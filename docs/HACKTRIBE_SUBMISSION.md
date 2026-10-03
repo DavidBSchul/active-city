@@ -20,12 +20,13 @@ The World Health Organization identifies insufficient physical activity as a maj
 
 Active City turns fragmented public recreation information into a clear, privacy-first activity journey:
 
-1. Explore 19 Kraków pilot locations on an interactive map or accessible text list.
+1. Explore 19 Kraków pilot locations on an interactive map or accessible text list, then filter for walking, running/cycling, strength, team sport or waterfront activity.
 2. Open a place profile to see its documented activities, equipment, access caveats and source link.
-3. Enter an approximate starting point to sort places by distance and choose walking, running or public transport.
-4. Choose a narrow age band, movement comfort and goal to discover suitable non-medical activity ideas.
-5. Select a higher-energy interval, bodyweight or court/pitch session when energetic activity is appropriate for the person’s self-described comfort.
+3. Build a simple “Today’s plan” from the selected place, one documented activity and a travel choice; enter an approximate starting point to sort by distance and choose walking, running or public transport.
+4. Choose a narrow age band, movement comfort and goal to discover non-medical activity ideas matched to documented venue activities.
+5. Select a higher-energy interval, bodyweight or court/pitch session when energetic activity matches the person’s self-described comfort and the venue record.
 6. Optionally reflect on how the activity felt and build a private three-movement-day challenge. Check-ins stay on the device by default.
+7. Explore an adult-only community prototype for planned public-place activity requests and volunteer/trainer guidance. It is explicitly browser-only: no accounts, live locations, contact details or connections are created.
 
 This combines motivation, practical next steps and transparent data limits. It does not diagnose, prescribe exercise or share health data with providers.
 
@@ -39,11 +40,9 @@ New idea / hackathon prototype.
 
 ## What was done so far and project goal
 
-Before the event, the team reviewed the challenge and identified public, reusable location sources. No pre-existing product is being represented as a completed solution.
+During HackYeah, the team built and validated a React and TypeScript Kraków pilot: source-backed facility profiles, activity filters, distance and route tools, a guided “Today’s plan”, non-medical activity discovery, an intensive-workout option, privacy-first wellbeing reflection, and a clearly bounded community prototype. Kraków is the first city theme; future city pilots can use their own landmark art and equivalent palette tokens without rewriting the experience.
 
-During HackYeah, the team is building and validating the prototype: a React and TypeScript map experience, source-backed facility profiles, route and distance tools, non-medical activity discovery, an intensive-workout option, and a privacy-first wellbeing reflection. The goal is a clear, demonstrable Kraków pilot that helps a person go from “I want to move” to a realistic next activity at a nearby public place.
-
-All implementation activity is recorded in `docs/DEVELOPMENT_LOG.md`; the team should check this wording against the organizer’s confirmed start-time clarification before submitting.
+The goal is a clear, demonstrable journey from “I want to move” to a realistic next activity at a nearby public place. All implementation activity and source limits are recorded in `docs/DEVELOPMENT_LOG.md` and `docs/DATA_SOURCES.md`.
 
 ## Team status
 
@@ -103,17 +102,17 @@ Create and upload a PDF or PPTX under 10 MB. Suggested six-slide structure:
 1. **Active City** — “From intention to a real place to move in Kraków.”
 2. **The friction** — public activity information is scattered and uncertain.
 3. **The journey** — discover → verify → route → move → reflect.
-4. **Live prototype** — map, facility evidence, accessible text list, and distance sorting.
-5. **Responsible personalisation** — non-medical suggestions, energetic pathway and device-first reflections.
-6. **Impact and next steps** — validate more sites, co-design with residents, and add current municipal availability data.
+4. **Live prototype** — filter the map, open a source-backed profile, then make a Today’s plan.
+5. **Responsible personalisation and community** — non-medical suggestions, energetic pathway, device-first reflections and local-only community drafts.
+6. **Impact and next steps** — validate more sites, co-design with residents, add current municipal availability data, and test future city themes.
 
 ## Cover image brief
 
-Create a 1600 × 900 PNG or JPG: a clean Kraków map-style background with three simple pins (outdoor gym, court, waterfront), an illustrated walking route, and the words **Active City — Your next move, nearby**. Use original or properly licensed assets and credit/disclose them where required.
+Use `public/active-city-hero.png` as the starting cover visual. It is an original AI-generated Kraków riverside illustration (1672 × 941) with outdoor movement and no text or logo. Crop it to the platform’s preferred aspect ratio if needed; add project title text only in the platform/editor, and disclose the generated asset as required by the competition rules.
 
 ## Final pre-publish checklist
 
-- [ ] Confirm the organizer’s start-time clarification and adjust the “done so far” wording if necessary.
+- [ ] Confirm the final provenance/start-time wording against the organizer’s rules before publishing.
 - [ ] Confirm team status, team size, member names and any needed skills.
 - [x] Create the GitHub repository, push the commit, and paste its public URL.
 - [ ] Add a deployed demo URL if one is available.
