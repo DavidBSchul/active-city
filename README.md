@@ -21,7 +21,7 @@ The app currently provides:
 - A private post-activity reflection and optional three-movement-day challenge; data stays in the browser unless the person explicitly opts into device storage.
 - Up to five device-local profiles for a person, someone they support, a child, or a household member; each keeps separate preferences, diary entries and challenge progress.
 - Opt-in, read-only progress links that include only reflections the user selects; the app creates no server copy or account.
-- A browser-only “Today’s plan” that links place selection, a documented activity, travel planning and post-activity reflection.
+- A browser-only “Today’s plan” that turns a chosen documented activity into a time-budgeted session outline, reserves an estimated return journey, flags places that do not fit today’s time, and offers nearer documented alternatives where available.
 
 ## Run locally
 

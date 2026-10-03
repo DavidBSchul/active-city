@@ -13,9 +13,10 @@ const pilotCity = {
 type Coordinates = { latitude: number; longitude: number }
 type TravelMode = 'walking' | 'running' | 'transit'
 type RouteData = { coordinates: [number, number][]; distanceKm: number; minutes: number; calories: number }
-type TodayPlan = { locationId: string; activity: string; travelMode: TravelMode }
+type TodayPlan = { locationId: string; activity: string; travelMode: TravelMode; timeBudgetMinutes: number }
 type RoutingResponse = { routes?: Array<{ distance: number; geometry: { coordinates: [number, number][] } }> }
 type GeocodingResult = { lat: string; lon: string; display_name: string }
+type PlanStep = { title: string; detail: string; minutes: number }
 type AgeRange = '0-4' | '5-8' | '9-12' | '13-15' | '16-17' | '18-24' | '25-34' | '35-44' | '45-54' | '55-64' | '65-74' | '75-plus'
 type MovementComfort = 'gentle' | 'steady' | 'energetic'
 type ActivityGoal = 'everyday' | 'endurance' | 'strength' | 'team' | 'waterfront'
@@ -307,6 +308,64 @@ function calorieEstimate(mode: Exclude<TravelMode, 'transit'>, minutes: number, 
   return Math.round((met * 3.5 * weightKg * minutes) / 200)
 }
 
+function travelEstimateMinutes(mode: TravelMode, distanceKm: number) {
+  if (mode === 'walking') return Math.max(1, Math.round((distanceKm / 4.8) * 60))
+  if (mode === 'running') return Math.max(1, Math.round((distanceKm / 8.5) * 60))
+  return Math.max(8, Math.round((distanceKm / 22) * 60) + 8)
+}
+
+function allocatePlanMinutes(totalMinutes: number, weights: number[]) {
+  const remaining = Math.max(0, totalMinutes)
+  const weightTotal = weights.reduce((sum, weight) => sum + weight, 0)
+  return weights.map((weight, index) => index === weights.length - 1
+    ? Math.max(1, remaining - weights.slice(0, -1).reduce((sum, earlierWeight) => sum + Math.max(1, Math.round((remaining * earlierWeight) / weightTotal)), 0))
+    : Math.max(1, Math.round((remaining * weight) / weightTotal)))
+}
+
+function buildSessionSteps(activity: string, availableMinutes: number): PlanStep[] {
+  const minutes = Math.max(10, availableMinutes)
+  const [warmUp, main, technique, coolDown] = allocatePlanMinutes(minutes, [2, 5, 2, 1])
+  const activityName = activity.toLowerCase()
+  if (activityName.includes('calisthenics') || activityName.includes('strength') || activityName.includes('bodyweight') || activityName.includes('fitness') || activityName.includes('street workout')) {
+    return [
+      { title: 'Warm up', minutes: warmUp, detail: 'Walk easily, then use gentle shoulder, hip and ankle movements. Inspect every bar, platform and surface before using it.' },
+      { title: 'Main strength practice', minutes: main, detail: 'Choose controlled squats and standing press-ups. If a documented bar is sound and you are already comfortable, use an appropriate pull-up progression; rest whenever form changes.' },
+      { title: 'Movement control', minutes: technique, detail: 'Add slow calf raises or supported balance work on a clear, dry surface. Keep a stable support within reach if you need one.' },
+      { title: 'Ease out', minutes: coolDown, detail: 'Walk slowly, let your breathing settle, and stop if pain, dizziness or unusual breathlessness occurs.' },
+    ]
+  }
+  if (activityName.includes('running')) {
+    return [
+      { title: 'Warm up', minutes: warmUp, detail: 'Start with an easy walk or very gentle jog on a clear surface.' },
+      { title: 'Run–walk block', minutes: main, detail: 'Alternate comfortable running with easy walking recovery. Keep the faster portions controlled rather than sprinting cold.' },
+      { title: 'Posture reset', minutes: technique, detail: 'Walk easily and check that your breathing and movement still feel controlled.' },
+      { title: 'Ease out', minutes: coolDown, detail: 'Finish with an easy walk. Stop if pain, dizziness or unusual breathlessness occurs.' },
+    ]
+  }
+  if (activityName.includes('football') || activityName.includes('basketball') || activityName.includes('volleyball')) {
+    return [
+      { title: 'Warm up', minutes: warmUp, detail: 'Confirm the court or pitch is available, clear and permitted for use; begin with easy walking, jogging and joint movements.' },
+      { title: 'Skill block', minutes: main, detail: 'Practise the sport’s basic movements at a controlled pace. Leave generous recovery between faster changes of direction.' },
+      { title: 'Movement control', minutes: technique, detail: 'Use slow side steps, balance work or easy passing before a final check that the surface still feels safe.' },
+      { title: 'Ease out', minutes: coolDown, detail: 'Walk slowly and stop while your movement remains controlled.' },
+    ]
+  }
+  if (activityName.includes('swimming')) {
+    return [
+      { title: 'Safety check', minutes: warmUp, detail: 'Use only an open, designated bathing area. Check current lifeguard, water-safety and on-site guidance before entering.' },
+      { title: 'Water activity', minutes: main, detail: 'Keep the activity within your confidence and current conditions. Do not treat this outline as swimming instruction or water-safety advice.' },
+      { title: 'Easy movement', minutes: technique, detail: 'Walk calmly on the designated paths and reassess how you feel.' },
+      { title: 'Finish safely', minutes: coolDown, detail: 'Dry off, warm up and follow the site’s rules before leaving.' },
+    ]
+  }
+  return [
+    { title: 'Ease in', minutes: warmUp, detail: 'Start with a comfortable walk and gentle movements on a clear surface.' },
+    { title: 'Main movement', minutes: main, detail: 'Use the documented activity at a pace that feels manageable. For walking, add short brisk sections only if they remain comfortable.' },
+    { title: 'Mobility and balance', minutes: technique, detail: 'Try controlled calf raises, heel-to-toe walking or supported balance near a stable support if appropriate.' },
+    { title: 'Ease out', minutes: coolDown, detail: 'Slow down, let your breathing settle, and stop if anything feels wrong.' },
+  ]
+}
+
 function App() {
   const [selectedId, setSelectedId] = useState(documentedLocations[0].id)
   const [profiles, setProfiles] = useState<Profile[]>([DEFAULT_PROFILE])
@@ -320,6 +379,7 @@ function App() {
   const [isLocating, setIsLocating] = useState(false)
   const [travelMode, setTravelMode] = useState<TravelMode>('walking')
   const [plannedActivity, setPlannedActivity] = useState(documentedLocations[0].activities[0])
+  const [planDurationMinutes, setPlanDurationMinutes] = useState(60)
   const [todayPlan, setTodayPlan] = useState<TodayPlan | null>(null)
   const [weightKg, setWeightKg] = useState('70')
   const [route, setRoute] = useState<RouteData | null>(null)
@@ -376,6 +436,38 @@ function App() {
     const matchingActivities = locationActivityMatches[locationActivityFilter]
     return visibleLocations.filter((location) => location.activities.some((activity) => matchingActivities.includes(activity)))
   }, [locationActivityFilter, visibleLocations])
+  const todayPlanDistanceKm = todayPlan && userLocation && todayPlanLocation
+    ? distanceInKm(userLocation, todayPlanLocation)
+    : undefined
+  const todayPlanOneWayMinutes = todayPlanDistanceKm === undefined || !todayPlan
+    ? undefined
+    : route && todayPlanLocation?.id === selectedLocation.id && todayPlan.travelMode !== 'transit' && travelMode === todayPlan.travelMode
+      ? route.minutes
+      : travelEstimateMinutes(todayPlan.travelMode, todayPlanDistanceKm)
+  const todayPlanTravelMinutes = todayPlanOneWayMinutes === undefined ? undefined : todayPlanOneWayMinutes * 2
+  const todayPlanActivityMinutes = todayPlan
+    ? todayPlanTravelMinutes === undefined
+      ? todayPlan.timeBudgetMinutes
+      : Math.max(0, todayPlan.timeBudgetMinutes - todayPlanTravelMinutes)
+    : 0
+  const todayPlanSteps = todayPlan && todayPlanActivityMinutes >= 10
+    ? buildSessionSteps(todayPlan.activity, todayPlanActivityMinutes)
+    : []
+  const nearbyPlanAlternatives = useMemo(() => {
+    if (!todayPlan || !userLocation) return []
+    const candidates = documentedLocations.filter((location) => location.id !== todayPlan.locationId)
+    const exactActivityMatches = candidates.filter((location) => location.activities.includes(todayPlan.activity))
+    const options = exactActivityMatches.length > 0 ? exactActivityMatches : candidates
+    return options
+      .map((location) => ({
+        location,
+        distanceKm: distanceInKm(userLocation, location),
+        activity: location.activities.includes(todayPlan.activity) ? todayPlan.activity : location.activities[0],
+        matchesActivity: location.activities.includes(todayPlan.activity),
+      }))
+      .sort((first, second) => first.distanceKm - second.distanceKm)
+      .slice(0, 2)
+  }, [todayPlan, userLocation])
   const activeCheckIns = useMemo(() => checkIns.filter((checkIn) => checkIn.profileId === activeProfile.id), [activeProfile.id, checkIns])
   const recommendations = useMemo(() => {
     const matches = wellbeingFocus === 'general'
@@ -584,7 +676,16 @@ function App() {
   }
 
   const buildTodayPlan = () => {
-    setTodayPlan({ locationId: selectedLocation.id, activity: plannedActivity, travelMode })
+    setTodayPlan({ locationId: selectedLocation.id, activity: plannedActivity, travelMode, timeBudgetMinutes: planDurationMinutes })
+  }
+
+  const chooseNearbyPlanLocation = (location: RecreationLocation, activity: string) => {
+    if (!todayPlan) return
+    setSelectedId(location.id)
+    setPlannedActivity(activity)
+    setTodayPlan({ ...todayPlan, locationId: location.id, activity })
+    setRoute(null)
+    setRouteStatus('')
   }
 
   const moveToPlanStep = (elementId: string) => {
@@ -707,7 +808,7 @@ function App() {
     const activity = location.activities.find((item) => post.activity.includes(item)) ?? location.activities[0]
     setSelectedId(location.id)
     setPlannedActivity(activity)
-    setTodayPlan({ locationId: location.id, activity, travelMode })
+    setTodayPlan({ locationId: location.id, activity, travelMode, timeBudgetMinutes: planDurationMinutes })
     setRoute(null)
     setRouteStatus('')
     setCommunityMessage(`${activity} at ${location.name} was added to ${activeProfile.name}'s Today plan. No request or contact details were sent.`)
@@ -922,7 +1023,7 @@ function App() {
           <div>
             <p className="eyebrow">One clear next step</p>
             <h3 id="today-plan-heading">Build today’s plan</h3>
-            <p>Make a simple plan from the place you selected, an activity documented there, and how you want to travel. It stays in this browser tab.</p>
+            <p>Set the time you actually have, including the return journey. The plan combines the selected public place, documented activity, travel allowance and a short session outline. It stays in this browser tab.</p>
           </div>
           <div className="today-plan-controls">
             <label>
@@ -943,6 +1044,16 @@ function App() {
                 <option value="transit">Take public transport</option>
               </select>
             </label>
+            <label>
+              Total time available
+              <select onChange={(event) => setPlanDurationMinutes(Number(event.target.value))} value={planDurationMinutes}>
+                <option value={30}>30 minutes</option>
+                <option value={45}>45 minutes</option>
+                <option value={60}>1 hour</option>
+                <option value={90}>1½ hours</option>
+                <option value={120}>2 hours</option>
+              </select>
+            </label>
             <button onClick={buildTodayPlan} type="button">Make today’s plan</button>
           </div>
           {todayPlan && todayPlanLocation && (
@@ -950,14 +1061,41 @@ function App() {
               <div>
                 <p className="eyebrow">Today’s plan</p>
                 <h4>{todayPlan.activity} at {todayPlanLocation.name}</h4>
-                <p>First, check the facility profile and source record. Then {todayPlan.travelMode === 'transit' ? 'open a live public-transport journey' : `prepare a ${todayPlan.travelMode} route`} when you are ready.</p>
+                {todayPlanDistanceKm === undefined ? (
+                  <p>Set a starting point above to check whether this venue fits your time. Until then, this is a {todayPlan.timeBudgetMinutes}-minute movement outline without a travel allowance.</p>
+                ) : (
+                  <p><strong>{todayPlanDistanceKm.toFixed(1)} km away</strong> as the straight-line planning distance. Allow about {todayPlanOneWayMinutes} minutes each way by {todayPlan.travelMode === 'transit' ? 'public transport' : todayPlan.travelMode}; this uses {todayPlanTravelMinutes} of your {todayPlan.timeBudgetMinutes} minutes for a return journey.</p>
+                )}
               </div>
               <div className="today-plan-actions">
                 <button onClick={() => moveToPlanStep('location-profile')} type="button">Review place details</button>
                 <button onClick={() => moveToPlanStep('route-heading')} type="button">Plan travel</button>
                 <button onClick={() => moveToPlanStep('wellbeing-heading')} type="button">Reflect afterwards</button>
               </div>
-              <p className="today-plan-note">This plan is a prompt for your next step, not a booking, workout prescription or safety assessment.</p>
+              {todayPlanDistanceKm !== undefined && todayPlanActivityMinutes < 10 ? (
+                <div className="today-plan-warning">
+                  <strong>This place does not fit today’s time.</strong>
+                  <p>The return journey would leave less than 10 minutes for activity. Choose a closer documented place or increase the time available.</p>
+                  {nearbyPlanAlternatives.length > 0 ? (
+                    <div className="nearby-plan-options">
+                      <p>{nearbyPlanAlternatives[0].matchesActivity ? 'Closer places with the same documented activity:' : 'Closest documented places, with an activity available there:'}</p>
+                      {nearbyPlanAlternatives.map(({ location, distanceKm, activity }) => <button key={location.id} onClick={() => chooseNearbyPlanLocation(location, activity)} type="button">Choose {location.name} · {distanceKm.toFixed(1)} km · {activity}</button>)}
+                    </div>
+                  ) : <p>No other documented place is available in this pilot yet. Try a different activity or increase the time available.</p>}
+                </div>
+              ) : (
+                <div className="today-session-outline">
+                  <div>
+                    <p className="eyebrow">Session outline</p>
+                    <h5>{todayPlanActivityMinutes} minutes for movement</h5>
+                    <p>{todayPlanDistanceKm === undefined ? 'Travel is not included until you set a starting point.' : 'This is the time left after the estimated return journey.'}</p>
+                  </div>
+                  <ol>
+                    {todayPlanSteps.map((step) => <li key={step.title}><strong>{step.minutes} min · {step.title}</strong><span>{step.detail}</span></li>)}
+                  </ol>
+                </div>
+              )}
+              <p className="today-plan-note">Travel times are planning estimates; route conditions, public-transport timetables and venue access can change. This is a general movement outline, not a workout prescription or safety assessment.</p>
             </div>
           )}
         </section>

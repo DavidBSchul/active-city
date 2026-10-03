@@ -87,4 +87,5 @@ An imported map feature must not be presented as confirmation that the location 
 
 - **Walking and running:** the interactive route layer requests a pedestrian route from the OpenStreetMap routing service only after the user asks for it. Running uses the same pedestrian geometry, with a different time and calorie estimate.
 - **Public transport:** the app hands the journey to Google Maps, which can calculate a live transit itinerary. Kraków’s official ZTP GTFS and real-time feeds are suitable input for a future self-hosted journey planner but do not by themselves provide one.
+- **Today’s Plan time check:** before a live walking/running route is requested, the app uses a straight-line planning estimate for the return journey; public transport uses a deliberately labelled rough allowance, not a timetable. The time budget is designed to reject an impractical venue and suggest closer documented alternatives, not to promise arrival times.
 - **Calories:** estimates use standard MET-based arithmetic from the selected mode, estimated duration, and a user-entered weight. They are general informational estimates, not medical or fitness advice.
