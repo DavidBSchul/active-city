@@ -8,6 +8,11 @@
 
 - Connected a Today plan to its private post-activity reflection: after a person returns, they can open the relevant check-in with its planned place already selected. The app does not claim that the activity was completed or save anything until the person chooses to add their own reflection.
 
+## 3 October 2026 — navigable app destinations
+
+- Made Explore, Plan, My week and Community direct browser destinations with readable addresses and Back/Forward support. Navigation items are now ordinary links with keyboard focus styling, while keeping the quick in-app transition.
+- Read-only progress links now open directly on the recipient’s shared weekly view.
+
 ## 2026-10-03 — Milestone 1 started
 
 - The participant confirmed in the project chat that development may begin.

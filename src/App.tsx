@@ -35,6 +35,11 @@ type GuidanceOffer = { id: string; role: GuidanceRole; title: string; locationId
 type AppView = 'explore' | 'plan' | 'week' | 'community'
 type WeeklyPattern = { movementDays: number; checkIns: number; familiarPlace?: string; reflection: string; nextStep: string }
 
+function viewFromCurrentUrl(): AppView {
+  const view = new URLSearchParams(window.location.search).get('view')
+  return view === 'plan' || view === 'week' || view === 'community' ? view : 'explore'
+}
+
 const WELLBEING_STORAGE_KEY = 'active-city-wellbeing-checkins-v1'
 const WELLBEING_CONSENT_KEY = 'active-city-wellbeing-save-on-device-v1'
 const PROFILE_STORAGE_KEY = 'active-city-profiles-v1'
@@ -380,7 +385,7 @@ function buildSessionSteps(activity: string, availableMinutes: number): PlanStep
 }
 
 function App() {
-  const [activeView, setActiveView] = useState<AppView>('explore')
+  const [activeView, setActiveView] = useState<AppView>(viewFromCurrentUrl)
   const [selectedId, setSelectedId] = useState(documentedLocations[0].id)
   const [profiles, setProfiles] = useState<Profile[]>([DEFAULT_PROFILE])
   const [activeProfileId, setActiveProfileId] = useState(DEFAULT_PROFILE.id)
@@ -610,14 +615,23 @@ function App() {
     if (!window.location.hash.startsWith(SHARE_HASH_PREFIX)) return
     try {
       const payload = JSON.parse(decodeURIComponent(window.location.hash.slice(SHARE_HASH_PREFIX.length))) as SharedProgress
-      if (typeof payload.profileName === 'string' && typeof payload.relationship === 'string' && Array.isArray(payload.entries) && payload.entries.every((entry) => typeof entry?.date === 'string' && typeof entry?.locationName === 'string' && typeof entry?.feeling === 'string' && typeof entry?.note === 'string')) setSharedProgress(payload)
+      if (typeof payload.profileName === 'string' && typeof payload.relationship === 'string' && Array.isArray(payload.entries) && payload.entries.every((entry) => typeof entry?.date === 'string' && typeof entry?.locationName === 'string' && typeof entry?.feeling === 'string' && typeof entry?.note === 'string')) {
+        setSharedProgress(payload)
+        setActiveView('week')
+      }
     } catch {
       // An invalid shared link leaves the normal app view available.
     }
   }, [])
 
+  useEffect(() => {
+    const syncViewFromBrowser = () => setActiveView(viewFromCurrentUrl())
+    window.addEventListener('popstate', syncViewFromBrowser)
+    return () => window.removeEventListener('popstate', syncViewFromBrowser)
+  }, [])
+
   const selectLocation = (location: RecreationLocation) => {
-    setActiveView('explore')
+    openView('explore')
     setSelectedId(location.id)
     setPlannedActivity(location.activities[0])
     setRoute(null)
@@ -730,7 +744,7 @@ function App() {
     if (!todayPlanLocation || !todayPlan) return
     setSelectedId(todayPlanLocation.id)
     setPlannedActivity(todayPlan.activity)
-    setActiveView('week')
+    openView('week')
     setCheckInMessage(`Your ${todayPlan.activity.toLowerCase()} plan at ${todayPlanLocation.name} is ready to reflect on. Add a note only if it would be useful to you.`)
     window.setTimeout(() => document.getElementById('wellbeing-heading')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 0)
   }
@@ -742,12 +756,15 @@ function App() {
       'route-heading': 'plan',
       'wellbeing-heading': 'week',
     }
-    setActiveView(viewByElement[elementId] ?? 'plan')
+    openView(viewByElement[elementId] ?? 'plan')
     window.setTimeout(() => document.getElementById(elementId)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 0)
   }
 
   const openView = (view: AppView) => {
     setActiveView(view)
+    const url = new URL(window.location.href)
+    url.searchParams.set('view', view)
+    window.history.pushState({ view }, '', `${url.pathname}${url.search}${url.hash}`)
     const startByView: Record<AppView, string> = {
       explore: 'app-content',
       plan: 'today-plan-heading',
@@ -1032,9 +1049,9 @@ function App() {
           ['week', 'My week', 'Keep track your way'],
           ['community', 'Community', 'Future pilot'],
         ] as Array<[AppView, string, string]>).map(([view, label, detail]) => (
-          <button aria-current={activeView === view ? 'page' : undefined} className={activeView === view ? 'selected' : ''} key={view} onClick={() => openView(view)} type="button">
+          <a aria-current={activeView === view ? 'page' : undefined} className={activeView === view ? 'selected' : ''} href={`?view=${view}${window.location.hash}`} key={view} onClick={(event) => { event.preventDefault(); openView(view) }}>
             <strong>{label}</strong><span>{detail}</span>
-          </button>
+          </a>
         ))}
       </nav>
 

@@ -26,6 +26,7 @@ The app currently provides:
 - A browser-only “Today’s plan” that turns a chosen documented activity into a time-budgeted session outline, reserves an estimated return journey, flags places that do not fit today’s time, and offers nearer documented alternatives where available.
 - A direct “I’m back — reflect” hand-off from a completed Today plan to the private weekly check-in, carrying the chosen place through without marking activity as completed automatically.
 - Four focused destinations instead of one long page: **Explore**, **Plan**, **My week**, and a clearly labelled **Community** future-pilot area.
+- Direct browser addresses for each destination (`?view=explore`, `?view=plan`, `?view=week`, and `?view=community`), with Back/Forward support. Read-only progress links open directly on the shared weekly view.
 
 ## Run locally
 
