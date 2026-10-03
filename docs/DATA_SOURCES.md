@@ -18,6 +18,10 @@
 
 The app links each documented gym directly to its public source. Equipment can change, so the app still asks people to confirm the on-site rules and current condition.
 
+## Documented park-sport hub
+
+- **Park Lotników Polskich** — the Municipal Greenery Authority lists street-workout equipment, a multi-purpose sports court, a pumptrack, a skatepark and a designated running route. Because the record does not itemise individual gym devices or confirm court availability, the app keeps those details unclaimed and asks people to check local conditions.
+
 ## Documented outdoor courts and pitches
 
 - **Olszanica, ul. Grzegorza Korzeniaka 20** — the ZIS municipal facility record lists an outdoor artificial-turf football pitch and an outdoor multi-sport court. The city’s 2026 renewal notice additionally confirms basketball and volleyball equipment at the site.

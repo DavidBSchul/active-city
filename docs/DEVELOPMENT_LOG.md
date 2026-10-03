@@ -26,7 +26,8 @@
 - Added an original AI-generated Kraków riverside hero illustration and refreshed the visual direction around its lake-blue, deep-navy, leaf-green and warm-amber palette. The illustration is documented as generated/referenced visual material in `docs/DATA_SOURCES.md`.
 - Turned the visual direction into a city-theme foundation. Kraków is the active pilot theme: its named landmark hero and palette tokens now style the journey panels, controls, activity states and community area. A future city can supply its own hero asset and equivalent theme tokens without rewriting the interface.
 - Added a browser-only “Today’s plan” flow that joins the selected facility, one documented activity, a travel choice, route planning and the post-activity reflection into one clear user journey. It does not create bookings, save plans or make individual exercise/safety decisions.
+- Verified and upgraded Park Lotników Polskich from an imported discovery point to a municipal-source-backed outdoor sport profile. The profile covers only the documented street-workout area, multi-purpose court, pumptrack, skatepark and running route; it avoids inventing individual device, court-availability or booking details.
 
 ### Next priority
 
-Verify each pilot location against a source record with a durable URL, then add selected outdoor gyms and sports facilities before introducing preference filters.
+Continue verifying pilot locations against durable municipal sources, then introduce concise activity filters for map discovery.
