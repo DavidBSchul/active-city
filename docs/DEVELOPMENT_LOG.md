@@ -30,6 +30,7 @@
 - Added an activity filter that updates both the interactive-map markers and the equivalent text list together. It provides concise choices for walking, running/cycling, strength/bodyweight, team sport and waterfront activity; no personal information is needed or retained.
 - Added a three-step community-demo path that makes the prototype’s safety-first sequence explicit: acknowledge adult/rules boundary, choose a public facility, then review a local draft rather than publish it.
 - Expanded documented map coverage with Orlik Kabel in Płaszów and Park Ogród nad Sudołem in Prądnik Czerwony. Both records link to the City source, distinguish equipment facts from current access, and leave availability/booking unconfirmed.
+- Added Park Linearny Ruczaj as a documented District VIII outdoor-activity record, including its City-listed stationary spinning bikes, table tennis, minigolf and pétanque facilities.
 
 ### Next priority
 

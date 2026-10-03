@@ -20,7 +20,7 @@ The World Health Organization identifies insufficient physical activity as a maj
 
 Active City turns fragmented public recreation information into a clear, privacy-first activity journey:
 
-1. Explore 21 Kraków pilot locations on an interactive map or accessible text list, then filter for walking, running/cycling, strength, team sport or waterfront activity.
+1. Explore 22 Kraków pilot locations on an interactive map or accessible text list, then filter for walking, running/cycling, strength, team sport or waterfront activity.
 2. Open a place profile to see its documented activities, equipment, access caveats and source link.
 3. Build a simple “Today’s plan” from the selected place, one documented activity and a travel choice; enter an approximate starting point to sort by distance and choose walking, running or public transport.
 4. Choose a narrow age band, movement comfort and goal to discover non-medical activity ideas matched to documented venue activities.
