@@ -1,5 +1,9 @@
 # Development log
 
+## 3 October 2026 — team identity for submission
+
+- Updated the HackYeah submission draft and final pitch deck to name **Fundacja Życie, Razem** as the Active City team, so the foundation is clearly credited in the public project materials.
+
 ## 2026-10-03 — Milestone 1 started
 
 - The participant confirmed in the project chat that development may begin.

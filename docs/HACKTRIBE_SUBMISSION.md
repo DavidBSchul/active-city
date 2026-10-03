@@ -6,6 +6,10 @@
 
 Active City
 
+## Team name
+
+Fundacja Życie, Razem
+
 ## Published
 
 Keep as a draft until the team has reviewed the copy, added the final repository link, and chosen a cover image. Publish once those checks are complete.
@@ -97,7 +101,7 @@ The application is a frontend prototype. It uses public map tiles and makes on-d
 
 ## Presentation
 
-Upload [`output/Active-City-HackYeah-2026-final.pptx`](../output/Active-City-HackYeah-2026-final.pptx). It has nine slides and is below 10 MB. Before upload, replace the team-name placeholder on slide 1. The deck covers the source-backed Kraków pilot, time-aware plan, private weekly pattern, community safety boundary, source/AI disclosure and the next city-pilot tests.
+Upload [`output/Active-City-HackYeah-2026-Fundacja-Zycie-Razem.pptx`](../output/Active-City-HackYeah-2026-Fundacja-Zycie-Razem.pptx). It has nine slides and is below 10 MB. The deck names Fundacja Życie, Razem on slide 1 and covers the source-backed Kraków pilot, time-aware plan, private weekly pattern, community safety boundary, source/AI disclosure and the next city-pilot tests.
 
 ## Cover image brief
 
