@@ -32,6 +32,7 @@ type ModerationState = 'Illustrative listing — no connection' | 'Private draft
 type CommunityPost = { id: string; kind: CommunityPostKind; activity: string; locationId: string; timing: string; capacity: number; interested: number; note: string; moderation: ModerationState }
 type GuidanceRole = 'volunteer' | 'trainer'
 type GuidanceOffer = { id: string; role: GuidanceRole; title: string; locationId: string; availability: string; topics: string; scope: string; enquiries: number; moderation: ModerationState }
+type AppView = 'explore' | 'plan' | 'week' | 'community'
 
 const WELLBEING_STORAGE_KEY = 'active-city-wellbeing-checkins-v1'
 const WELLBEING_CONSENT_KEY = 'active-city-wellbeing-save-on-device-v1'
@@ -378,6 +379,7 @@ function buildSessionSteps(activity: string, availableMinutes: number): PlanStep
 }
 
 function App() {
+  const [activeView, setActiveView] = useState<AppView>('explore')
   const [selectedId, setSelectedId] = useState(documentedLocations[0].id)
   const [profiles, setProfiles] = useState<Profile[]>([DEFAULT_PROFILE])
   const [activeProfileId, setActiveProfileId] = useState(DEFAULT_PROFILE.id)
@@ -591,11 +593,12 @@ function App() {
   }, [])
 
   const selectLocation = (location: RecreationLocation) => {
+    setActiveView('explore')
     setSelectedId(location.id)
     setPlannedActivity(location.activities[0])
     setRoute(null)
     setRouteStatus('')
-    document.getElementById('location-profile')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+    window.setTimeout(() => document.getElementById('location-profile')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 0)
   }
 
   const activateProfile = (profile: Profile) => {
@@ -700,7 +703,25 @@ function App() {
   }
 
   const moveToPlanStep = (elementId: string) => {
-    document.getElementById(elementId)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    const viewByElement: Record<string, AppView> = {
+      'location-profile': 'explore',
+      'today-plan-heading': 'plan',
+      'route-heading': 'plan',
+      'wellbeing-heading': 'week',
+    }
+    setActiveView(viewByElement[elementId] ?? 'plan')
+    window.setTimeout(() => document.getElementById(elementId)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 0)
+  }
+
+  const openView = (view: AppView) => {
+    setActiveView(view)
+    const startByView: Record<AppView, string> = {
+      explore: 'app-content',
+      plan: 'today-plan-heading',
+      week: 'profile-hub-heading',
+      community: 'community-heading',
+    }
+    window.setTimeout(() => document.getElementById(startByView[view])?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 0)
   }
 
   const showPedestrianRoute = async () => {
@@ -971,7 +992,20 @@ function App() {
         </aside>
       </header>
 
-      {sharedProgress && (
+      <nav aria-label="Main sections" className="app-navigation">
+        {([
+          ['explore', 'Explore', 'Find a place'],
+          ['plan', 'Plan', 'Make today work'],
+          ['week', 'My week', 'Keep track your way'],
+          ['community', 'Community', 'Future pilot'],
+        ] as Array<[AppView, string, string]>).map(([view, label, detail]) => (
+          <button aria-current={activeView === view ? 'page' : undefined} className={activeView === view ? 'selected' : ''} key={view} onClick={() => openView(view)} type="button">
+            <strong>{label}</strong><span>{detail}</span>
+          </button>
+        ))}
+      </nav>
+
+      {sharedProgress && activeView === 'week' && (
         <aside className="shared-progress" aria-labelledby="shared-progress-heading">
           <p className="eyebrow">Shared with you</p>
           <h2 id="shared-progress-heading">A few reflections from {sharedProgress.profileName}</h2>
@@ -980,7 +1014,7 @@ function App() {
         </aside>
       )}
 
-      <section className="profile-hub" aria-labelledby="profile-hub-heading">
+      <section className="profile-hub" aria-labelledby="profile-hub-heading" hidden={activeView !== 'week'}>
         <div>
           <p className="eyebrow">Your space</p>
           <h2 id="profile-hub-heading">Who is this plan for?</h2>
@@ -1008,8 +1042,8 @@ function App() {
         <p className="profile-device-note">{saveOnDevice ? 'Profiles and diary entries are saved on this device only.' : 'Profiles and diary entries are currently available only in this browser tab. Turn on device saving below to keep them after closing it.'}</p>
       </section>
 
-      <section aria-labelledby="map-heading" className="discovery">
-        <div className="section-heading">
+      <section aria-labelledby="map-heading" className="discovery" id="app-content">
+        <div className="section-heading" hidden={activeView !== 'explore'}>
           <div>
             <p className="eyebrow">Explore</p>
             <h2 id="map-heading">Krakow recreation spaces</h2>
@@ -1017,7 +1051,7 @@ function App() {
           <p className="location-count">{documentedLocations.length} places to explore</p>
         </div>
 
-        <form className="distance-form" onSubmit={(event) => { event.preventDefault(); updateLocation() }}>
+        <form className="distance-form" hidden={activeView !== 'explore'} onSubmit={(event) => { event.preventDefault(); updateLocation() }}>
           <div>
             <label htmlFor="location-input">Where are you starting from?</label>
             <input
@@ -1037,16 +1071,16 @@ function App() {
           {locationError && <p className="location-error" id="location-error" role="alert">{locationError}</p>}
           {userLocation && <p className="location-sorted">Here are the places closest to you first.</p>}
         </form>
-        <label className="location-filter">
+        <label className="location-filter" hidden={activeView !== 'explore'}>
           Show places for
           <select onChange={(event) => setLocationActivityFilter(event.target.value as LocationActivityFilter)} value={locationActivityFilter}>
             {Object.entries(locationActivityFilterLabel).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
           </select>
           <span>{filteredLocations.length} of {documentedLocations.length} places are on the map and in the list below.</span>
         </label>
-        <p className="coverage-note">We have started with places we can link back to a public source. More places are being checked before they appear here.</p>
+        <p className="coverage-note" hidden={activeView !== 'explore'}>We have started with places we can link back to a public source. More places are being checked before they appear here.</p>
 
-        <section className="today-plan" aria-labelledby="today-plan-heading">
+        <section className="today-plan" aria-labelledby="today-plan-heading" hidden={activeView !== 'plan'}>
           <div>
             <p className="eyebrow">Make it work for today</p>
             <h3 id="today-plan-heading">What have you got time for?</h3>
@@ -1127,7 +1161,7 @@ function App() {
           )}
         </section>
 
-        <section className="preference-panel" aria-labelledby="preference-heading">
+        <section className="preference-panel" aria-labelledby="preference-heading" hidden={activeView !== 'plan'}>
           <div>
             <p className="eyebrow">Start where you are</p>
             <h3 id="preference-heading">What feels right today?</h3>
@@ -1261,7 +1295,7 @@ function App() {
           )}
         </section>
 
-        <section className="movement-library" aria-labelledby="movement-library-heading">
+        <section className="movement-library" aria-labelledby="movement-library-heading" hidden={activeView !== 'plan'}>
           <div>
             <p className="eyebrow">Try something new</p>
             <h3 id="movement-library-heading">A few ways to get moving</h3>
@@ -1285,7 +1319,7 @@ function App() {
           </div>
         </section>
 
-        <section className="community-panel" aria-labelledby="community-heading">
+        <section className="community-panel" aria-labelledby="community-heading" hidden={activeView !== 'community'}>
           <div>
             <p className="eyebrow">Move with others</p>
             <h3 id="community-heading">A little company can help</h3>
@@ -1428,7 +1462,7 @@ function App() {
           )}
         </section>
 
-        <section className="wellbeing-panel" aria-labelledby="wellbeing-heading">
+        <section className="wellbeing-panel" aria-labelledby="wellbeing-heading" hidden={activeView !== 'week'}>
           <div>
             <p className="eyebrow">Afterwards</p>
             <h3 id="wellbeing-heading">How did that feel, {activeProfile.name}?</h3>
@@ -1488,7 +1522,7 @@ function App() {
           <p className="wellbeing-safety">If you feel in immediate danger or are at risk of harming yourself or someone else, contact local emergency services. For persistent or worrying changes in mood, energy or wellbeing, seek support from a qualified health professional.</p>
         </section>
 
-        <section className="route-panel" aria-labelledby="route-heading">
+        <section className="route-panel" aria-labelledby="route-heading" hidden={activeView !== 'plan'}>
           <div>
             <p className="eyebrow">Getting there</p>
             <h3 id="route-heading">Find your way to {selectedLocation.name}</h3>
@@ -1518,7 +1552,7 @@ function App() {
           </div>
         </section>
 
-        <div className="map-frame" aria-label="Interactive map of Krakow recreation spaces">
+        <div className="map-frame" aria-label="Interactive map of Krakow recreation spaces" hidden={activeView !== 'explore'}>
           <MapContainer center={KRAKOW_CENTER} zoom={12} scrollWheelZoom={false} aria-label="Krakow map">
             <TileLayer
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'
@@ -1548,12 +1582,12 @@ function App() {
             ))}
           </MapContainer>
         </div>
-        <p className="map-note">
+        <p className="map-note" hidden={activeView !== 'explore'}>
           Map tiles © OpenStreetMap contributors. Select a marker or use the accessible location list below.
         </p>
       </section>
 
-      <section className="content-grid" aria-label="Location discovery details">
+      <section className="content-grid" aria-label="Location discovery details" hidden={activeView !== 'explore'}>
         <div className="location-list" aria-labelledby="list-heading">
           <div className="section-heading compact">
             <div>
@@ -1603,7 +1637,7 @@ function App() {
         </article>
       </section>
 
-      <aside className="safety-note">
+      <aside className="safety-note" hidden={activeView === 'week' || activeView === 'community'}>
         <strong>Good to know:</strong> location records are a starting point, not a guarantee of access, condition,
         or suitability. Check local signs and conditions before starting an activity. If you have a health concern,
         injury, symptoms, or need individual exercise advice, speak with a qualified health professional.

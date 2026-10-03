@@ -23,6 +23,7 @@ The app currently provides:
 - Up to five device-local profiles for a person, someone they support, a child, or a household member; each keeps separate preferences, diary entries and challenge progress.
 - Opt-in, read-only progress links that include only reflections the user selects; the app creates no server copy or account.
 - A browser-only “Today’s plan” that turns a chosen documented activity into a time-budgeted session outline, reserves an estimated return journey, flags places that do not fit today’s time, and offers nearer documented alternatives where available.
+- Four focused destinations instead of one long page: **Explore**, **Plan**, **My week**, and a clearly labelled **Community** future-pilot area.
 
 ## Run locally
 
@@ -48,6 +49,6 @@ Copy-ready project fields and the final upload checklist are in [`docs/HACKTRIBE
 - Vite 5 (Node 18-compatible)
 - Leaflet + React Leaflet
 - OpenStreetMap tiles and attribution
-- City-theme foundation: Kraków is the pilot with its own landmark illustration and palette tokens; later cities can provide their own theme asset and colours.
+- City-theme foundation: Kraków is the pilot with a civic route-based identity and palette tokens; later cities can provide their own landmark direction and colours.
 
 See [`docs/DEVELOPMENT_LOG.md`](docs/DEVELOPMENT_LOG.md), [`docs/DATA_SOURCES.md`](docs/DATA_SOURCES.md), and [`docs/HACKTRIBE_SUBMISSION.md`](docs/HACKTRIBE_SUBMISSION.md) for provenance, data limitations, and submission preparation.
