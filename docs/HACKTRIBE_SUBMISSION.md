@@ -23,10 +23,10 @@ Active City turns fragmented public recreation information into a clear, privacy
 1. Explore 22 Kraków pilot locations on an interactive map or accessible text list, then filter for walking, running/cycling, strength, team sport or waterfront activity.
 2. Open a place profile to see its documented activities, equipment, access caveats and source link.
 3. Build a simple “Today’s plan” from the selected place, one documented activity and a travel choice; enter an approximate starting point to sort by distance and choose walking, running or public transport.
-4. Choose a narrow age band, movement comfort and goal to discover non-medical activity ideas matched to documented venue activities.
+4. Create separate on-device profiles for a person, a person they support, a child, or a household member; each profile has its own broad preferences, progress and diary entries.
 5. Select a higher-energy interval, bodyweight or court/pitch session when energetic activity matches the person’s self-described comfort and the venue record.
-6. Optionally reflect on how the activity felt and build a private three-movement-day challenge. Check-ins stay on the device by default.
-7. Explore an adult-only community prototype for planned public-place activity requests and volunteer/trainer guidance. It is explicitly browser-only: no accounts, live locations, contact details or connections are created.
+6. Optionally reflect on how the activity felt and build a private three-movement-day challenge. Check-ins stay on the device by default, and the person may create a read-only link containing only entries they explicitly select.
+7. Explore an adult-only community prototype for planned public-place activity requests and volunteer/trainer guidance. A volunteer application visibly requires a future verification sequence and safety agreement; it is explicitly browser-only, so no accounts, live locations, contact details, documents or connections are created.
 
 This combines motivation, practical next steps and transparent data limits. It does not diagnose, prescribe exercise or share health data with providers.
 
@@ -40,7 +40,7 @@ New idea / hackathon prototype.
 
 ## What was done so far and project goal
 
-During HackYeah, the team built and validated a React and TypeScript Kraków pilot: source-backed facility profiles, activity filters, distance and route tools, a guided “Today’s plan”, non-medical activity discovery, an intensive-workout option, privacy-first wellbeing reflection, and a clearly bounded community prototype. Kraków is the first city theme; future city pilots can use their own landmark art and equivalent palette tokens without rewriting the experience.
+During HackYeah, the team built and validated a React and TypeScript Kraków pilot: source-backed facility profiles, activity filters, distance and route tools, a guided “Today’s plan”, non-medical activity discovery, an intensive-workout option, privacy-first wellbeing reflection, multi-profile device-local progress, and a clearly bounded community prototype. Kraków is the first city theme; future city pilots can use their own landmark art and equivalent palette tokens without rewriting the experience.
 
 The goal is a clear, demonstrable journey from “I want to move” to a realistic next activity at a nearby public place. All implementation activity and source limits are recorded in `docs/DEVELOPMENT_LOG.md` and `docs/DATA_SOURCES.md`.
 
@@ -103,7 +103,7 @@ Create and upload a PDF or PPTX under 10 MB. Suggested six-slide structure:
 2. **The friction** — public activity information is scattered and uncertain.
 3. **The journey** — discover → verify → route → move → reflect.
 4. **Live prototype** — filter the map, open a source-backed profile, then make a Today’s plan.
-5. **Responsible personalisation and community** — non-medical suggestions, energetic pathway, device-first reflections and local-only community drafts.
+5. **Responsible personalisation and community** — separate device-local profiles, selected-entry sharing, non-medical suggestions, and a volunteer-verification boundary that is not a liability waiver.
 6. **Impact and next steps** — validate more sites, co-design with residents, add current municipal availability data, and test future city themes.
 
 ## Cover image brief

@@ -19,6 +19,8 @@ The app currently provides:
 - A visible three-step safety-first community-demo path: acknowledge rules, choose a public facility, then review a local draft rather than publish.
 - A local safety layer for that prototype: adult and community-rule confirmation, draft/moderation states, report controls, and a no-document trainer-verification journey.
 - A private post-activity reflection and optional three-movement-day challenge; data stays in the browser unless the person explicitly opts into device storage.
+- Up to five device-local profiles for a person, someone they support, a child, or a household member; each keeps separate preferences, diary entries and challenge progress.
+- Opt-in, read-only progress links that include only reflections the user selects; the app creates no server copy or account.
 - A browser-only “Today’s plan” that links place selection, a documented activity, travel planning and post-activity reflection.
 
 ## Run locally

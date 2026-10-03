@@ -31,7 +31,9 @@
 - Added a three-step community-demo path that makes the prototype’s safety-first sequence explicit: acknowledge adult/rules boundary, choose a public facility, then review a local draft rather than publish it.
 - Expanded documented map coverage with Orlik Kabel in Płaszów and Park Ogród nad Sudołem in Prądnik Czerwony. Both records link to the City source, distinguish equipment facts from current access, and leave availability/booking unconfirmed.
 - Added Park Linearny Ruczaj as a documented District VIII outdoor-activity record, including its City-listed stationary spinning bikes, table tennis, minigolf and pétanque facilities.
+- Added up to five privacy-first profiles on one device. Each profile keeps distinct discovery preferences, wellbeing entries and challenge progress; persistence is explicit device-only opt-in. Added a deliberately selected-entry, read-only share-link flow with notes excluded by default and no server copy.
+- Added a volunteer application and safety-acknowledgement prototype. It makes the verification sequence visible without collecting documents or creating a listing, and explicitly states that the acknowledgement is not a liability waiver.
 
 ### Next priority
 
-Continue verifying pilot locations against durable municipal sources, then prepare concise submission-ready demo and project materials.
+Prepare concise submission-ready demo and project materials, including a walkthrough of the profile, share-link and volunteer-safety boundaries.

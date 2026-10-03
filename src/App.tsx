@@ -20,7 +20,10 @@ type MovementComfort = 'gentle' | 'steady' | 'energetic'
 type ActivityGoal = 'everyday' | 'endurance' | 'strength' | 'team' | 'waterfront'
 type WellbeingFocus = 'general' | 'mood' | 'heart' | 'mobility' | 'strength-bone' | 'condition'
 type PostActivityFeeling = 'energised' | 'calmer' | 'about-the-same' | 'tired' | 'drained'
-type WellbeingCheckIn = { id: string; date: string; locationName: string; feeling: PostActivityFeeling; note: string }
+type ProfileRelationship = 'self' | 'person-supported' | 'child-supported' | 'partner-household'
+type Profile = { id: string; name: string; relationship: ProfileRelationship; ageRange: AgeRange; movementComfort: MovementComfort; activityGoal: ActivityGoal; wellbeingFocus: WellbeingFocus }
+type WellbeingCheckIn = { id: string; profileId: string; date: string; locationName: string; feeling: PostActivityFeeling; note: string }
+type SharedProgress = { profileName: string; relationship: ProfileRelationship; entries: Array<Pick<WellbeingCheckIn, 'date' | 'locationName' | 'feeling' | 'note'>> }
 type IntensiveSession = 'intervals' | 'strength-circuit' | 'court-conditioning'
 type ExerciseCategory = 'all' | 'walk-run' | 'strength' | 'mobility-balance' | 'team'
 type LocationActivityFilter = 'all' | 'walking' | 'running-cycling' | 'strength' | 'team' | 'waterfront'
@@ -32,6 +35,17 @@ type GuidanceOffer = { id: string; role: GuidanceRole; title: string; locationId
 
 const WELLBEING_STORAGE_KEY = 'active-city-wellbeing-checkins-v1'
 const WELLBEING_CONSENT_KEY = 'active-city-wellbeing-save-on-device-v1'
+const PROFILE_STORAGE_KEY = 'active-city-profiles-v1'
+const ACTIVE_PROFILE_STORAGE_KEY = 'active-city-active-profile-v1'
+const SHARE_HASH_PREFIX = '#active-city-shared-progress='
+const DEFAULT_PROFILE: Profile = { id: 'profile-self', name: 'My profile', relationship: 'self', ageRange: '25-34', movementComfort: 'steady', activityGoal: 'everyday', wellbeingFocus: 'general' }
+
+const profileRelationshipLabel: Record<ProfileRelationship, string> = {
+  self: 'My profile',
+  'person-supported': 'Person I support',
+  'child-supported': 'Child or young person I support',
+  'partner-household': 'Partner or household profile',
+}
 
 const communityPostLabel: Record<CommunityPostKind, string> = {
   activity: 'Move together',
@@ -301,6 +315,11 @@ function calorieEstimate(mode: Exclude<TravelMode, 'transit'>, minutes: number, 
 
 function App() {
   const [selectedId, setSelectedId] = useState(locations[0].id)
+  const [profiles, setProfiles] = useState<Profile[]>([DEFAULT_PROFILE])
+  const [activeProfileId, setActiveProfileId] = useState(DEFAULT_PROFILE.id)
+  const [profileNameDraft, setProfileNameDraft] = useState('')
+  const [profileRelationshipDraft, setProfileRelationshipDraft] = useState<ProfileRelationship>('self')
+  const [showProfileCreator, setShowProfileCreator] = useState(false)
   const [locationInput, setLocationInput] = useState('')
   const [userLocation, setUserLocation] = useState<Coordinates | null>(null)
   const [locationError, setLocationError] = useState('')
@@ -322,6 +341,11 @@ function App() {
   const [storageReady, setStorageReady] = useState(false)
   const [checkInMessage, setCheckInMessage] = useState('')
   const [showPrivateSummary, setShowPrivateSummary] = useState(false)
+  const [shareEntryIds, setShareEntryIds] = useState<string[]>([])
+  const [shareIncludeNotes, setShareIncludeNotes] = useState(false)
+  const [shareLink, setShareLink] = useState('')
+  const [shareMessage, setShareMessage] = useState('')
+  const [sharedProgress, setSharedProgress] = useState<SharedProgress | null>(null)
   const [intensiveSession, setIntensiveSession] = useState<IntensiveSession>('intervals')
   const [showIntensivePlan, setShowIntensivePlan] = useState(false)
   const [exerciseCategory, setExerciseCategory] = useState<ExerciseCategory>('all')
@@ -340,6 +364,9 @@ function App() {
   const [communityAccessMessage, setCommunityAccessMessage] = useState('')
   const [flaggedItemIds, setFlaggedItemIds] = useState<string[]>([])
   const [trainerVerificationState, setTrainerVerificationState] = useState<'not-started' | 'demo-review'>('not-started')
+  const [volunteerSafetyAcknowledged, setVolunteerSafetyAcknowledged] = useState(false)
+  const [volunteerApplicationState, setVolunteerApplicationState] = useState<'not-started' | 'draft-review'>('not-started')
+  const activeProfile = profiles.find((profile) => profile.id === activeProfileId) ?? profiles[0]
   const selectedLocation = locations.find((location) => location.id === selectedId) ?? locations[0]
   const todayPlanLocation = todayPlan ? locations.find((location) => location.id === todayPlan.locationId) ?? locations[0] : null
   const visibleLocations = useMemo(() => {
@@ -354,6 +381,7 @@ function App() {
     const matchingActivities = locationActivityMatches[locationActivityFilter]
     return visibleLocations.filter((location) => location.activities.some((activity) => matchingActivities.includes(activity)))
   }, [locationActivityFilter, visibleLocations])
+  const activeCheckIns = useMemo(() => checkIns.filter((checkIn) => checkIn.profileId === activeProfile.id), [activeProfile.id, checkIns])
   const recommendations = useMemo(() => {
     const matches = wellbeingFocus === 'general'
       ? activityMatches[activityGoal][movementComfort]
@@ -393,26 +421,41 @@ function App() {
   const activeChallengeDays = useMemo(() => {
     const today = new Date(`${todayInKrakow()}T00:00:00`)
     const activeDays = new Set<string>()
-    checkIns.forEach((checkIn) => {
+    activeCheckIns.forEach((checkIn) => {
       const loggedDay = new Date(`${checkIn.date}T00:00:00`)
       const difference = Math.round((today.getTime() - loggedDay.getTime()) / 86_400_000)
       if (difference >= 0 && difference < 7) activeDays.add(checkIn.date)
     })
     return activeDays.size
-  }, [checkIns])
+  }, [activeCheckIns])
   const privateSummary = useMemo(() => {
-    const lines = checkIns.slice(0, 14).map((checkIn) => `${checkIn.date} | ${checkIn.locationName} | ${feelingLabel[checkIn.feeling]}${checkIn.note ? ` | Note: ${checkIn.note}` : ''}`)
-    return ['Active City private activity reflection', 'Generated locally for the user to review before sharing.', 'This is a personal reflection, not a clinical record.', '', ...lines].join('\n')
-  }, [checkIns])
+    const lines = activeCheckIns.slice(0, 14).map((checkIn) => `${checkIn.date} | ${checkIn.locationName} | ${feelingLabel[checkIn.feeling]}${checkIn.note ? ` | Note: ${checkIn.note}` : ''}`)
+    return [`Active City private activity reflection — ${activeProfile.name}`, 'Generated locally for the user to review before sharing.', 'This is a personal reflection, not a clinical record.', '', ...lines].join('\n')
+  }, [activeCheckIns, activeProfile.name])
   const selectedIntensiveSession = intensiveSessions[intensiveSession]
   const intensiveVenueMatch = selectedIntensiveSession.requiredActivities.some((activity) => selectedLocation.activities.includes(activity))
 
   useEffect(() => {
     try {
       if (window.localStorage.getItem(WELLBEING_CONSENT_KEY) === 'yes') {
+        const savedProfiles = window.localStorage.getItem(PROFILE_STORAGE_KEY)
+        const parsedProfiles = savedProfiles ? JSON.parse(savedProfiles) : []
+        const validProfiles = Array.isArray(parsedProfiles)
+          ? parsedProfiles.filter((profile): profile is Profile => typeof profile?.id === 'string' && typeof profile?.name === 'string' && typeof profile?.relationship === 'string' && typeof profile?.ageRange === 'string' && typeof profile?.movementComfort === 'string' && typeof profile?.activityGoal === 'string' && typeof profile?.wellbeingFocus === 'string')
+          : []
+        if (validProfiles.length > 0) {
+          setProfiles(validProfiles)
+          const savedActiveProfileId = window.localStorage.getItem(ACTIVE_PROFILE_STORAGE_KEY)
+          const savedActiveProfile = validProfiles.find((profile) => profile.id === savedActiveProfileId) ?? validProfiles[0]
+          setActiveProfileId(savedActiveProfile.id)
+          setAgeRange(savedActiveProfile.ageRange)
+          setMovementComfort(savedActiveProfile.movementComfort)
+          setActivityGoal(savedActiveProfile.activityGoal)
+          setWellbeingFocus(savedActiveProfile.wellbeingFocus)
+        }
         const saved = window.localStorage.getItem(WELLBEING_STORAGE_KEY)
         const parsed = saved ? JSON.parse(saved) : []
-        if (Array.isArray(parsed)) setCheckIns(parsed.filter((entry): entry is WellbeingCheckIn => typeof entry?.id === 'string' && typeof entry?.date === 'string' && typeof entry?.locationName === 'string' && typeof entry?.feeling === 'string' && typeof entry?.note === 'string'))
+        if (Array.isArray(parsed)) setCheckIns(parsed.filter((entry) => typeof entry?.id === 'string' && typeof entry?.date === 'string' && typeof entry?.locationName === 'string' && typeof entry?.feeling === 'string' && typeof entry?.note === 'string').map((entry): WellbeingCheckIn => ({ ...entry, profileId: typeof entry.profileId === 'string' ? entry.profileId : DEFAULT_PROFILE.id })))
         setSaveOnDevice(true)
       }
     } catch {
@@ -426,10 +469,28 @@ function App() {
     try {
       window.localStorage.setItem(WELLBEING_CONSENT_KEY, 'yes')
       window.localStorage.setItem(WELLBEING_STORAGE_KEY, JSON.stringify(checkIns))
+      window.localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profiles))
+      window.localStorage.setItem(ACTIVE_PROFILE_STORAGE_KEY, activeProfileId)
     } catch {
       setCheckInMessage('Your check-in is available in this browser tab, but this device could not save it for later.')
     }
-  }, [checkIns, saveOnDevice, storageReady])
+  }, [activeProfileId, checkIns, profiles, saveOnDevice, storageReady])
+
+  useEffect(() => {
+    setProfiles((current) => current.map((profile) => profile.id === activeProfileId
+      ? { ...profile, ageRange, movementComfort, activityGoal, wellbeingFocus }
+      : profile))
+  }, [activeProfileId, ageRange, activityGoal, movementComfort, wellbeingFocus])
+
+  useEffect(() => {
+    if (!window.location.hash.startsWith(SHARE_HASH_PREFIX)) return
+    try {
+      const payload = JSON.parse(decodeURIComponent(window.location.hash.slice(SHARE_HASH_PREFIX.length))) as SharedProgress
+      if (typeof payload.profileName === 'string' && typeof payload.relationship === 'string' && Array.isArray(payload.entries) && payload.entries.every((entry) => typeof entry?.date === 'string' && typeof entry?.locationName === 'string' && typeof entry?.feeling === 'string' && typeof entry?.note === 'string')) setSharedProgress(payload)
+    } catch {
+      // An invalid shared link leaves the normal app view available.
+    }
+  }, [])
 
   const selectLocation = (location: RecreationLocation) => {
     setSelectedId(location.id)
@@ -437,6 +498,42 @@ function App() {
     setRoute(null)
     setRouteStatus('')
     document.getElementById('location-profile')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+  }
+
+  const activateProfile = (profile: Profile) => {
+    setActiveProfileId(profile.id)
+    setAgeRange(profile.ageRange)
+    setMovementComfort(profile.movementComfort)
+    setActivityGoal(profile.activityGoal)
+    setWellbeingFocus(profile.wellbeingFocus)
+    setShowRecommendations(false)
+    setShowPrivateSummary(false)
+    setShareEntryIds([])
+    setShareLink('')
+    setShareMessage('')
+    setCommunityAccessReady(false)
+    setCommunityAccessMessage('')
+    setVolunteerSafetyAcknowledged(false)
+    setVolunteerApplicationState('not-started')
+  }
+
+  const createProfile = () => {
+    const name = profileNameDraft.trim()
+    if (!name) return
+    const profile: Profile = {
+      id: `profile-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+      name,
+      relationship: profileRelationshipDraft,
+      ageRange: DEFAULT_PROFILE.ageRange,
+      movementComfort: DEFAULT_PROFILE.movementComfort,
+      activityGoal: DEFAULT_PROFILE.activityGoal,
+      wellbeingFocus: DEFAULT_PROFILE.wellbeingFocus,
+    }
+    setProfiles((current) => [...current, profile])
+    setProfileNameDraft('')
+    setProfileRelationshipDraft('self')
+    setShowProfileCreator(false)
+    activateProfile(profile)
   }
 
   const updateLocation = () => {
@@ -503,6 +600,7 @@ function App() {
   const addCheckIn = () => {
     const entry: WellbeingCheckIn = {
       id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+      profileId: activeProfile.id,
       date: todayInKrakow(),
       locationName: selectedLocation.name,
       feeling: postActivityFeeling,
@@ -520,6 +618,8 @@ function App() {
       try {
         window.localStorage.removeItem(WELLBEING_CONSENT_KEY)
         window.localStorage.removeItem(WELLBEING_STORAGE_KEY)
+        window.localStorage.removeItem(PROFILE_STORAGE_KEY)
+        window.localStorage.removeItem(ACTIVE_PROFILE_STORAGE_KEY)
       } catch {
         setCheckInMessage('Saving is off for future check-ins. This browser could not clear its previous saved copy.')
       }
@@ -527,13 +627,42 @@ function App() {
   }
 
   const clearCheckIns = () => {
-    setCheckIns([])
+    setCheckIns((current) => current.filter((checkIn) => checkIn.profileId !== activeProfile.id))
+    setShareEntryIds([])
+    setShareLink('')
     setShowPrivateSummary(false)
-    setCheckInMessage('Your check-ins have been cleared from this browser tab and, if enabled, this device.')
+    setCheckInMessage(`Check-ins for ${activeProfile.name} have been cleared from this browser tab and, if enabled, this device.`)
+  }
+
+  const toggleShareEntry = (entryId: string) => {
+    setShareEntryIds((current) => current.includes(entryId) ? current.filter((id) => id !== entryId) : [...current, entryId])
+    setShareLink('')
+    setShareMessage('')
+  }
+
+  const prepareShareLink = () => {
+    const entries = activeCheckIns.filter((entry) => shareEntryIds.includes(entry.id)).map((entry) => ({
+      date: entry.date,
+      locationName: entry.locationName,
+      feeling: entry.feeling,
+      note: shareIncludeNotes ? entry.note : '',
+    }))
+    if (entries.length === 0) {
+      setShareMessage('Select at least one reflection before creating a link.')
+      return
+    }
+    const payload: SharedProgress = { profileName: activeProfile.name, relationship: activeProfile.relationship, entries }
+    setShareLink(`${window.location.origin}${window.location.pathname}${SHARE_HASH_PREFIX}${encodeURIComponent(JSON.stringify(payload))}`)
+    setShareMessage('A read-only link is ready. Anyone with it can view the selected information.')
+  }
+
+  const copyShareLink = async () => {
+    if (!shareLink) return
     try {
-      window.localStorage.removeItem(WELLBEING_STORAGE_KEY)
+      await navigator.clipboard.writeText(shareLink)
+      setShareMessage('Link copied. Send it only to someone you trust.')
     } catch {
-      // The browser tab has still been cleared.
+      setShareMessage('Copy was not available in this browser. You can select and copy the link below manually.')
     }
   }
 
@@ -635,6 +764,19 @@ function App() {
     setGuidanceMessage('Verification workflow marked “demo review”. No documents, identity details or credentials were uploaded or collected.')
   }
 
+  const startVolunteerApplicationDemo = () => {
+    if (!communityActionsEnabled) {
+      setCommunityAccessMessage('Complete the local safety setup before starting a volunteer application demo.')
+      return
+    }
+    if (!volunteerSafetyAcknowledged) {
+      setGuidanceMessage('Read and acknowledge the volunteer safety boundary before starting the application demo.')
+      return
+    }
+    setVolunteerApplicationState('draft-review')
+    setGuidanceMessage('Volunteer application marked “draft review”. Nothing was submitted, published or verified. A live service would next check identity, safeguarding, role boundaries and the written agreement before approval.')
+  }
+
   const publicTransportUrl = userLocation
     ? `https://www.google.com/maps/dir/?api=1&origin=${userLocation.latitude},${userLocation.longitude}&destination=${selectedLocation.latitude},${selectedLocation.longitude}&travelmode=transit`
     : undefined
@@ -656,6 +798,43 @@ function App() {
           <img alt={pilotCity.heroAlt} src={pilotCity.heroImage} />
         </figure>
       </header>
+
+      {sharedProgress && (
+        <aside className="shared-progress" aria-labelledby="shared-progress-heading">
+          <p className="eyebrow">Read-only shared progress</p>
+          <h2 id="shared-progress-heading">{sharedProgress.profileName}’s selected activity reflections</h2>
+          <p>This link shows only the entries the sender selected. It does not create a profile, add entries to this device, or make health recommendations.</p>
+          <ul>{sharedProgress.entries.map((entry, index) => <li key={`${entry.date}-${entry.locationName}-${index}`}><strong>{entry.date}</strong> · {entry.locationName} · {feelingLabel[entry.feeling]}{entry.note ? ` — ${entry.note}` : ''}</li>)}</ul>
+        </aside>
+      )}
+
+      <section className="profile-hub" aria-labelledby="profile-hub-heading">
+        <div>
+          <p className="eyebrow">My Active City</p>
+          <h2 id="profile-hub-heading">Profiles on this device</h2>
+          <p>Keep separate activity choices and diary entries for yourself, someone you support, a child, or a household member. This is not an online account.</p>
+        </div>
+        <div className="profile-tabs" aria-label="Choose a profile">
+          {profiles.map((profile) => <button aria-pressed={profile.id === activeProfile.id} className={profile.id === activeProfile.id ? 'selected' : ''} key={profile.id} onClick={() => activateProfile(profile)} type="button"><strong>{profile.name}</strong><span>{profileRelationshipLabel[profile.relationship]}</span></button>)}
+          {profiles.length < 5 && <button className="add-profile" onClick={() => setShowProfileCreator((visible) => !visible)} type="button">{showProfileCreator ? 'Close' : 'Add profile'}</button>}
+        </div>
+        {showProfileCreator && (
+          <form className="profile-creator" onSubmit={(event) => { event.preventDefault(); createProfile() }}>
+            <label>
+              Profile name
+              <input maxLength={40} onChange={(event) => setProfileNameDraft(event.target.value)} placeholder="For example, Mum or Our weekend plan" value={profileNameDraft} />
+            </label>
+            <label>
+              This profile is for
+              <select onChange={(event) => setProfileRelationshipDraft(event.target.value as ProfileRelationship)} value={profileRelationshipDraft}>
+                {Object.entries(profileRelationshipLabel).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+              </select>
+            </label>
+            <button disabled={!profileNameDraft.trim()} type="submit">Create profile</button>
+          </form>
+        )}
+        <p className="profile-device-note">{saveOnDevice ? 'Profiles and diary entries are saved on this device only.' : 'Profiles and diary entries are currently available only in this browser tab. Turn on device saving below to keep them after closing it.'}</p>
+      </section>
 
       <section aria-labelledby="map-heading" className="discovery">
         <div className="section-heading">
@@ -740,7 +919,7 @@ function App() {
           <div>
             <p className="eyebrow">Personalised discovery</p>
             <h3 id="preference-heading">Find an activity idea</h3>
-            <p className="preference-intro">Choose broad preferences, not medical details. They stay only in this browser tab and are used to match known activities at the mapped places.</p>
+            <p className="preference-intro">Choices for <strong>{activeProfile.name}</strong> use broad preferences, not medical details. They are used to match known activities at the mapped places.</p>
           </div>
           <form className="preference-form" onSubmit={(event) => { event.preventDefault(); setShowRecommendations(true) }}>
             <label>
@@ -950,6 +1129,15 @@ function App() {
                   </div>
                   <button disabled={!communityActionsEnabled || trainerVerificationState === 'demo-review'} onClick={startTrainerVerificationDemo} type="button">{trainerVerificationState === 'demo-review' ? 'Demo review pending' : 'Start verification demo'}</button>
                 </div>
+                <section className="volunteer-application" aria-labelledby="volunteer-application-heading">
+                  <div>
+                    <p className="eyebrow">Volunteer application — prototype</p>
+                    <h5 id="volunteer-application-heading">Offer general movement support safely</h5>
+                    <p>{volunteerApplicationState === 'draft-review' ? 'Draft review started. A live launch would need identity checks, safeguarding, role-boundary review, any required qualifications or insurance, a written volunteer agreement, moderation and venue approval before this person could be listed.' : 'A volunteer can offer general encouragement, warm-up or activity-company support—not healthcare, rehabilitation, diagnosis or individual exercise assessment.'}</p>
+                  </div>
+                  <label><input checked={volunteerSafetyAcknowledged} onChange={(event) => setVolunteerSafetyAcknowledged(event.target.checked)} type="checkbox" /> I understand this is a safety acknowledgement, not a liability waiver. I would not give medical advice, collect health details, arrange unsafe meetings, or appear publicly until a real service completes verification.</label>
+                  <button disabled={!communityActionsEnabled || volunteerApplicationState === 'draft-review'} onClick={startVolunteerApplicationDemo} type="button">{volunteerApplicationState === 'draft-review' ? 'Draft review pending' : 'Start volunteer application demo'}</button>
+                </section>
                 <div className="guidance-offers">
                   {guidanceOffersWithLocation.map((offer) => (
                     <article className="guidance-offer" key={offer.id}>
@@ -969,8 +1157,8 @@ function App() {
                 <form className="guidance-offer-form" onSubmit={(event) => { event.preventDefault(); addGuidanceOffer() }}>
                   <div>
                     <p className="eyebrow">Offer time or expertise</p>
-                    <h5>Build a sample guidance listing</h5>
-                    <p>Uses the selected facility: <strong>{selectedLocation.name}</strong>. This is not published.</p>
+                    <h5>Build a local guidance-listing draft</h5>
+                    <p>Uses the selected facility: <strong>{selectedLocation.name}</strong>. It is not published or shown to other people.</p>
                   </div>
                   <label>
                     Role
@@ -988,7 +1176,7 @@ function App() {
                       <option value="Court or pitch warm-up">Court or pitch warm-up</option>
                     </select>
                   </label>
-                  <button disabled={!communityActionsEnabled} type="submit">Add sample listing</button>
+                  <button disabled={!communityActionsEnabled} type="submit">Add local listing draft</button>
                 </form>
               </section>
               <form className="community-request" onSubmit={(event) => { event.preventDefault(); createCommunityRequest() }}>
@@ -1028,7 +1216,7 @@ function App() {
         <section className="wellbeing-panel" aria-labelledby="wellbeing-heading">
           <div>
             <p className="eyebrow">After your activity</p>
-            <h3 id="wellbeing-heading">Private wellbeing check-in</h3>
+            <h3 id="wellbeing-heading">Private wellbeing check-in for {activeProfile.name}</h3>
             <p className="wellbeing-intro">Capture how you feel after an activity. This is a personal reflection, not a mental-health assessment or clinical record.</p>
           </div>
           <form className="checkin-form" onSubmit={(event) => { event.preventDefault(); addCheckIn() }}>
@@ -1047,7 +1235,7 @@ function App() {
               Optional private note
               <textarea maxLength={500} onChange={(event) => setCheckInNote(event.target.value)} placeholder="What made this activity easier or harder today?" value={checkInNote} />
             </label>
-            <label className="save-choice"><input checked={saveOnDevice} onChange={(event) => updateDeviceSaving(event.target.checked)} type="checkbox" /> Save these entries on this device</label>
+            <label className="save-choice"><input checked={saveOnDevice} onChange={(event) => updateDeviceSaving(event.target.checked)} type="checkbox" /> Save profiles and diary entries on this device</label>
             <button type="submit">Add today’s check-in</button>
           </form>
           <div className="challenge-card" aria-live="polite">
@@ -1059,12 +1247,27 @@ function App() {
             <div className="challenge-progress" aria-label={`${Math.min(activeChallengeDays, 3)} of 3 movement days logged`}><span style={{ width: `${Math.min((activeChallengeDays / 3) * 100, 100)}%` }} /></div>
           </div>
           {checkInMessage && <p className="checkin-message" role="status">{checkInMessage}</p>}
-          {checkIns.length > 0 && (
+          {activeCheckIns.length > 0 && (
             <div className="checkin-history">
               <div className="history-heading"><h4>Recent reflections</h4><button onClick={clearCheckIns} type="button">Clear check-ins</button></div>
-              <ul>{checkIns.slice(0, 3).map((checkIn) => <li key={checkIn.id}><strong>{checkIn.date}</strong> · {checkIn.locationName} · {feelingLabel[checkIn.feeling]}{checkIn.note ? ` — ${checkIn.note}` : ''}</li>)}</ul>
+              <ul>{activeCheckIns.slice(0, 3).map((checkIn) => <li key={checkIn.id}><strong>{checkIn.date}</strong> · {checkIn.locationName} · {feelingLabel[checkIn.feeling]}{checkIn.note ? ` — ${checkIn.note}` : ''}</li>)}</ul>
               <button className="summary-button" onClick={() => setShowPrivateSummary(true)} type="button">Prepare a private summary to review</button>
               {showPrivateSummary && <><p className="summary-note">Review this before manually copying or sharing it. Active City does not send it anywhere.</p><textarea aria-label="Private activity reflection summary" className="private-summary" readOnly value={privateSummary} /></>}
+              <section className="share-progress" aria-labelledby="share-progress-heading">
+                <div>
+                  <p className="eyebrow">Optional sharing</p>
+                  <h4 id="share-progress-heading">Share selected progress</h4>
+                  <p>Choose exactly which reflections to include. A link is read-only and keeps the information in the link itself—there is no Active City account or server copy.</p>
+                </div>
+                <div className="share-entry-list">
+                  {activeCheckIns.slice(0, 10).map((checkIn) => <label key={checkIn.id}><input checked={shareEntryIds.includes(checkIn.id)} onChange={() => toggleShareEntry(checkIn.id)} type="checkbox" /> <strong>{checkIn.date}</strong> · {checkIn.locationName} · {feelingLabel[checkIn.feeling]}</label>)}
+                </div>
+                <label className="share-notes-choice"><input checked={shareIncludeNotes} onChange={(event) => { setShareIncludeNotes(event.target.checked); setShareLink('') }} type="checkbox" /> Include the optional private notes in the selected entries</label>
+                <button className="summary-button" onClick={prepareShareLink} type="button">Create read-only share link</button>
+                {shareMessage && <p className="share-message" role="status">{shareMessage}</p>}
+                {shareLink && <><textarea aria-label="Read-only progress share link" className="private-summary share-link" readOnly value={shareLink} /><button className="share-copy" onClick={copyShareLink} type="button">Copy share link</button></>}
+                <p className="share-warning">Anyone who receives this link can read its selected contents. Do not include notes, locations or reflections you would not want them to see; links may remain in browser history or forwarded messages.</p>
+              </section>
             </div>
           )}
           <p className="wellbeing-safety">If you feel in immediate danger or are at risk of harming yourself or someone else, contact local emergency services. For persistent or worrying changes in mood, energy or wellbeing, seek support from a qualified health professional.</p>

@@ -18,6 +18,24 @@ h2 { margin-bottom: 0; color: #183d35; font-family: Georgia, serif; font-size: c
 .hero .intro { max-width: 470px; color: #edf9fb; }
 .hero-strapline { align-self: flex-start; margin: 4px 0 0; padding: 7px 10px; border: 1px solid rgba(255, 255, 255, .32); border-radius: 999px; color: #fff; background: rgba(4, 44, 70, .22); font-size: .78rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
 .discovery, .profile, .location-list { background: #fff; border: 1px solid #dfe3db; border-radius: 18px; box-shadow: 0 12px 32px rgba(39, 68, 58, .06); }
+.shared-progress, .profile-hub { margin-bottom: 16px; padding: 18px; border: 1px solid #bcd5e0; border-radius: 14px; background: #f5fafc; }
+.shared-progress h2, .profile-hub h2 { margin-bottom: 7px; color: #264a5e; font-size: clamp(1.35rem, 3vw, 1.85rem); }
+.shared-progress > p:not(.eyebrow), .profile-hub > div:first-child > p:last-child { max-width: 760px; margin-bottom: 0; color: #405d6d; font-size: .88rem; line-height: 1.45; }
+.shared-progress ul { display: grid; gap: 6px; margin: 13px 0 0; padding-left: 20px; color: #405d6d; font-size: .84rem; line-height: 1.45; }
+.profile-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.profile-tabs button { display: grid; gap: 2px; min-width: 150px; padding: 10px 12px; border: 1px solid #b6cfda; border-radius: 8px; color: #31586a; background: #fff; text-align: left; cursor: pointer; font: inherit; }
+.profile-tabs button:hover, .profile-tabs button.selected { border-color: #26718d; background: #eaf4f8; }
+.profile-tabs button[aria-pressed="true"] { box-shadow: inset 4px 0 #f4a928; }
+.profile-tabs button strong { font-size: .87rem; }
+.profile-tabs button span { font-size: .74rem; line-height: 1.25; }
+.profile-tabs .add-profile { display: inline-flex; align-items: center; min-width: auto; color: #fff; background: #1c607c; font-weight: 800; }
+.profile-tabs .add-profile:hover { color: #fff; background: #164b62; }
+.profile-creator { display: grid; grid-template-columns: minmax(220px, 1.1fr) minmax(220px, 1fr) auto; gap: 12px; align-items: end; margin-top: 12px; padding: 13px; border: 1px dashed #a9c7d3; border-radius: 9px; background: #fff; }
+.profile-creator label { color: #31586a; font-size: .8rem; font-weight: 800; }
+.profile-creator input, .profile-creator select { display: block; box-sizing: border-box; width: 100%; min-height: 38px; margin-top: 5px; padding: 7px 9px; border: 1px solid #b6cfda; border-radius: 7px; color: #264a5e; background: #fff; font: inherit; }
+.profile-creator button { min-height: 38px; padding: 8px 12px; border: 0; border-radius: 7px; color: #fff; background: #1c607c; cursor: pointer; font-weight: 800; white-space: nowrap; }
+.profile-creator button:disabled { cursor: not-allowed; background: #91a8b1; }
+.profile-device-note { margin: 11px 0 0; color: #486474; font-size: .79rem; line-height: 1.4; }
 .discovery { padding: 22px; }
 .section-heading { display: flex; justify-content: space-between; align-items: end; gap: 16px; margin-bottom: 18px; }
 .section-heading.compact { margin-bottom: 14px; }
@@ -151,6 +169,13 @@ h2 { margin-bottom: 0; color: #183d35; font-family: Georgia, serif; font-size: c
 .guidance-directory > div:first-child > p:last-child { color: #486474; font-size: .83rem; line-height: 1.45; }
 .verification-workflow { display: flex; justify-content: space-between; align-items: end; gap: 14px; margin-top: 12px; padding: 12px; border: 1px solid #d6dfba; border-radius: 8px; background: #fbfcf6; }
 .verification-workflow .eyebrow { color: #657142; }
+.volunteer-application { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(230px, 1fr) auto; gap: 12px; align-items: end; margin-top: 12px; padding: 12px; border: 1px solid #b9d7df; border-radius: 8px; background: #f7fcfd; }
+.volunteer-application h5 { margin: 0; color: #264a5e; font-size: 1rem; }
+.volunteer-application p { margin: 5px 0 0; color: #486474; font-size: .8rem; line-height: 1.4; }
+.volunteer-application label { color: #31586a; font-size: .78rem; font-weight: 700; line-height: 1.4; }
+.volunteer-application input { margin: 0 7px 0 0; accent-color: #26718d; }
+.volunteer-application button { min-height: 38px; padding: 8px 11px; border: 0; border-radius: 7px; color: #fff; background: #1c607c; cursor: pointer; font-size: .8rem; font-weight: 800; }
+.volunteer-application button:disabled { cursor: not-allowed; background: #91a8b1; }
 .guidance-offers { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
 .guidance-offer { display: flex; flex-direction: column; padding: 13px; border: 1px solid #c8dce5; border-radius: 9px; background: #fff; }
 .guidance-role { align-self: flex-start; display: inline-block; padding: 3px 7px; border-radius: 999px; font-size: .7rem; font-weight: 800; }
@@ -196,6 +221,17 @@ h2 { margin-bottom: 0; color: #183d35; font-family: Georgia, serif; font-size: c
 .history-heading h4 { font-size: 1rem; }
 .history-heading button { padding: 0; border: 0; color: #69507f; background: none; cursor: pointer; font: inherit; font-size: .82rem; font-weight: 800; text-decoration: underline; }
 .checkin-history ul { display: grid; gap: 6px; margin: 10px 0; padding-left: 20px; color: #594c66; font-size: .83rem; line-height: 1.4; }
+.share-progress { margin-top: 15px; padding: 13px; border: 1px solid #b9d7df; border-radius: 9px; background: #f7fcfd; }
+.share-progress h4 { font-size: 1rem; }
+.share-progress > div:first-child > p:last-child, .share-warning { margin: 5px 0 0; color: #486474; font-size: .8rem; line-height: 1.42; }
+.share-entry-list { display: grid; gap: 7px; margin-top: 11px; }
+.share-entry-list label, .share-notes-choice { color: #31586a; font-size: .8rem; line-height: 1.4; }
+.share-entry-list input, .share-notes-choice input { margin-right: 6px; accent-color: #26718d; }
+.share-notes-choice { display: block; margin: 12px 0; font-weight: 800; }
+.share-message { margin: 10px 0 0; color: #21586f; font-size: .82rem; font-weight: 800; line-height: 1.4; }
+.share-link { min-height: 86px; margin-top: 10px; }
+.share-copy { min-height: 36px; margin-top: 8px; padding: 7px 10px; border: 0; border-radius: 7px; color: #fff; background: #1c607c; cursor: pointer; font-weight: 800; }
+.share-warning { margin-top: 12px; color: #725320; }
 .summary-note { margin: 10px 0 6px; color: #594c66; font-size: .82rem; }
 .private-summary { box-sizing: border-box; width: 100%; min-height: 150px; padding: 10px; border: 1px solid #bcaecb; border-radius: 7px; color: #2f2638; background: #fff; font: .82rem/1.45 ui-monospace, SFMono-Regular, Menlo, monospace; resize: vertical; }
 .wellbeing-safety { margin: 14px 0 0; color: #725320; font-size: .8rem; line-height: 1.45; }
@@ -233,6 +269,12 @@ dd { margin: 5px 0 0; line-height: 1.45; }
 .city-theme--krakow h1, .city-theme--krakow h2, .city-theme--krakow .preference-panel h3, .city-theme--krakow .exercise-ideas h4, .city-theme--krakow .route-panel h3 { color: var(--city-ink); }
 .city-theme--krakow .hero h1 { color: #fff; }
 .city-theme--krakow .discovery, .city-theme--krakow .profile, .city-theme--krakow .location-list { border-color: var(--city-border); box-shadow: 0 12px 32px rgba(8, 63, 105, .08); }
+.city-theme--krakow .shared-progress, .city-theme--krakow .profile-hub { border-color: var(--city-border); background: var(--city-sky-mist); }
+.city-theme--krakow .shared-progress h2, .city-theme--krakow .profile-hub h2 { color: var(--city-ink); }
+.city-theme--krakow .shared-progress > p:not(.eyebrow), .city-theme--krakow .profile-hub > div:first-child > p:last-child, .city-theme--krakow .profile-device-note { color: var(--city-copy); }
+.city-theme--krakow .profile-tabs button, .city-theme--krakow .profile-creator input, .city-theme--krakow .profile-creator select { border-color: var(--city-border); color: var(--city-ink); }
+.city-theme--krakow .profile-tabs button:hover, .city-theme--krakow .profile-tabs button.selected { border-color: var(--city-lake); background: var(--city-mist); }
+.city-theme--krakow .profile-tabs .add-profile, .city-theme--krakow .profile-creator button, .city-theme--krakow .share-copy { background: var(--city-navy); }
 .city-theme--krakow .distance-form label, .city-theme--krakow .location-filter, .city-theme--krakow .preference-form label, .city-theme--krakow .route-panel label { color: var(--city-ink); }
 .city-theme--krakow .distance-form input, .city-theme--krakow .location-filter select, .city-theme--krakow .preference-form select, .city-theme--krakow .route-panel select, .city-theme--krakow .route-panel input { border-color: var(--city-border); color: var(--city-ink); }
 .city-theme--krakow .distance-form button, .city-theme--krakow .preference-form button, .city-theme--krakow .route-action { background: var(--city-teal); }
@@ -266,6 +308,10 @@ dd { margin: 5px 0 0; line-height: 1.45; }
 .city-theme--krakow .community-safety-note, .city-theme--krakow .community-access-form { border-color: var(--city-border); background: #fff; }
 .city-theme--krakow .community-demo-path li { border-color: var(--city-border); color: var(--city-copy); }
 .city-theme--krakow .community-demo-path li::before { background: var(--city-teal); }
+.city-theme--krakow .volunteer-application { border-color: var(--city-border); background: var(--city-mist); }
+.city-theme--krakow .volunteer-application h5, .city-theme--krakow .volunteer-application label { color: var(--city-ink); }
+.city-theme--krakow .volunteer-application p { color: var(--city-copy); }
+.city-theme--krakow .volunteer-application button { background: var(--city-teal); }
 .city-theme--krakow .community-access-form button, .city-theme--krakow .verification-workflow button { background: var(--city-navy); }
 .city-theme--krakow .community-access-form button:hover, .city-theme--krakow .verification-workflow button:hover { background: var(--city-teal); }
 .city-theme--krakow .community-post, .city-theme--krakow .guidance-offer { border-color: var(--city-border); }
@@ -286,4 +332,4 @@ dd { margin: 5px 0 0; line-height: 1.45; }
 .city-theme--krakow .location-card:hover, .city-theme--krakow .location-card.selected { border-color: var(--city-lake); background: var(--city-sky-mist); }
 .city-theme--krakow .location-card[aria-pressed="true"] { box-shadow: inset 4px 0 var(--city-amber); }
 .city-theme--krakow .status, .city-theme--krakow .safety-note { border-color: var(--city-amber); background: var(--city-amber-mist); color: #765b22; }
-@media (max-width: 720px) { main { padding: 20px 16px 40px; } .hero { grid-template-columns: 1fr; min-height: 0; border-radius: 18px; } .hero-copy { min-height: 300px; padding: 34px 28px; } .hero-art img { min-height: 230px; object-position: 57% center; } .discovery, .location-list, .profile { padding: 16px; } .content-grid { grid-template-columns: 1fr; } .map-frame { height: 52vh; min-height: 290px; } dl { grid-template-columns: 1fr; } .distance-form { grid-template-columns: 1fr; } .distance-form button { width: 100%; } .today-plan-controls, .today-plan-result, .preference-form, .recommendation-cards, .exercise-cards, .movement-library-cards, .community-demo-path, .community-access-form, .community-posts, .guidance-offers, .guidance-offer-form, .community-request, .checkin-form, .challenge-card, .intensive-controls, .route-panel { grid-template-columns: 1fr; } .today-plan-actions { justify-content: flex-start; } .verification-workflow { align-items: stretch; flex-direction: column; } .checkin-form .save-choice { grid-column: auto; } .today-plan-controls button, .preference-form button, .checkin-form button, .intensive-controls button, .community-access-form button, .guidance-offer-form button, .community-request button, .route-action { width: 100%; } }
+@media (max-width: 720px) { main { padding: 20px 16px 40px; } .hero { grid-template-columns: 1fr; min-height: 0; border-radius: 18px; } .hero-copy { min-height: 300px; padding: 34px 28px; } .hero-art img { min-height: 230px; object-position: 57% center; } .discovery, .location-list, .profile, .shared-progress, .profile-hub { padding: 16px; } .content-grid { grid-template-columns: 1fr; } .map-frame { height: 52vh; min-height: 290px; } dl { grid-template-columns: 1fr; } .distance-form { grid-template-columns: 1fr; } .distance-form button { width: 100%; } .profile-creator, .today-plan-controls, .today-plan-result, .preference-form, .recommendation-cards, .exercise-cards, .movement-library-cards, .community-demo-path, .community-access-form, .community-posts, .guidance-offers, .guidance-offer-form, .volunteer-application, .community-request, .checkin-form, .challenge-card, .intensive-controls, .route-panel { grid-template-columns: 1fr; } .today-plan-actions { justify-content: flex-start; } .verification-workflow { align-items: stretch; flex-direction: column; } .checkin-form .save-choice { grid-column: auto; } .today-plan-controls button, .preference-form button, .checkin-form button, .intensive-controls button, .community-access-form button, .guidance-offer-form button, .volunteer-application button, .community-request button, .route-action { width: 100%; } }

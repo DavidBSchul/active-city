@@ -45,7 +45,7 @@ An imported map feature must not be presented as confirmation that the location 
 ## Recommendation prototype and personal data
 
 - The recommendation interface requests a narrowed age range, self-described movement comfort, a general activity goal and an optional broad wellbeing focus. It does not collect diagnoses, symptoms, medication, injuries or medical history.
-- These preferences are kept in React state only, with no local storage or server transmission. Broad wellbeing focuses prioritise activity categories rather than making a medical assessment, exercise prescription or suitability decision. The existing-condition, injury or recovery option deliberately suppresses recommendations.
+- These preferences are kept in React state by default. Up to five profiles can be held separately in one browser; device storage for profiles and diary entries is an explicit opt-in, and no server transmission occurs. Broad wellbeing focuses prioritise activity categories rather than making a medical assessment, exercise prescription or suitability decision. The existing-condition, injury or recovery option deliberately suppresses recommendations.
 - General age-context wording links to the World Health Organization’s *WHO guidelines on physical activity and sedentary behaviour: at a glance* (2020). The app does not calculate individual activity targets from the guideline.
 
 ## Instructional exercise links
@@ -60,6 +60,8 @@ An imported map feature must not be presented as confirmation that the location 
 
 - The post-activity check-in is a self-described feeling log, not a symptom screener, diagnostic questionnaire or clinical record. It offers descriptive responses (for example, calmer or tired) and optional notes.
 - Entries remain in browser memory by default. Saving across visits is explicit opt-in local device storage; disabling it removes the saved browser copy. A private summary is prepared only on screen for the person to review and manually share.
+- Profiles and check-ins are separated on the device, so a person can keep distinct records for themselves and people they support. The feature does not create online accounts or cross-device syncing.
+- The optional share-link tool creates a read-only URL containing only the selected entries, and includes optional notes only after a second explicit choice. It creates no Active City server copy, but anyone with the link can view its contents; the interface warns that links may be forwarded or retained in browser history.
 - The wording acknowledges the broad wellbeing evidence in the World Health Organization physical-activity guidance, but does not make an individual clinical claim or provide a treatment recommendation.
 
 ## Targeted movement library
@@ -75,6 +77,7 @@ An imported map feature must not be presented as confirmation that the location 
 - Volunteer coach and trainer entries are labelled as unverified examples. The guidance directory separates volunteer movement guides (general encouragement only) from personal trainers. A live service must provide identity/role verification, qualification and insurance checks where relevant, safeguarding policy, clear boundaries between general instruction and healthcare, moderation and reporting, and venue availability checks before connecting people.
 - The social rationale is grounded in the World Health Organization’s **Commission on Social Connection** (2025), which identifies social connection as a health and wellbeing concern. This is rationale for carefully designed group participation, not a claim that a particular meeting is safe or suitable for any individual.
 - The safety-onboarding, moderation states, local report controls and trainer-verification screen are interaction prototypes only. They do not create accounts, capture supporting documents, verify credentials, submit reports, publish listings or exchange messages. A production system would need independently designed privacy, moderation, safeguarding, incident-response and credential-verification processes before enabling those actions.
+- The volunteer-application screen is also a local interaction prototype. Its acknowledgement is expressly **not** a liability waiver: a live service would still need identity checks, safeguarding, role-boundary review, any required qualification/insurance checks, a written volunteer agreement, moderation and venue approval before publishing a volunteer.
 
 ## Routing and travel estimates
 
