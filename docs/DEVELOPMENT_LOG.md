@@ -17,6 +17,10 @@
 
 - Reduced the Community destination to its essential first-screen choices: browse sample public-place ideas or add one to a personal plan. Trainer/volunteer and activity-request workflows remain functional but are tucked into optional panels, with shorter visible safety copy.
 
+## 3 October 2026 — flexible plan location
+
+- Replaced the read-only place label in Today’s plan with a place picker. A person can now change location without returning to Explore; the matching activity choices update at the same time, and any earlier plan is cleared before a fresh one is made.
+
 ## 2026-10-03 — Milestone 1 started
 
 - The participant confirmed in the project chat that development may begin.

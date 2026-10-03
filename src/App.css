@@ -86,8 +86,7 @@ h2 { margin-bottom: 0; color: #183d35; font-family: Georgia, serif; font-size: c
 .today-plan > div:first-child > p:last-child { max-width: 720px; margin: 7px 0 0; color: #435a53; font-size: .88rem; line-height: 1.45; }
 .today-plan-controls { display: grid; grid-template-columns: minmax(170px, 1.1fr) minmax(150px, .9fr) minmax(135px, .75fr) minmax(135px, .75fr) auto; gap: 12px; align-items: end; margin-top: 14px; }
 .today-plan-controls label { color: #25493f; font-size: .8rem; font-weight: 800; }
-.today-plan-place, .today-plan-controls select { display: block; box-sizing: border-box; width: 100%; min-height: 38px; margin-top: 5px; padding: 8px 9px; border: 1px solid #aebfb8; border-radius: 7px; color: #19332d; background: #fff; font: inherit; }
-.today-plan-place { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.today-plan-controls select { display: block; box-sizing: border-box; width: 100%; min-height: 38px; margin-top: 5px; padding: 8px 9px; border: 1px solid #aebfb8; border-radius: 7px; color: #19332d; background: #fff; font: inherit; }
 .today-plan-controls button { min-height: 38px; padding: 8px 12px; border: 0; border-radius: 7px; color: #fff; background: #245f50; cursor: pointer; font-weight: 800; white-space: nowrap; }
 .today-plan-controls button:hover { background: #183d35; }
 .today-plan-result { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px; align-items: center; margin-top: 14px; padding: 13px; border: 1px solid #c8e1d3; border-radius: 9px; background: #fff; }
@@ -350,7 +349,7 @@ dd { margin: 5px 0 0; line-height: 1.45; }
 .city-theme--krakow .today-plan { border-color: #b8d8cb; background: var(--city-leaf-mist); }
 .city-theme--krakow .today-plan h3, .city-theme--krakow .today-plan h4, .city-theme--krakow .today-plan-controls label { color: var(--city-ink); }
 .city-theme--krakow .today-plan > div:first-child > p:last-child, .city-theme--krakow .today-plan-result p { color: var(--city-copy); }
-.city-theme--krakow .today-plan-place, .city-theme--krakow .today-plan-controls select { border-color: var(--city-border); color: var(--city-ink); }
+.city-theme--krakow .today-plan-controls select { border-color: var(--city-border); color: var(--city-ink); }
 .city-theme--krakow .today-plan-controls button { background: var(--city-teal); }
 .city-theme--krakow .today-plan-controls button:hover { background: var(--city-navy); }
 .city-theme--krakow .today-plan-result { border-color: #c6e0d0; }

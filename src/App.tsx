@@ -731,6 +731,16 @@ function App() {
     setTodayPlan({ locationId: selectedLocation.id, activity: plannedActivity, travelMode, timeBudgetMinutes: planDurationMinutes })
   }
 
+  const choosePlanningLocation = (locationId: string) => {
+    const location = documentedLocations.find((candidate) => candidate.id === locationId)
+    if (!location) return
+    setSelectedId(location.id)
+    setPlannedActivity(location.activities[0])
+    setTodayPlan(null)
+    setRoute(null)
+    setRouteStatus('')
+  }
+
   const chooseNearbyPlanLocation = (location: RecreationLocation, activity: string) => {
     if (!todayPlan) return
     setSelectedId(location.id)
@@ -1138,8 +1148,10 @@ function App() {
           </div>
           <div className="today-plan-controls">
             <label>
-              Selected place
-              <span className="today-plan-place">{selectedLocation.name}</span>
+              Choose a place
+              <select onChange={(event) => choosePlanningLocation(event.target.value)} value={selectedLocation.id}>
+                {visibleLocations.map((location) => <option key={location.id} value={location.id}>{location.name}{location.distanceKm === undefined ? '' : ` · ${location.distanceKm.toFixed(1)} km`}</option>)}
+              </select>
             </label>
             <label>
               Activity at this place
