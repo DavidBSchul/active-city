@@ -23,6 +23,7 @@ type PostActivityFeeling = 'energised' | 'calmer' | 'about-the-same' | 'tired' |
 type WellbeingCheckIn = { id: string; date: string; locationName: string; feeling: PostActivityFeeling; note: string }
 type IntensiveSession = 'intervals' | 'strength-circuit' | 'court-conditioning'
 type ExerciseCategory = 'all' | 'walk-run' | 'strength' | 'mobility-balance' | 'team'
+type LocationActivityFilter = 'all' | 'walking' | 'running-cycling' | 'strength' | 'team' | 'waterfront'
 type CommunityPostKind = 'activity' | 'team' | 'guidance'
 type ModerationState = 'Sample only — not live' | 'Draft — not submitted'
 type CommunityPost = { id: string; kind: CommunityPostKind; activity: string; locationId: string; timing: string; capacity: number; interested: number; note: string; moderation: ModerationState }
@@ -67,6 +68,23 @@ const exerciseCategoryIds: Record<Exclude<ExerciseCategory, 'all'>, string[]> = 
   strength: ['standing-press-up', 'bodyweight-squat', 'pull-up', 'sit-to-stand', 'calf-raises', 'sideways-leg-lift', 'rear-leg-extension'],
   'mobility-balance': ['yoga-mobility', 'sideways-walk', 'heel-to-toe', 'one-leg-stand', 'step-up', 'grapevine'],
   team: ['short-sprints', 'warm-up-posture', 'bodyweight-squat'],
+}
+
+const locationActivityFilterLabel: Record<LocationActivityFilter, string> = {
+  all: 'All places',
+  walking: 'Walking and gentle movement',
+  'running-cycling': 'Running and cycling',
+  strength: 'Strength and bodyweight',
+  team: 'Team sport',
+  waterfront: 'Waterfront activity',
+}
+
+const locationActivityMatches: Record<Exclude<LocationActivityFilter, 'all'>, string[]> = {
+  walking: ['Walking', 'Gentle mobility', 'Outdoor movement', 'Low-impact outdoor movement', 'Walking and viewpoints'],
+  'running-cycling': ['Running', 'Cycling'],
+  strength: ['Strength training', 'Calisthenics', 'Bodyweight strength', 'Outdoor fitness', 'Street workout'],
+  team: ['Football', 'Basketball', 'Volleyball', 'Beach volleyball'],
+  waterfront: ['Seasonal swimming at designated bathing areas', 'Waterfront relaxation', 'Nature observation', 'Walking and viewpoints'],
 }
 
 const activityMatches: Record<ActivityGoal, Record<MovementComfort, string[]>> = {
@@ -307,6 +325,7 @@ function App() {
   const [intensiveSession, setIntensiveSession] = useState<IntensiveSession>('intervals')
   const [showIntensivePlan, setShowIntensivePlan] = useState(false)
   const [exerciseCategory, setExerciseCategory] = useState<ExerciseCategory>('all')
+  const [locationActivityFilter, setLocationActivityFilter] = useState<LocationActivityFilter>('all')
   const [communityPosts, setCommunityPosts] = useState<CommunityPost[]>(communitySeedPosts)
   const [communityKind, setCommunityKind] = useState<CommunityPostKind>('activity')
   const [communityActivity, setCommunityActivity] = useState('Walking')
@@ -330,6 +349,11 @@ function App() {
     }))
     return userLocation ? withDistance.sort((first, second) => first.distanceKm! - second.distanceKm!) : withDistance
   }, [userLocation])
+  const filteredLocations = useMemo(() => {
+    if (locationActivityFilter === 'all') return visibleLocations
+    const matchingActivities = locationActivityMatches[locationActivityFilter]
+    return visibleLocations.filter((location) => location.activities.some((activity) => matchingActivities.includes(activity)))
+  }, [locationActivityFilter, visibleLocations])
   const recommendations = useMemo(() => {
     const matches = wellbeingFocus === 'general'
       ? activityMatches[activityGoal][movementComfort]
@@ -659,6 +683,13 @@ function App() {
           {locationError && <p className="location-error" id="location-error" role="alert">{locationError}</p>}
           {userLocation && <p className="location-sorted">Showing nearest places first from {userLocation.latitude.toFixed(4)}, {userLocation.longitude.toFixed(4)}.</p>}
         </form>
+        <label className="location-filter">
+          Show places for
+          <select onChange={(event) => setLocationActivityFilter(event.target.value as LocationActivityFilter)} value={locationActivityFilter}>
+            {Object.entries(locationActivityFilterLabel).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+          </select>
+          <span>{filteredLocations.length} of {locations.length} pilot locations shown on the map and in the text list.</span>
+        </label>
         <p className="coverage-note">A source-backed selection of outdoor gyms, courts, pitches and waterfront activities is shown. This is a growing citywide pilot, not yet a complete municipal inventory.</p>
 
         <section className="today-plan" aria-labelledby="today-plan-heading">
@@ -1076,7 +1107,7 @@ function App() {
               </CircleMarker>
             )}
             {route && <Polyline pathOptions={{ color: travelMode === 'running' ? '#db5b36' : '#245f50', weight: 5, opacity: 0.85 }} positions={route.coordinates} />}
-            {visibleLocations.map((location) => (
+            {filteredLocations.map((location) => (
               <CircleMarker
                 center={[location.latitude, location.longitude]}
                 eventHandlers={{ click: () => selectLocation(location) }}
@@ -1108,7 +1139,7 @@ function App() {
             </div>
           </div>
           <div className="cards">
-            {visibleLocations.map((location) => (
+            {filteredLocations.map((location) => (
               <button
                 aria-pressed={location.id === selectedLocation.id}
                 className={`location-card ${location.id === selectedLocation.id ? 'selected' : ''}`}

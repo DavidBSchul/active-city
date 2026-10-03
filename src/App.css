@@ -30,6 +30,9 @@ h2 { margin-bottom: 0; color: #183d35; font-family: Georgia, serif; font-size: c
 .distance-form p { grid-column: 1 / -1; margin: 0; color: #61736d; font-size: .8rem; }
 .distance-form .location-error { color: #a73020; font-weight: 700; }
 .distance-form .location-sorted { color: #245f50; font-weight: 700; }
+.location-filter { display: block; max-width: 340px; margin: 0 0 14px; color: #25493f; font-size: .84rem; font-weight: 800; }
+.location-filter select { display: block; box-sizing: border-box; width: 100%; min-height: 40px; margin-top: 5px; padding: 8px 9px; border: 1px solid #aebfb8; border-radius: 8px; color: #19332d; background: #fff; font: inherit; }
+.location-filter span { display: block; margin-top: 5px; color: #61736d; font-size: .78rem; font-weight: 600; line-height: 1.35; }
 .coverage-note { margin: 0 0 14px; color: #5e471e; font-size: .84rem; line-height: 1.45; }
 .today-plan { margin: 0 0 16px; padding: 16px; border: 1px solid #b8d8cb; border-radius: 12px; background: #f4faef; }
 .today-plan h3, .today-plan h4 { margin: 0; color: #183d35; font-family: Georgia, serif; }
@@ -227,8 +230,8 @@ dd { margin: 5px 0 0; line-height: 1.45; }
 .city-theme--krakow h1, .city-theme--krakow h2, .city-theme--krakow .preference-panel h3, .city-theme--krakow .exercise-ideas h4, .city-theme--krakow .route-panel h3 { color: var(--city-ink); }
 .city-theme--krakow .hero h1 { color: #fff; }
 .city-theme--krakow .discovery, .city-theme--krakow .profile, .city-theme--krakow .location-list { border-color: var(--city-border); box-shadow: 0 12px 32px rgba(8, 63, 105, .08); }
-.city-theme--krakow .distance-form label, .city-theme--krakow .preference-form label, .city-theme--krakow .route-panel label { color: var(--city-ink); }
-.city-theme--krakow .distance-form input, .city-theme--krakow .preference-form select, .city-theme--krakow .route-panel select, .city-theme--krakow .route-panel input { border-color: var(--city-border); color: var(--city-ink); }
+.city-theme--krakow .distance-form label, .city-theme--krakow .location-filter, .city-theme--krakow .preference-form label, .city-theme--krakow .route-panel label { color: var(--city-ink); }
+.city-theme--krakow .distance-form input, .city-theme--krakow .location-filter select, .city-theme--krakow .preference-form select, .city-theme--krakow .route-panel select, .city-theme--krakow .route-panel input { border-color: var(--city-border); color: var(--city-ink); }
 .city-theme--krakow .distance-form button, .city-theme--krakow .preference-form button, .city-theme--krakow .route-action { background: var(--city-teal); }
 .city-theme--krakow .distance-form button:hover, .city-theme--krakow .preference-form button:hover, .city-theme--krakow .route-action:hover { background: var(--city-navy); }
 .city-theme--krakow .coverage-note, .city-theme--krakow .wellbeing-safety { color: #755b22; }

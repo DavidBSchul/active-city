@@ -11,6 +11,7 @@ The app currently provides:
 - 19 Kraków pilot locations on an interactive map and an equivalent text alternative.
 - Source-linked profiles for outdoor gyms, outdoor courts/pitches, waterfront recreation and a documented park-sport hub at Park Lotników Polskich.
 - Distance sorting from a voluntarily entered location, walking/running route previews, and a public-transport handoff.
+- A concise activity filter that updates the map and text alternative together.
 - Non-medical activity discovery based on an age band, movement comfort, goal and optional broad wellbeing focus.
 - Venue-matched exercise ideas and a high-energy session builder for people who select energetic activity.
 - A category-based movement library with NHS-linked walking/running, expanded strength/bodyweight, mobility and balance resources.

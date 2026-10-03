@@ -27,7 +27,8 @@
 - Turned the visual direction into a city-theme foundation. Kraków is the active pilot theme: its named landmark hero and palette tokens now style the journey panels, controls, activity states and community area. A future city can supply its own hero asset and equivalent theme tokens without rewriting the interface.
 - Added a browser-only “Today’s plan” flow that joins the selected facility, one documented activity, a travel choice, route planning and the post-activity reflection into one clear user journey. It does not create bookings, save plans or make individual exercise/safety decisions.
 - Verified and upgraded Park Lotników Polskich from an imported discovery point to a municipal-source-backed outdoor sport profile. The profile covers only the documented street-workout area, multi-purpose court, pumptrack, skatepark and running route; it avoids inventing individual device, court-availability or booking details.
+- Added an activity filter that updates both the interactive-map markers and the equivalent text list together. It provides concise choices for walking, running/cycling, strength/bodyweight, team sport and waterfront activity; no personal information is needed or retained.
 
 ### Next priority
 
-Continue verifying pilot locations against durable municipal sources, then introduce concise activity filters for map discovery.
+Continue verifying pilot locations against durable municipal sources, then shape the community prototype into a concise demo journey.
