@@ -40,7 +40,9 @@
 - Improved strength and calisthenics recommendations so they name concrete movements instead of only facility categories. Steady suggestions include bodyweight squats, standing press-ups and controlled calf raises; pull-up progressions appear only for an energetic profile at a documented calisthenics or bodyweight-strength venue. Existing NHS how-to links remain available after opening the selected facility.
 - Rechecked the Sport & Healthcare challenge brief before the final interface cleanup. The pilot is now framed around a clear need: helping time-limited Kraków residents find a realistic public-space movement plan and reflect on what helps them repeat it. The next product priority is a small weekly pattern-and-next-step view, not more feature domains or a live social network.
 - Replaced the single long discovery page with four simple destinations: **Explore** for nearby source-backed places, **Plan** for a time-aware route and activity outline, **My week** for local profiles and private reflections, and **Community** for the clearly labelled future-pilot concept. Cross-links move to the relevant destination, so selecting a place, making a plan and reflecting afterwards still work as one journey.
+- Added the private weekly pattern view to close the feedback-loop gap in the challenge brief. It counts recent movement days and check-ins, identifies a familiar place when one appears, and offers one modest next step. It stays non-medical, uses only the active profile’s local check-ins, and makes no score, diagnosis or clinical claim.
+- Prepared and visually checked a nine-slide HackYeah upload deck. It stays below the platform’s 10-slide and 10 MB limits, includes AI/source disclosure, and leaves only the team-member line for final editing before upload.
 
 ### Next priority
 
-Add a small private weekly pattern-and-next-step view, then prepare concise submission-ready demo and project materials, including a walkthrough of the source-backed discovery, plan, profile/reflection and volunteer-safety boundaries.
+Confirm team details in the deck, then prepare a short demo recording and final HackTribe project entry.

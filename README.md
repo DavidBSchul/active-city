@@ -20,6 +20,7 @@ The app currently provides:
 - A visible three-step safety-first planning path: acknowledge rules, choose a public facility, then add a personal Today plan or save a private draft rather than publish.
 - A local safety layer for that prototype: adult and community-rule confirmation, draft/moderation states, report controls, and a no-document trainer-verification journey.
 - A private post-activity reflection and optional three-movement-day challenge; data stays in the browser unless the person explicitly opts into device storage.
+- A private weekly view that turns recent check-ins into movement days, a familiar place and one modest next-step suggestion. It does not produce a health score, diagnosis or clinical record.
 - Up to five device-local profiles for a person, someone they support, a child, or a household member; each keeps separate preferences, diary entries and challenge progress.
 - Opt-in, read-only progress links that include only reflections the user selects; the app creates no server copy or account.
 - A browser-only “Today’s plan” that turns a chosen documented activity into a time-budgeted session outline, reserves an estimated return journey, flags places that do not fit today’s time, and offers nearer documented alternatives where available.

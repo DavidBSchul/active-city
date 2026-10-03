@@ -97,14 +97,7 @@ The application is a frontend prototype. It uses public map tiles and makes on-d
 
 ## Presentation
 
-Create and upload a PDF or PPTX under 10 MB. Suggested six-slide structure:
-
-1. **Active City** — “From intention to a real place to move in Kraków.”
-2. **The friction** — public activity information is scattered and uncertain.
-3. **The journey** — discover → verify → route → move → reflect.
-4. **Live prototype** — filter the map, open a source-backed profile, then make a Today’s plan.
-5. **Responsible personalisation and community** — separate device-local profiles, selected-entry sharing, non-medical suggestions, and a volunteer-verification boundary that is not a liability waiver.
-6. **Impact and next steps** — validate more sites, co-design with residents, add current municipal availability data, and test future city themes.
+Upload [`output/Active-City-HackYeah-2026-final.pptx`](../output/Active-City-HackYeah-2026-final.pptx). It has nine slides and is below 10 MB. Before upload, replace the team-name placeholder on slide 1. The deck covers the source-backed Kraków pilot, time-aware plan, private weekly pattern, community safety boundary, source/AI disclosure and the next city-pilot tests.
 
 ## Cover image brief
 
@@ -118,5 +111,5 @@ Use `public/active-city-hero.png` as the starting cover visual. It is an origina
 - [ ] Add a deployed demo URL if one is available.
 - [ ] Make a cover image with rights-cleared assets.
 - [ ] Record a short listed YouTube demo, if time allows.
-- [ ] Export the final presentation as PDF/PPTX under 10 MB.
+- [x] Create the final PPTX under 10 MB and add source/AI disclosure.
 - [ ] Disclose use of AI tools and external/reused assets in the presentation/submission as required by the competition rules.

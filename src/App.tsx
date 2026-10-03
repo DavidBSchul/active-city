@@ -33,6 +33,7 @@ type CommunityPost = { id: string; kind: CommunityPostKind; activity: string; lo
 type GuidanceRole = 'volunteer' | 'trainer'
 type GuidanceOffer = { id: string; role: GuidanceRole; title: string; locationId: string; availability: string; topics: string; scope: string; enquiries: number; moderation: ModerationState }
 type AppView = 'explore' | 'plan' | 'week' | 'community'
+type WeeklyPattern = { movementDays: number; checkIns: number; familiarPlace?: string; reflection: string; nextStep: string }
 
 const WELLBEING_STORAGE_KEY = 'active-city-wellbeing-checkins-v1'
 const WELLBEING_CONSENT_KEY = 'active-city-wellbeing-save-on-device-v1'
@@ -528,6 +529,29 @@ function App() {
     })
     return activeDays.size
   }, [activeCheckIns])
+  const weeklyPattern = useMemo<WeeklyPattern>(() => {
+    const today = new Date(`${todayInKrakow()}T00:00:00`)
+    const recentCheckIns = activeCheckIns.filter((checkIn) => {
+      const loggedDay = new Date(`${checkIn.date}T00:00:00`)
+      const difference = Math.round((today.getTime() - loggedDay.getTime()) / 86_400_000)
+      return difference >= 0 && difference < 7
+    })
+    const placeCounts = recentCheckIns.reduce<Record<string, number>>((counts, checkIn) => ({ ...counts, [checkIn.locationName]: (counts[checkIn.locationName] ?? 0) + 1 }), {})
+    const familiarPlace = Object.entries(placeCounts).sort(([, first], [, second]) => second - first)[0]?.[0]
+    const tiredCheckIns = recentCheckIns.filter((checkIn) => checkIn.feeling === 'tired' || checkIn.feeling === 'drained').length
+    const positiveCheckIns = recentCheckIns.filter((checkIn) => checkIn.feeling === 'energised' || checkIn.feeling === 'calmer').length
+
+    if (recentCheckIns.length === 0) {
+      return { movementDays: 0, checkIns: 0, reflection: 'Nothing logged yet. A short walk or a few minutes of gentle movement is enough to start a week.', nextStep: 'Choose a nearby place and give yourself 30 minutes, including the journey.' }
+    }
+    if (tiredCheckIns > positiveCheckIns) {
+      return { movementDays: activeChallengeDays, checkIns: recentCheckIns.length, familiarPlace, reflection: 'You have logged more tired or drained moments than energised or calmer ones this week.', nextStep: 'Keep the next plan short and gentle. A nearby walk, warm-up or mobility session may feel more manageable.' }
+    }
+    if (activeChallengeDays < 3) {
+      return { movementDays: activeChallengeDays, checkIns: recentCheckIns.length, familiarPlace, reflection: familiarPlace ? `${familiarPlace} has been your familiar place this week.` : 'You have started building a picture of what your week feels like.', nextStep: 'Add one more short movement day before the week ends. Repeating a place you already know is a good place to start.' }
+    }
+    return { movementDays: activeChallengeDays, checkIns: recentCheckIns.length, familiarPlace, reflection: familiarPlace ? `You came back to ${familiarPlace} this week.` : 'You have made time for movement on three or more days this week.', nextStep: 'Keep the next session easy to repeat. Notice what made it work, then write a few words afterwards.' }
+  }, [activeChallengeDays, activeCheckIns])
   const privateSummary = useMemo(() => {
     const lines = activeCheckIns.slice(0, 14).map((checkIn) => `${checkIn.date} | ${checkIn.locationName} | ${feelingLabel[checkIn.feeling]}${checkIn.note ? ` | Note: ${checkIn.note}` : ''}`)
     return [`Active City private activity reflection — ${activeProfile.name}`, 'Generated locally for the user to review before sharing.', 'This is a personal reflection, not a clinical record.', '', ...lines].join('\n')
@@ -1468,6 +1492,23 @@ function App() {
             <h3 id="wellbeing-heading">How did that feel, {activeProfile.name}?</h3>
             <p className="wellbeing-intro">Take a moment to notice how you feel. This is your own reflection—not a health assessment or clinical record.</p>
           </div>
+          <section className="weekly-pattern" aria-labelledby="weekly-pattern-heading">
+            <div>
+              <p className="eyebrow">Your week at a glance</p>
+              <h4 id="weekly-pattern-heading">A small picture of what is working</h4>
+              <p>{weeklyPattern.reflection}</p>
+            </div>
+            <dl className="weekly-pattern-stats">
+              <div><dt>Movement days</dt><dd>{weeklyPattern.movementDays}</dd></div>
+              <div><dt>Check-ins</dt><dd>{weeklyPattern.checkIns}</dd></div>
+              <div><dt>Familiar place</dt><dd>{weeklyPattern.familiarPlace ?? 'Still to find'}</dd></div>
+            </dl>
+            <div className="weekly-next-step">
+              <strong>Next small step</strong>
+              <p>{weeklyPattern.nextStep}</p>
+              <button onClick={() => openView('plan')} type="button">Make a plan for today</button>
+            </div>
+          </section>
           <form className="checkin-form" onSubmit={(event) => { event.preventDefault(); addCheckIn() }}>
             <label>
               How do you feel after activity?
