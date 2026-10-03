@@ -33,7 +33,8 @@
 - Added Park Linearny Ruczaj as a documented District VIII outdoor-activity record, including its City-listed stationary spinning bikes, table tennis, minigolf and pétanque facilities.
 - Added up to five privacy-first profiles on one device. Each profile keeps distinct discovery preferences, wellbeing entries and challenge progress; persistence is explicit device-only opt-in. Added a deliberately selected-entry, read-only share-link flow with notes excluded by default and no server copy.
 - Added a volunteer application and safety-acknowledgement prototype. It makes the verification sequence visible without collecting documents or creating a listing, and explicitly states that the acknowledgement is not a liability waiver.
+- Refined the discovery and community experience from user review: the public map and text list now show only source-backed facility profiles, while wider imported discovery records stay unpublished until checked. Replaced coordinate entry with neighbourhood/street/landmark search and an explicit browser device-location prompt; neither is stored. Community controls now perform a real in-app outcome (add a documented activity to the active profile’s Today plan or open the facility review) rather than imply that an invitation, enquiry or report was sent. The verification view now names the missing operational dependency: a city, NGO or venue operator must appoint trained reviewers before any volunteer or trainer can be verified.
 
 ### Next priority
 
-Prepare concise submission-ready demo and project materials, including a walkthrough of the profile, share-link and volunteer-safety boundaries.
+Prepare concise submission-ready demo and project materials, including a walkthrough of the source-backed discovery, profile, share-link and volunteer-safety boundaries.

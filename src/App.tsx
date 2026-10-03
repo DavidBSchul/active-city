@@ -15,6 +15,7 @@ type TravelMode = 'walking' | 'running' | 'transit'
 type RouteData = { coordinates: [number, number][]; distanceKm: number; minutes: number; calories: number }
 type TodayPlan = { locationId: string; activity: string; travelMode: TravelMode }
 type RoutingResponse = { routes?: Array<{ distance: number; geometry: { coordinates: [number, number][] } }> }
+type GeocodingResult = { lat: string; lon: string; display_name: string }
 type AgeRange = '0-4' | '5-8' | '9-12' | '13-15' | '16-17' | '18-24' | '25-34' | '35-44' | '45-54' | '55-64' | '65-74' | '75-plus'
 type MovementComfort = 'gentle' | 'steady' | 'energetic'
 type ActivityGoal = 'everyday' | 'endurance' | 'strength' | 'team' | 'waterfront'
@@ -28,7 +29,7 @@ type IntensiveSession = 'intervals' | 'strength-circuit' | 'court-conditioning'
 type ExerciseCategory = 'all' | 'walk-run' | 'strength' | 'mobility-balance' | 'team'
 type LocationActivityFilter = 'all' | 'walking' | 'running-cycling' | 'strength' | 'team' | 'waterfront'
 type CommunityPostKind = 'activity' | 'team' | 'guidance'
-type ModerationState = 'Sample only — not live' | 'Draft — not submitted'
+type ModerationState = 'Illustrative listing — no connection' | 'Private draft — not published'
 type CommunityPost = { id: string; kind: CommunityPostKind; activity: string; locationId: string; timing: string; capacity: number; interested: number; note: string; moderation: ModerationState }
 type GuidanceRole = 'volunteer' | 'trainer'
 type GuidanceOffer = { id: string; role: GuidanceRole; title: string; locationId: string; availability: string; topics: string; scope: string; enquiries: number; moderation: ModerationState }
@@ -39,6 +40,7 @@ const PROFILE_STORAGE_KEY = 'active-city-profiles-v1'
 const ACTIVE_PROFILE_STORAGE_KEY = 'active-city-active-profile-v1'
 const SHARE_HASH_PREFIX = '#active-city-shared-progress='
 const DEFAULT_PROFILE: Profile = { id: 'profile-self', name: 'My profile', relationship: 'self', ageRange: '25-34', movementComfort: 'steady', activityGoal: 'everyday', wellbeingFocus: 'general' }
+const documentedLocations = locations.filter((location) => location.verificationStatus === 'documented')
 
 const profileRelationshipLabel: Record<ProfileRelationship, string> = {
   self: 'My profile',
@@ -54,9 +56,9 @@ const communityPostLabel: Record<CommunityPostKind, string> = {
 }
 
 const communitySeedPosts: CommunityPost[] = [
-  { id: 'walk-bagry', kind: 'activity', activity: 'Easy waterfront walk', locationId: 'bagry', timing: 'A planned daytime session', capacity: 6, interested: 2, note: 'A low-pressure walk around the designated public paths.', moderation: 'Sample only — not live' },
-  { id: 'basketball-olszanica', kind: 'team', activity: 'Basketball — need two more players', locationId: 'olszanica-outdoor-gym', timing: 'A planned evening session', capacity: 6, interested: 4, note: 'Bring a ball if you can; check court availability before travel.', moderation: 'Sample only — not live' },
-  { id: 'mobility-klinowka', kind: 'guidance', activity: 'Outdoor mobility and warm-up basics', locationId: 'klinowka-parkour', timing: 'A planned weekend session', capacity: 8, interested: 3, note: 'Example volunteer listing. Any live service would verify the organiser and clearly state qualifications.', moderation: 'Sample only — not live' },
+  { id: 'walk-bagry', kind: 'activity', activity: 'Easy waterfront walk', locationId: 'bagry', timing: 'A planned daytime session', capacity: 6, interested: 2, note: 'A low-pressure walk around the designated public paths.', moderation: 'Illustrative listing — no connection' },
+  { id: 'basketball-olszanica', kind: 'team', activity: 'Basketball — need two more players', locationId: 'olszanica-outdoor-gym', timing: 'A planned evening session', capacity: 6, interested: 4, note: 'Bring a ball if you can; check court availability before travel.', moderation: 'Illustrative listing — no connection' },
+  { id: 'mobility-klinowka', kind: 'guidance', activity: 'Outdoor mobility and warm-up basics', locationId: 'klinowka-parkour', timing: 'A planned weekend session', capacity: 8, interested: 3, note: 'Illustrative volunteer listing. Any live service would verify the organiser and clearly state qualifications.', moderation: 'Illustrative listing — no connection' },
 ]
 
 const guidanceRoleLabel: Record<GuidanceRole, string> = {
@@ -65,8 +67,8 @@ const guidanceRoleLabel: Record<GuidanceRole, string> = {
 }
 
 const guidanceSeedOffers: GuidanceOffer[] = [
-  { id: 'volunteer-warmup', role: 'volunteer', title: 'General warm-up and outdoor movement buddy', locationId: 'parkowa-street-workout', availability: 'Planned weekend daytime session', topics: 'Warm-up basics, gentle mobility, using public equipment with care', scope: 'Unverified demo role. General movement support only—not healthcare, rehabilitation or individual fitness assessment.', enquiries: 2, moderation: 'Sample only — not live' },
-  { id: 'trainer-bodyweight', role: 'trainer', title: 'Bodyweight technique introduction', locationId: 'olszanica-outdoor-gym', availability: 'Planned weekday evening session', topics: 'Squat, supported press-up, pull-up progression and session warm-up', scope: 'Unverified demo trainer listing. A live service must verify identity, qualifications, insurance and scope before publication.', enquiries: 1, moderation: 'Sample only — not live' },
+  { id: 'volunteer-warmup', role: 'volunteer', title: 'General warm-up and outdoor movement buddy', locationId: 'parkowa-street-workout', availability: 'Planned weekend daytime session', topics: 'Warm-up basics, gentle mobility, using public equipment with care', scope: 'Unverified role. General movement support only—not healthcare, rehabilitation or individual fitness assessment.', enquiries: 2, moderation: 'Illustrative listing — no connection' },
+  { id: 'trainer-bodyweight', role: 'trainer', title: 'Bodyweight technique introduction', locationId: 'olszanica-outdoor-gym', availability: 'Planned weekday evening session', topics: 'Squat, supported press-up, pull-up progression and session warm-up', scope: 'Unverified trainer listing. A live service must verify identity, qualifications, insurance and scope before publication.', enquiries: 1, moderation: 'Illustrative listing — no connection' },
 ]
 
 const exerciseCategoryLabel: Record<ExerciseCategory, string> = {
@@ -300,21 +302,13 @@ function distanceInKm(from: Coordinates, to: Coordinates) {
   return earthRadiusKm * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
 }
 
-function parseCoordinates(value: string): Coordinates | null {
-  const parts = value.trim().split(/[\s,]+/).map(Number)
-  if (parts.length !== 2 || parts.some((part) => !Number.isFinite(part))) return null
-  const [latitude, longitude] = parts
-  if (latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) return null
-  return { latitude, longitude }
-}
-
 function calorieEstimate(mode: Exclude<TravelMode, 'transit'>, minutes: number, weightKg: number) {
   const met = mode === 'walking' ? 3.5 : 9.8
   return Math.round((met * 3.5 * weightKg * minutes) / 200)
 }
 
 function App() {
-  const [selectedId, setSelectedId] = useState(locations[0].id)
+  const [selectedId, setSelectedId] = useState(documentedLocations[0].id)
   const [profiles, setProfiles] = useState<Profile[]>([DEFAULT_PROFILE])
   const [activeProfileId, setActiveProfileId] = useState(DEFAULT_PROFILE.id)
   const [profileNameDraft, setProfileNameDraft] = useState('')
@@ -323,8 +317,9 @@ function App() {
   const [locationInput, setLocationInput] = useState('')
   const [userLocation, setUserLocation] = useState<Coordinates | null>(null)
   const [locationError, setLocationError] = useState('')
+  const [isLocating, setIsLocating] = useState(false)
   const [travelMode, setTravelMode] = useState<TravelMode>('walking')
-  const [plannedActivity, setPlannedActivity] = useState(locations[0].activities[0])
+  const [plannedActivity, setPlannedActivity] = useState(documentedLocations[0].activities[0])
   const [todayPlan, setTodayPlan] = useState<TodayPlan | null>(null)
   const [weightKg, setWeightKg] = useState('70')
   const [route, setRoute] = useState<RouteData | null>(null)
@@ -367,10 +362,10 @@ function App() {
   const [volunteerSafetyAcknowledged, setVolunteerSafetyAcknowledged] = useState(false)
   const [volunteerApplicationState, setVolunteerApplicationState] = useState<'not-started' | 'draft-review'>('not-started')
   const activeProfile = profiles.find((profile) => profile.id === activeProfileId) ?? profiles[0]
-  const selectedLocation = locations.find((location) => location.id === selectedId) ?? locations[0]
-  const todayPlanLocation = todayPlan ? locations.find((location) => location.id === todayPlan.locationId) ?? locations[0] : null
+  const selectedLocation = documentedLocations.find((location) => location.id === selectedId) ?? documentedLocations[0]
+  const todayPlanLocation = todayPlan ? documentedLocations.find((location) => location.id === todayPlan.locationId) ?? documentedLocations[0] : null
   const visibleLocations = useMemo(() => {
-    const withDistance = locations.map((location) => ({
+    const withDistance = documentedLocations.map((location) => ({
       ...location,
       distanceKm: userLocation ? distanceInKm(userLocation, location) : undefined,
     }))
@@ -412,11 +407,11 @@ function App() {
   const communityActionsEnabled = adultCommunityAccess && communityAccessReady
   const communityPostsWithLocation = useMemo(() => communityPosts.map((post) => ({
     ...post,
-    location: locations.find((location) => location.id === post.locationId) ?? locations[0],
+    location: documentedLocations.find((location) => location.id === post.locationId) ?? documentedLocations[0],
   })), [communityPosts])
   const guidanceOffersWithLocation = useMemo(() => guidanceOffers.map((offer) => ({
     ...offer,
-    location: locations.find((location) => location.id === offer.locationId) ?? locations[0],
+    location: documentedLocations.find((location) => location.id === offer.locationId) ?? documentedLocations[0],
   })), [guidanceOffers])
   const activeChallengeDays = useMemo(() => {
     const today = new Date(`${todayInKrakow()}T00:00:00`)
@@ -536,21 +531,56 @@ function App() {
     activateProfile(profile)
   }
 
-  const updateLocation = () => {
+  const updateLocation = async () => {
     if (!locationInput.trim()) {
       setUserLocation(null)
       setLocationError('')
       return
     }
-    const coordinates = parseCoordinates(locationInput)
-    if (!coordinates) {
-      setLocationError('Enter latitude and longitude, for example: 50.0614, 19.9366.')
+    setIsLocating(true)
+    setLocationError('')
+    try {
+      const endpoint = new URL('https://nominatim.openstreetmap.org/search')
+      endpoint.searchParams.set('format', 'jsonv2')
+      endpoint.searchParams.set('limit', '1')
+      endpoint.searchParams.set('countrycodes', 'pl')
+      endpoint.searchParams.set('q', `${locationInput.trim()}, Kraków`)
+      const response = await fetch(endpoint)
+      const matches = await response.json() as GeocodingResult[]
+      const result = matches[0]
+      const latitude = Number(result?.lat)
+      const longitude = Number(result?.lon)
+      if (!response.ok || !Number.isFinite(latitude) || !Number.isFinite(longitude)) throw new Error('No place found')
+      setUserLocation({ latitude, longitude })
+      setRoute(null)
+      setRouteStatus('')
+    } catch {
+      setLocationError('We could not find that place in Kraków. Try a neighbourhood, street, landmark, or use your device location.')
+    } finally {
+      setIsLocating(false)
+    }
+  }
+
+  const useDeviceLocation = () => {
+    if (!navigator.geolocation) {
+      setLocationError('This browser does not support device location. Search for a neighbourhood, street, or landmark instead.')
       return
     }
-    setUserLocation(coordinates)
+    setIsLocating(true)
     setLocationError('')
-    setRoute(null)
-    setRouteStatus('')
+    navigator.geolocation.getCurrentPosition(
+      ({ coords }) => {
+        setUserLocation({ latitude: coords.latitude, longitude: coords.longitude })
+        setRoute(null)
+        setRouteStatus('')
+        setIsLocating(false)
+      },
+      () => {
+        setLocationError('Location permission was not granted. Search for a neighbourhood, street, or landmark instead.')
+        setIsLocating(false)
+      },
+      { enableHighAccuracy: false, maximumAge: 300_000, timeout: 10_000 },
+    )
   }
 
   const buildTodayPlan = () => {
@@ -666,20 +696,27 @@ function App() {
     }
   }
 
-  const registerCommunityInterest = (postId: string) => {
+  const addCommunityActivityToPlan = (postId: string) => {
     if (!communityActionsEnabled) {
-      setCommunityAccessMessage('Complete the local safety setup before saving demo interest.')
+      setCommunityAccessMessage('Complete the local safety setup before adding an activity to your plan.')
       return
     }
-    setCommunityPosts((current) => current.map((post) => post.id === postId && post.interested < post.capacity
-      ? { ...post, interested: post.interested + 1 }
-      : post))
-    setCommunityMessage('Interest saved in this browser demo only. No contact details, location, or health information were shared.')
+    const post = communityPosts.find((item) => item.id === postId)
+    const location = post ? documentedLocations.find((item) => item.id === post.locationId) : undefined
+    if (!post || !location) return
+    const activity = location.activities.find((item) => post.activity.includes(item)) ?? location.activities[0]
+    setSelectedId(location.id)
+    setPlannedActivity(activity)
+    setTodayPlan({ locationId: location.id, activity, travelMode })
+    setRoute(null)
+    setRouteStatus('')
+    setCommunityMessage(`${activity} at ${location.name} was added to ${activeProfile.name}'s Today plan. No request or contact details were sent.`)
+    moveToPlanStep('today-plan-heading')
   }
 
   const createCommunityRequest = () => {
     if (!communityActionsEnabled) {
-      setCommunityAccessMessage('Complete the local safety setup before creating a demo request.')
+      setCommunityAccessMessage('Complete the local safety setup before creating a private request draft.')
       return
     }
     const activityLabel = communityActivity
@@ -696,21 +733,28 @@ function App() {
       timing: 'A future planned session',
       capacity: communityKind === 'team' ? 6 : 8,
       interested: 1,
-      moderation: 'Draft — not submitted',
+      moderation: 'Private draft — not published',
       note: communityKind === 'guidance'
-        ? 'Demo guidance offer. A live service must verify credentials, role boundaries and safeguarding before publishing.'
-        : 'Demo request. Confirm venue availability and agree details through a moderated service before meeting.',
+        ? 'Private guidance draft. A live service must verify credentials, role boundaries and safeguarding before publishing.'
+        : 'Private request draft. Confirm venue availability and agree details through a moderated service before meeting.',
     }, ...current])
-    setCommunityMessage('Your request has been added to this browser-only demo. It is not visible to other people and does not send an invitation.')
+    setCommunityMessage('Your request is saved as a private draft in this browser tab. It is not visible to other people and does not send an invitation.')
   }
 
   const registerGuidanceInterest = (offerId: string) => {
     if (!communityActionsEnabled) {
-      setCommunityAccessMessage('Complete the local safety setup before requesting demo details.')
+      setCommunityAccessMessage('Complete the local safety setup before reviewing this pilot listing.')
       return
     }
-    setGuidanceOffers((current) => current.map((offer) => offer.id === offerId ? { ...offer, enquiries: offer.enquiries + 1 } : offer))
-    setGuidanceMessage('Interest saved in this browser demo only. No profile, contact information or health details were sent.')
+    const offer = guidanceOffers.find((item) => item.id === offerId)
+    const location = offer ? documentedLocations.find((item) => item.id === offer.locationId) : undefined
+    if (!offer || !location) return
+    setSelectedId(location.id)
+    setPlannedActivity(location.activities[0])
+    setRoute(null)
+    setRouteStatus('')
+    setGuidanceMessage(`${location.name} is selected so you can review the public facility and the guide's stated boundary. This listing is not contactable until a real service verifies it.`)
+    moveToPlanStep('location-profile')
   }
 
   const addGuidanceOffer = () => {
@@ -729,12 +773,12 @@ function App() {
       availability: 'A future planned session',
       topics: guidanceFocus,
       scope: guidanceRole === 'trainer'
-        ? 'Demo trainer offer. A live listing requires identity, qualification, insurance and scope verification before it can receive enquiries.'
-        : 'Demo volunteer offer. General activity encouragement only—not healthcare, rehabilitation or individual fitness assessment.',
+        ? 'Private trainer draft. A live listing requires identity, qualification, insurance and scope verification before it can receive enquiries.'
+        : 'Private volunteer draft. General activity encouragement only—not healthcare, rehabilitation or individual fitness assessment.',
       enquiries: 0,
-      moderation: 'Draft — not submitted',
+      moderation: 'Private draft — not published',
     }, ...current])
-    setGuidanceMessage('Your guidance offer was added to this browser-only demo. It has not been published or shared with anyone.')
+    setGuidanceMessage('Your guidance offer is saved as a private draft in this browser tab. It has not been published or shared with anyone.')
   }
 
   const enableCommunityActions = () => {
@@ -743,38 +787,38 @@ function App() {
       return
     }
     if (!adultDeclaration || !communityRulesAccepted) {
-      setCommunityAccessMessage('Confirm both safety statements before enabling local demo actions.')
+      setCommunityAccessMessage('Confirm both safety statements before enabling local planning actions.')
       return
     }
     setCommunityAccessReady(true)
-    setCommunityAccessMessage('Local demo actions are enabled for this browser tab. Nothing is published, sent, or saved after you close it.')
+    setCommunityAccessMessage('Local planning actions are enabled for this browser tab. Nothing is published, sent, or saved after you close it.')
   }
 
   const flagCommunityItem = (itemId: string) => {
     setFlaggedItemIds((current) => current.includes(itemId) ? current : [...current, itemId])
-    setCommunityAccessMessage('This item is flagged in your local demo only. A real service would send it to trained moderators and provide follow-up options.')
+    setCommunityAccessMessage('This item is flagged in this browser tab. A real service would send it to trained moderators and provide follow-up options.')
   }
 
   const startTrainerVerificationDemo = () => {
     if (!communityActionsEnabled) {
-      setCommunityAccessMessage('Complete the local safety setup before starting a verification demo.')
+      setCommunityAccessMessage('Complete the local safety setup before preparing a verification checklist.')
       return
     }
     setTrainerVerificationState('demo-review')
-    setGuidanceMessage('Verification workflow marked “demo review”. No documents, identity details or credentials were uploaded or collected.')
+    setGuidanceMessage('A local verification checklist is ready. No documents were collected and nobody was verified: a live service needs a named city, NGO, or venue operator to appoint trained reviewers.')
   }
 
   const startVolunteerApplicationDemo = () => {
     if (!communityActionsEnabled) {
-      setCommunityAccessMessage('Complete the local safety setup before starting a volunteer application demo.')
+      setCommunityAccessMessage('Complete the local safety setup before preparing a volunteer application draft.')
       return
     }
     if (!volunteerSafetyAcknowledged) {
-      setGuidanceMessage('Read and acknowledge the volunteer safety boundary before starting the application demo.')
+      setGuidanceMessage('Read and acknowledge the volunteer safety boundary before preparing a local application draft.')
       return
     }
     setVolunteerApplicationState('draft-review')
-    setGuidanceMessage('Volunteer application marked “draft review”. Nothing was submitted, published or verified. A live service would next check identity, safeguarding, role boundaries and the written agreement before approval.')
+    setGuidanceMessage('A local application draft is ready. It was not submitted or verified: a live service needs a named city, NGO, or venue operator to check identity, safeguarding, role boundaries and the written agreement before approval.')
   }
 
   const publicTransportUrl = userLocation
@@ -789,8 +833,8 @@ function App() {
           <h1>Active City</h1>
           <p className="tagline">Your city. Your space. Your workout.</p>
           <p className="intro">
-            Start with a place you can use today. Browse public recreation spaces, inspect what is known about
-            them, and keep unknown details visible instead of guessing.
+            Start with a place you can use today. Browse source-backed recreation spaces, inspect documented
+            details, and check on-site conditions before you travel.
           </p>
           <p className="hero-strapline">Move · Meet · Explore</p>
         </div>
@@ -842,34 +886,37 @@ function App() {
             <p className="eyebrow">Explore</p>
             <h2 id="map-heading">Krakow recreation spaces</h2>
           </div>
-          <p className="location-count">{locations.length} pilot locations</p>
+          <p className="location-count">{documentedLocations.length} source-backed places</p>
         </div>
 
         <form className="distance-form" onSubmit={(event) => { event.preventDefault(); updateLocation() }}>
           <div>
-            <label htmlFor="location-input">Sort places by your location</label>
+            <label htmlFor="location-input">Where are you starting from?</label>
             <input
               aria-describedby="location-help location-error"
               id="location-input"
               onChange={(event) => setLocationInput(event.target.value)}
-              placeholder="Latitude, longitude — e.g. 50.0614, 19.9366"
+              placeholder="Neighbourhood, street, or landmark — e.g. Main Square"
               type="text"
               value={locationInput}
             />
           </div>
-          <button type="submit">Sort by distance</button>
-          <p id="location-help">Used only in this browser tab. Distances are straight-line estimates.</p>
+          <div className="location-actions">
+            <button disabled={isLocating} type="submit">{isLocating ? 'Finding your place…' : 'Find nearby places'}</button>
+            <button className="secondary-location-action" disabled={isLocating} onClick={useDeviceLocation} type="button">Use my device location</button>
+          </div>
+          <p id="location-help">Search sends the place you type to OpenStreetMap only when you press the button. Device location is requested only after you choose it; neither is saved by Active City. Distances are straight-line estimates.</p>
           {locationError && <p className="location-error" id="location-error" role="alert">{locationError}</p>}
-          {userLocation && <p className="location-sorted">Showing nearest places first from {userLocation.latitude.toFixed(4)}, {userLocation.longitude.toFixed(4)}.</p>}
+          {userLocation && <p className="location-sorted">Showing nearest source-backed places first.</p>}
         </form>
         <label className="location-filter">
           Show places for
           <select onChange={(event) => setLocationActivityFilter(event.target.value as LocationActivityFilter)} value={locationActivityFilter}>
             {Object.entries(locationActivityFilterLabel).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
           </select>
-          <span>{filteredLocations.length} of {locations.length} pilot locations shown on the map and in the text list.</span>
+          <span>{filteredLocations.length} of {documentedLocations.length} source-backed places shown on the map and in the text list.</span>
         </label>
-        <p className="coverage-note">A source-backed selection of outdoor gyms, courts, pitches and waterfront activities is shown. This is a growing citywide pilot, not yet a complete municipal inventory.</p>
+        <p className="coverage-note">Every place shown has a linked public source and documented activity or equipment information. Wider discovery records are kept out of this public view until their details are checked.</p>
 
         <section className="today-plan" aria-labelledby="today-plan-heading">
           <div>
@@ -1072,7 +1119,7 @@ function App() {
 
         <section className="community-panel" aria-labelledby="community-heading">
           <div>
-            <p className="eyebrow">Community layer — prototype</p>
+            <p className="eyebrow">Community layer — pilot design</p>
             <h3 id="community-heading">Plan an activity together</h3>
             <p>Group activity can be motivating, but the app does not broadcast your live location. This board uses planned sessions at public facilities, never health details or direct contact information.</p>
           </div>
@@ -1081,22 +1128,22 @@ function App() {
           ) : (
             <>
               <div className="community-safety-note">
-                <strong>Prototype boundaries:</strong> examples and new requests exist only in this browser tab. A real service would need account protection, moderation and reporting, venue rules, and verified coach/trainer roles before it could connect people.
+                <strong>What works today:</strong> buttons can add an activity to your personal Today plan or open its source-backed facility profile. Nothing connects you to another person. A live service would need account protection, moderation and reporting, venue rules, and verified coach/trainer roles first.
               </div>
-              <ol className="community-demo-path" aria-label="How the local community demo works">
-                <li><strong>Set the boundary:</strong> confirm an adult demo profile and the community rules.</li>
-                <li><strong>Choose a public place:</strong> use an existing example or create a sample request linked to the currently selected facility.</li>
-                <li><strong>Review, do not publish:</strong> every new request is labelled as a draft in this browser tab; report controls are demonstration-only.</li>
+              <ol className="community-demo-path" aria-label="How the community planning journey works">
+                <li><strong>Set the boundary:</strong> confirm an adult profile and the community rules.</li>
+                <li><strong>Choose a public place:</strong> add an illustrative activity to your personal plan or inspect the facility profile.</li>
+                <li><strong>Keep it private:</strong> new requests remain private drafts in this browser tab until a real moderated service exists.</li>
               </ol>
               <form className="community-access-form" onSubmit={(event) => { event.preventDefault(); enableCommunityActions() }}>
                 <div>
                   <p className="eyebrow">Safety setup</p>
-                  <h4>Enable local community-demo actions</h4>
-                  <p>This does not create an account or share data. It makes the prototype’s buttons available in this tab only.</p>
+                  <h4>Enable local planning actions</h4>
+                  <p>This does not create an account or share data. It lets you use the personal planning actions in this tab.</p>
                 </div>
                 <label><input checked={adultDeclaration} onChange={(event) => setAdultDeclaration(event.target.checked)} type="checkbox" /> I confirm this is an 18+ community profile.</label>
                 <label><input checked={communityRulesAccepted} onChange={(event) => setCommunityRulesAccepted(event.target.checked)} type="checkbox" /> I will not share health details, a home address, a live location, or arrange unsafe meetings.</label>
-                <button type="submit">Enable local demo actions</button>
+                <button type="submit">Enable local planning</button>
               </form>
               {communityAccessMessage && <p className="community-access-message" role="status">{communityAccessMessage}</p>}
               <div className="community-posts" aria-live="polite">
@@ -1106,51 +1153,51 @@ function App() {
                     <h4>{post.activity}</h4>
                     <p className="community-location"><button onClick={() => selectLocation(post.location)} type="button">{post.location.name}</button> · {post.timing}</p>
                     <p>{post.note}</p>
-                    <p className="moderation-state">Moderation: {post.moderation}</p>
+                    <p className="moderation-state">Status: {post.moderation}</p>
                     <div className="community-post-footer">
-                      <span>{post.interested} of {post.capacity} places interested</span>
-                      <button disabled={!communityActionsEnabled || post.interested >= post.capacity} onClick={() => registerCommunityInterest(post.id)} type="button">{post.interested >= post.capacity ? 'Interest list full' : 'Request to connect — demo'}</button>
+                      <span>Personal planning action</span>
+                      <button disabled={!communityActionsEnabled} onClick={() => addCommunityActivityToPlan(post.id)} type="button">Add to my Today plan</button>
                     </div>
-                    <button className="report-action" disabled={flaggedItemIds.includes(post.id)} onClick={() => flagCommunityItem(post.id)} type="button">{flaggedItemIds.includes(post.id) ? 'Flagged locally' : 'Report concern — demo'}</button>
+                    <button className="report-action" disabled={flaggedItemIds.includes(post.id)} onClick={() => flagCommunityItem(post.id)} type="button">{flaggedItemIds.includes(post.id) ? 'Flagged in this tab' : 'Flag concern in this tab'}</button>
                   </article>
                 ))}
               </div>
               <section className="guidance-directory" aria-labelledby="guidance-heading">
                 <div>
-                  <p className="eyebrow">Guidance directory — prototype</p>
+                  <p className="eyebrow">Guidance directory — pilot design</p>
                   <h4 id="guidance-heading">Meet a guide or trainer at a public facility</h4>
                   <p>Volunteer guides can offer general encouragement. Personal trainers must show verified credentials and clear scope before a live listing can take enquiries. Neither role replaces healthcare advice.</p>
                 </div>
                 <div className="verification-workflow">
                   <div>
-                    <p className="eyebrow">Trainer verification — prototype</p>
-                    <h5>{trainerVerificationState === 'demo-review' ? 'Demo review started' : 'Before a trainer can go live'}</h5>
-                    <p>Real review would check identity, appropriate qualification, insurance where relevant, role boundaries, safeguarding and a moderation agreement. This prototype never asks for or stores those documents.</p>
+                    <p className="eyebrow">Trainer verification</p>
+                    <h5>{trainerVerificationState === 'demo-review' ? 'Local checklist prepared' : 'Before a trainer can go live'}</h5>
+                    <p><strong>Who verifies?</strong> A named city, NGO, or venue operator must appoint trained reviewers. Real review would check identity, appropriate qualification, insurance where relevant, role boundaries, safeguarding and a moderation agreement. This pilot never asks for or stores documents.</p>
                   </div>
-                  <button disabled={!communityActionsEnabled || trainerVerificationState === 'demo-review'} onClick={startTrainerVerificationDemo} type="button">{trainerVerificationState === 'demo-review' ? 'Demo review pending' : 'Start verification demo'}</button>
+                  <button disabled={!communityActionsEnabled || trainerVerificationState === 'demo-review'} onClick={startTrainerVerificationDemo} type="button">{trainerVerificationState === 'demo-review' ? 'Checklist prepared' : 'Prepare verification checklist'}</button>
                 </div>
                 <section className="volunteer-application" aria-labelledby="volunteer-application-heading">
                   <div>
-                    <p className="eyebrow">Volunteer application — prototype</p>
+                    <p className="eyebrow">Volunteer application</p>
                     <h5 id="volunteer-application-heading">Offer general movement support safely</h5>
                     <p>{volunteerApplicationState === 'draft-review' ? 'Draft review started. A live launch would need identity checks, safeguarding, role-boundary review, any required qualifications or insurance, a written volunteer agreement, moderation and venue approval before this person could be listed.' : 'A volunteer can offer general encouragement, warm-up or activity-company support—not healthcare, rehabilitation, diagnosis or individual exercise assessment.'}</p>
                   </div>
                   <label><input checked={volunteerSafetyAcknowledged} onChange={(event) => setVolunteerSafetyAcknowledged(event.target.checked)} type="checkbox" /> I understand this is a safety acknowledgement, not a liability waiver. I would not give medical advice, collect health details, arrange unsafe meetings, or appear publicly until a real service completes verification.</label>
-                  <button disabled={!communityActionsEnabled || volunteerApplicationState === 'draft-review'} onClick={startVolunteerApplicationDemo} type="button">{volunteerApplicationState === 'draft-review' ? 'Draft review pending' : 'Start volunteer application demo'}</button>
+                  <button disabled={!communityActionsEnabled || volunteerApplicationState === 'draft-review'} onClick={startVolunteerApplicationDemo} type="button">{volunteerApplicationState === 'draft-review' ? 'Application draft prepared' : 'Prepare application draft'}</button>
                 </section>
                 <div className="guidance-offers">
                   {guidanceOffersWithLocation.map((offer) => (
                     <article className="guidance-offer" key={offer.id}>
-                      <span className={`guidance-role ${offer.role}`}>{guidanceRoleLabel[offer.role]} · unverified demo</span>
+                      <span className={`guidance-role ${offer.role}`}>{guidanceRoleLabel[offer.role]} · not contactable</span>
                       <h5>{offer.title}</h5>
                       <p className="guidance-venue"><button onClick={() => selectLocation(offer.location)} type="button">{offer.location.name}</button> · {offer.availability}</p>
                       <dl className="guidance-details">
                         <div><dt>Focus</dt><dd>{offer.topics}</dd></div>
                         <div><dt>Role boundary</dt><dd>{offer.scope}</dd></div>
                       </dl>
-                      <p className="moderation-state">Moderation: {offer.moderation}</p>
-                      <div className="guidance-footer"><span>{offer.enquiries} demo enquiries</span><button disabled={!communityActionsEnabled} onClick={() => registerGuidanceInterest(offer.id)} type="button">Request details — demo</button></div>
-                      <button className="report-action" disabled={flaggedItemIds.includes(offer.id)} onClick={() => flagCommunityItem(offer.id)} type="button">{flaggedItemIds.includes(offer.id) ? 'Flagged locally' : 'Report concern — demo'}</button>
+                      <p className="moderation-state">Status: {offer.moderation}</p>
+                      <div className="guidance-footer"><span>Review before a future launch</span><button disabled={!communityActionsEnabled} onClick={() => registerGuidanceInterest(offer.id)} type="button">Review safety and place</button></div>
+                      <button className="report-action" disabled={flaggedItemIds.includes(offer.id)} onClick={() => flagCommunityItem(offer.id)} type="button">{flaggedItemIds.includes(offer.id) ? 'Flagged in this tab' : 'Flag concern in this tab'}</button>
                     </article>
                   ))}
                 </div>
@@ -1176,13 +1223,13 @@ function App() {
                       <option value="Court or pitch warm-up">Court or pitch warm-up</option>
                     </select>
                   </label>
-                  <button disabled={!communityActionsEnabled} type="submit">Add local listing draft</button>
+                  <button disabled={!communityActionsEnabled} type="submit">Save private listing draft</button>
                 </form>
               </section>
               <form className="community-request" onSubmit={(event) => { event.preventDefault(); createCommunityRequest() }}>
                 <div>
                   <p className="eyebrow">Try a request</p>
-                  <h4>Create a browser-only activity request</h4>
+                  <h4>Create a private activity-request draft</h4>
                   <p>It uses the currently selected location: <strong>{selectedLocation.name}</strong>.</p>
                 </div>
                 <label>
@@ -1205,7 +1252,7 @@ function App() {
                     <option value="Mobility warm-up">Mobility warm-up</option>
                   </select>
                 </label>
-                <button disabled={!communityActionsEnabled} type="submit">Add request to demo</button>
+                <button disabled={!communityActionsEnabled} type="submit">Save private request draft</button>
               </form>
               {(guidanceMessage || communityMessage) && <p className="community-message" role="status">{guidanceMessage || communityMessage}</p>}
               <p className="community-footnote">Do not arrange a first meeting in a secluded place or share an address, medical information, personal number, or live location. Check the facility’s access rules before travelling.</p>
@@ -1311,7 +1358,7 @@ function App() {
             />
             {userLocation && (
               <CircleMarker center={[userLocation.latitude, userLocation.longitude]} pathOptions={{ color: '#153f78', fillColor: '#4b9ed6', fillOpacity: 1, weight: 3 }} radius={10}>
-                <Tooltip direction="top" offset={[0, -8]}>Your entered location</Tooltip>
+                <Tooltip direction="top" offset={[0, -8]}>Your starting point</Tooltip>
               </CircleMarker>
             )}
             {route && <Polyline pathOptions={{ color: travelMode === 'running' ? '#db5b36' : '#245f50', weight: 5, opacity: 0.85 }} positions={route.coordinates} />}

@@ -8,15 +8,15 @@ The project is a HackYeah 2026 Sport & Healthcare submission in progress. It is 
 
 The app currently provides:
 
-- 22 Kraków pilot locations on an interactive map and an equivalent text alternative.
+- A public map and equivalent text alternative showing the 14 source-backed Kraków facility profiles; broader discovery records remain unpublished until their details are verified.
 - Source-linked profiles for outdoor gyms, outdoor courts/pitches, waterfront recreation and a documented park-sport hub at Park Lotników Polskich.
-- Distance sorting from a voluntarily entered location, walking/running route previews, and a public-transport handoff.
+- Nearby-place search from a neighbourhood, street or landmark, plus an optional browser device-location prompt; walking/running route previews and a public-transport handoff.
 - A concise activity filter that updates the map and text alternative together.
 - Non-medical activity discovery based on an age band, movement comfort, goal and optional broad wellbeing focus.
 - Venue-matched exercise ideas and a high-energy session builder for people who select energetic activity.
 - A category-based movement library with NHS-linked walking/running, expanded strength/bodyweight, mobility and balance resources.
-- An adult-only, browser-only community-board prototype for activity companions, team-sport player requests and a separate unverified volunteer-guide/personal-trainer directory; it does not expose live locations or connect people.
-- A visible three-step safety-first community-demo path: acknowledge rules, choose a public facility, then review a local draft rather than publish.
+- An adult-only, browser-only community-board pilot design for activity companions, team-sport player requests and a separate unverified volunteer-guide/personal-trainer directory; it never exposes live locations or connects people.
+- A visible three-step safety-first planning path: acknowledge rules, choose a public facility, then add a personal Today plan or save a private draft rather than publish.
 - A local safety layer for that prototype: adult and community-rule confirmation, draft/moderation states, report controls, and a no-document trainer-verification journey.
 - A private post-activity reflection and optional three-movement-day challenge; data stays in the browser unless the person explicitly opts into device storage.
 - Up to five device-local profiles for a person, someone they support, a child, or a household member; each keeps separate preferences, diary entries and challenge progress.

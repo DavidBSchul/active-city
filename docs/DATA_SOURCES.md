@@ -38,6 +38,10 @@ The app links each documented gym directly to its public source. Equipment can c
 - **Zalew Bagry** — the Municipal Greenery Authority lists two designated bathing areas. The app deliberately describes swimming as seasonal and limited to designated areas, with current safety information and signs taking priority.
 - **Park Zakrzówek** — the Municipal Greenery Authority records bathing infrastructure, prepared running paths with stretching elements and drinking fountains, and opportunities for cycling and climbing. The app keeps swimming conditional on the designated bathing area being open and keeps climbing/cycling subject to local rules and conditions.
 
+## Public display rule
+
+- The public map and text list show only locations whose profile has a linked public source and documented activity or equipment detail. Imported OpenStreetMap discovery records remain in the project’s internal data only until a later verification pass improves them.
+
 ## Data handling rule
 
 An imported map feature must not be presented as confirmation that the location is open, safe, step-free, free of charge, or suitable for a particular activity. A later verification pass will attach each facility to a specific source record and record its verification date.
@@ -72,11 +76,11 @@ An imported map feature must not be presented as confirmation that the location 
 
 ## Community activity-board prototype
 
-- The app’s activity board is deliberately a browser-only, non-networked prototype. Sample posts and newly created requests are not visible to other people; pressing interest does not send contact details, invite a person, or disclose live location.
+- The app’s activity board is deliberately a browser-only, non-networked pilot design. Illustrative posts and newly created requests are not visible to other people; a planning action can add a documented activity to the active profile’s Today plan or open the public facility profile, but cannot send contact details, invite a person, or disclose live location.
 - The design uses planned sessions at mapped public facilities rather than real-time check-ins. It deliberately excludes health information, direct contact details and location sharing. It is adult-only in this prototype; supporting younger people would require separate consent, safeguarding and supervision rules.
 - Volunteer coach and trainer entries are labelled as unverified examples. The guidance directory separates volunteer movement guides (general encouragement only) from personal trainers. A live service must provide identity/role verification, qualification and insurance checks where relevant, safeguarding policy, clear boundaries between general instruction and healthcare, moderation and reporting, and venue availability checks before connecting people.
 - The social rationale is grounded in the World Health Organization’s **Commission on Social Connection** (2025), which identifies social connection as a health and wellbeing concern. This is rationale for carefully designed group participation, not a claim that a particular meeting is safe or suitable for any individual.
-- The safety-onboarding, moderation states, local report controls and trainer-verification screen are interaction prototypes only. They do not create accounts, capture supporting documents, verify credentials, submit reports, publish listings or exchange messages. A production system would need independently designed privacy, moderation, safeguarding, incident-response and credential-verification processes before enabling those actions.
+- The safety-onboarding, moderation states, local report controls and trainer-verification screen are interaction prototypes only. They do not create accounts, capture supporting documents, verify credentials, submit reports, publish listings or exchange messages. A production system would need independently designed privacy, moderation, safeguarding, incident-response and credential-verification processes before enabling those actions. In particular, a named city, NGO or venue operator must appoint trained reviewers before a volunteer or trainer can be verified.
 - The volunteer-application screen is also a local interaction prototype. Its acknowledgement is expressly **not** a liability waiver: a live service would still need identity checks, safeguarding, role-boundary review, any required qualification/insurance checks, a written volunteer agreement, moderation and venue approval before publishing a volunteer.
 
 ## Routing and travel estimates
