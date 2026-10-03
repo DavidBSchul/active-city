@@ -18,6 +18,8 @@
 - Expanded activity results with venue-matched, specific exercise ideas: fast walking, run–walk intervals, short sprint efforts, standing press-ups, bodyweight squats, pull-ups, yoga/mobility and balance practice. Each card has an external NHS instructional link and a readiness/safety note; advanced options are limited to the energetic comfort setting.
 - Added a privacy-first post-activity wellbeing reflection and optional three-movement-day challenge. Check-ins stay in memory by default; browser-device retention is a user-controlled opt-in. The app prepares an on-screen summary for manual review and sharing only, and never transmits it to a provider.
 - Added a high-energy session builder within the activity results. It offers interval, bodyweight-circuit and court/pitch conditioning options, requires the user to select energetic movement comfort, checks the selected location’s documented activity type, and links to NHS technique and warm-up guidance.
+- Added a category-based movement library with additional NHS-linked balance, warm-up and posture resources: heel-to-toe walking, supported one-leg stands, controlled step-ups and simple grapevine steps sit alongside the existing walking, running, strength and mobility ideas.
+- Added an adult-only community activity-board prototype: browser-only interest markers, activity-companion requests, team-sport player requests and clearly unverified volunteer-guidance examples. It deliberately does not transmit data, expose live locations, collect contact details or connect users. The interface documents the verification, moderation, safeguarding and reporting requirements needed before a future live version.
 
 ### Next priority
 

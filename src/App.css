@@ -62,6 +62,45 @@ h2 { margin-bottom: 0; color: #183d35; font-family: Georgia, serif; font-size: c
 .intensive-result h5 { margin: 0 0 5px; color: #754017; font-size: 1rem; }
 .intensive-result ol { margin: 8px 0 10px; padding-left: 20px; }
 .intensive-result a { color: #974713; font-weight: 800; }
+.movement-library, .community-panel { margin: 0 0 16px; padding: 16px; border-radius: 12px; }
+.movement-library { border: 1px solid #d7d7bc; background: #fbfbf3; }
+.movement-library h3, .community-panel h3, .community-panel h4 { margin: 0; font-family: Georgia, serif; }
+.movement-library h3 { color: #53502b; font-size: 1.3rem; }
+.movement-library > div:first-child > p:last-child, .community-panel > div:first-child > p:last-child { max-width: 760px; margin: 7px 0 0; font-size: .88rem; line-height: 1.45; }
+.movement-library > div:first-child > p:last-child { color: #5c5c46; }
+.movement-filter { display: block; max-width: 310px; margin-top: 14px; color: #53502b; font-size: .8rem; font-weight: 800; }
+.movement-filter select, .community-request select { display: block; box-sizing: border-box; width: 100%; min-height: 38px; margin-top: 5px; padding: 7px 9px; border: 1px solid #bbb99c; border-radius: 7px; color: #3f3f2d; background: #fff; font: inherit; }
+.movement-library-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 13px; }
+.movement-library-card { padding: 13px; border: 1px solid #dddbc2; border-radius: 9px; background: #fff; }
+.movement-library-card h4 { margin: 0 0 6px; color: #53502b; font-size: .98rem; }
+.movement-library-card p { margin: 0 0 8px; color: #59594b; font-size: .82rem; line-height: 1.42; }
+.movement-library-card .movement-safety { color: #785521; }
+.movement-library-card a { color: #605c21; font-size: .82rem; font-weight: 800; }
+.community-panel { border: 1px solid #bcd5e0; background: #f5fafc; }
+.community-panel h3, .community-panel h4 { color: #264a5e; }
+.community-panel > div:first-child > p:last-child { color: #405d6d; }
+.community-safety-note, .community-adult-note { margin: 14px 0 0; padding: 11px 12px; border-radius: 8px; color: #365564; background: #eaf4f8; font-size: .84rem; line-height: 1.45; }
+.community-adult-note { color: #624b21; background: #fff4dd; }
+.community-posts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 13px; }
+.community-post { display: flex; flex-direction: column; align-items: flex-start; padding: 13px; border: 1px solid #c8dce5; border-radius: 9px; background: #fff; }
+.community-kind { display: inline-block; padding: 3px 7px; border-radius: 999px; font-size: .71rem; font-weight: 800; }
+.community-kind.activity { color: #245946; background: #e4f2ea; }
+.community-kind.team { color: #844619; background: #fff0e4; }
+.community-kind.guidance { color: #50406d; background: #eee8f7; }
+.community-post h4 { margin: 9px 0 5px; font-size: .99rem; }
+.community-post p { margin: 0 0 8px; color: #486474; font-size: .82rem; line-height: 1.42; }
+.community-post .community-location { color: #2e586d; font-weight: 700; }
+.community-location button { padding: 0; border: 0; color: #1e637f; background: none; cursor: pointer; font: inherit; font-weight: 800; text-decoration: underline; }
+.community-post-footer { display: flex; justify-content: space-between; align-items: center; gap: 8px; width: 100%; margin-top: auto; padding-top: 5px; color: #5d7580; font-size: .75rem; font-weight: 700; }
+.community-post-footer button, .community-request button { min-height: 34px; padding: 7px 9px; border: 0; border-radius: 7px; color: #fff; background: #26718d; cursor: pointer; font-size: .78rem; font-weight: 800; }
+.community-post-footer button:hover, .community-request button:hover { background: #1a5971; }
+.community-post-footer button:disabled { cursor: not-allowed; background: #91a8b1; }
+.community-request { display: grid; grid-template-columns: minmax(190px, 1.2fr) minmax(150px, .7fr) minmax(150px, .7fr) auto; gap: 12px; align-items: end; margin-top: 14px; padding: 13px; border: 1px dashed #a9c7d3; border-radius: 9px; background: #fff; }
+.community-request h4 { font-size: 1rem; }
+.community-request p { margin: 5px 0 0; color: #486474; font-size: .8rem; line-height: 1.4; }
+.community-request label { color: #31586a; font-size: .8rem; font-weight: 800; }
+.community-message { margin: 11px 0 0; color: #21586f; font-size: .84rem; font-weight: 700; line-height: 1.4; }
+.community-footnote { margin: 12px 0 0; color: #6d5929; font-size: .8rem; line-height: 1.45; }
 .wellbeing-panel { margin: 0 0 16px; padding: 16px; border: 1px solid #d8cce4; border-radius: 12px; background: #faf7fc; }
 .wellbeing-panel h3, .wellbeing-panel h4 { margin: 0; color: #403153; font-family: Georgia, serif; }
 .wellbeing-panel h3 { font-size: 1.3rem; }
@@ -121,4 +160,4 @@ dd { margin: 5px 0 0; line-height: 1.45; }
 .status { display: inline-block; padding: 3px 8px; border-radius: 999px; background: #fff2df; color: #865113; font-size: .85rem; font-weight: 700; }
 .source-note a { color: #245f50; font-weight: 800; }
 .safety-note { margin-top: 24px; padding: 16px 18px; border-left: 5px solid #ec8d30; background: #fff2df; color: #5e471e; line-height: 1.55; }
-@media (max-width: 720px) { main { padding: 20px 16px 40px; } .discovery, .location-list, .profile { padding: 16px; } .content-grid { grid-template-columns: 1fr; } .map-frame { height: 52vh; min-height: 290px; } dl { grid-template-columns: 1fr; } .distance-form { grid-template-columns: 1fr; } .distance-form button { width: 100%; } .preference-form, .recommendation-cards, .exercise-cards, .checkin-form, .challenge-card, .intensive-controls, .route-panel { grid-template-columns: 1fr; } .checkin-form .save-choice { grid-column: auto; } .preference-form button, .checkin-form button, .intensive-controls button, .route-action { width: 100%; } }
+@media (max-width: 720px) { main { padding: 20px 16px 40px; } .discovery, .location-list, .profile { padding: 16px; } .content-grid { grid-template-columns: 1fr; } .map-frame { height: 52vh; min-height: 290px; } dl { grid-template-columns: 1fr; } .distance-form { grid-template-columns: 1fr; } .distance-form button { width: 100%; } .preference-form, .recommendation-cards, .exercise-cards, .movement-library-cards, .community-posts, .community-request, .checkin-form, .challenge-card, .intensive-controls, .route-panel { grid-template-columns: 1fr; } .checkin-form .save-choice { grid-column: auto; } .preference-form button, .checkin-form button, .intensive-controls button, .community-request button, .route-action { width: 100%; } }

@@ -15,9 +15,39 @@ type WellbeingFocus = 'general' | 'mood' | 'heart' | 'mobility' | 'strength-bone
 type PostActivityFeeling = 'energised' | 'calmer' | 'about-the-same' | 'tired' | 'drained'
 type WellbeingCheckIn = { id: string; date: string; locationName: string; feeling: PostActivityFeeling; note: string }
 type IntensiveSession = 'intervals' | 'strength-circuit' | 'court-conditioning'
+type ExerciseCategory = 'all' | 'walk-run' | 'strength' | 'mobility-balance' | 'team'
+type CommunityPostKind = 'activity' | 'team' | 'guidance'
+type CommunityPost = { id: string; kind: CommunityPostKind; activity: string; locationId: string; timing: string; capacity: number; interested: number; note: string }
 
 const WELLBEING_STORAGE_KEY = 'active-city-wellbeing-checkins-v1'
 const WELLBEING_CONSENT_KEY = 'active-city-wellbeing-save-on-device-v1'
+
+const communityPostLabel: Record<CommunityPostKind, string> = {
+  activity: 'Move together',
+  team: 'Need players',
+  guidance: 'Volunteer guidance offer',
+}
+
+const communitySeedPosts: CommunityPost[] = [
+  { id: 'walk-bagry', kind: 'activity', activity: 'Easy waterfront walk', locationId: 'bagry', timing: 'A planned daytime session', capacity: 6, interested: 2, note: 'A low-pressure walk around the designated public paths.' },
+  { id: 'basketball-olszanica', kind: 'team', activity: 'Basketball — need two more players', locationId: 'olszanica-outdoor-gym', timing: 'A planned evening session', capacity: 6, interested: 4, note: 'Bring a ball if you can; check court availability before travel.' },
+  { id: 'mobility-klinowka', kind: 'guidance', activity: 'Outdoor mobility and warm-up basics', locationId: 'klinowka-parkour', timing: 'A planned weekend session', capacity: 8, interested: 3, note: 'Example volunteer listing. Any live service would verify the organiser and clearly state qualifications.' },
+]
+
+const exerciseCategoryLabel: Record<ExerciseCategory, string> = {
+  all: 'All movement ideas',
+  'walk-run': 'Walking and running',
+  strength: 'Strength and bodyweight',
+  'mobility-balance': 'Mobility and balance',
+  team: 'Court and pitch preparation',
+}
+
+const exerciseCategoryIds: Record<Exclude<ExerciseCategory, 'all'>, string[]> = {
+  'walk-run': ['fast-walk', 'run-walk', 'short-sprints', 'warm-up-posture'],
+  strength: ['standing-press-up', 'bodyweight-squat', 'pull-up'],
+  'mobility-balance': ['yoga-mobility', 'sideways-walk', 'heel-to-toe', 'one-leg-stand', 'step-up', 'grapevine'],
+  team: ['short-sprints', 'warm-up-posture', 'bodyweight-squat'],
+}
 
 const activityMatches: Record<ActivityGoal, Record<MovementComfort, string[]>> = {
   everyday: {
@@ -148,6 +178,21 @@ const exerciseLibrary: ExerciseIdea[] = [
   {
     id: 'sideways-walk', name: 'Sideways walking and balance practice', summary: 'A gentle controlled-movement option for an everyday mobility focus.', safetyNote: 'Use a clear surface and stay near a stable support if you need one; this is not a substitute for falls assessment or rehabilitation.', comfort: ['gentle', 'steady'], goals: ['everyday'], focuses: ['mobility'], locationActivities: ['Walking', 'Gentle mobility', 'Outdoor movement'], instructionUrl: 'https://www.nhs.uk/live-well/exercise/balance-exercises/', instructionLabel: 'Open NHS illustrated balance guide',
   },
+  {
+    id: 'heel-to-toe', name: 'Heel-to-toe walk', summary: 'A slow, controlled balance drill that can fit a calm walking routine.', safetyNote: 'Use a clear, level surface and stay near a stable support if you need one. Start small and build gradually.', comfort: ['gentle', 'steady'], goals: ['everyday'], focuses: ['mobility'], locationActivities: ['Walking', 'Gentle mobility', 'Outdoor movement'], instructionUrl: 'https://www.nhs.uk/live-well/exercise/balance-exercises/', instructionLabel: 'Open NHS heel-to-toe guide',
+  },
+  {
+    id: 'one-leg-stand', name: 'Supported one-leg stand', summary: 'A controlled balance practice for a clear space near a stable support.', safetyNote: 'Keep a wall or other stable support within reach; do not use this as a response to a recent fall or unsteadiness without individual advice.', comfort: ['gentle', 'steady'], goals: ['everyday'], focuses: ['mobility'], locationActivities: ['Gentle mobility', 'Outdoor movement', 'Walking'], instructionUrl: 'https://www.nhs.uk/live-well/exercise/balance-exercises/', instructionLabel: 'Open NHS one-leg-stand guide',
+  },
+  {
+    id: 'step-up', name: 'Controlled step-up', summary: 'A lower-body and balance movement for a secure step or low platform with support nearby.', safetyNote: 'Only use a stable step or platform that is intended for use; avoid damaged or wet surfaces and move slowly.', comfort: ['gentle', 'steady'], goals: ['everyday', 'strength'], focuses: ['mobility', 'strength-bone'], locationActivities: ['Outdoor fitness', 'Outdoor movement', 'Bodyweight strength'], instructionUrl: 'https://www.nhs.uk/live-well/exercise/balance-exercises/', instructionLabel: 'Open NHS step-up guide',
+  },
+  {
+    id: 'grapevine', name: 'Simple grapevine steps', summary: 'A sideways stepping pattern for coordination and gentle movement variety.', safetyNote: 'Use a dry, clear surface and a smaller step pattern if you are new to it; keep a stable support close if needed.', comfort: ['gentle', 'steady'], goals: ['everyday'], focuses: ['mobility', 'mood'], locationActivities: ['Walking', 'Gentle mobility', 'Outdoor movement'], instructionUrl: 'https://www.nhs.uk/live-well/exercise/balance-exercises/', instructionLabel: 'Open NHS grapevine guide',
+  },
+  {
+    id: 'warm-up-posture', name: 'Warm-up and movement posture', summary: 'A preparation routine before a faster walk, run, court session or bodyweight workout.', safetyNote: 'Warm up before more demanding activity and stop if pain or illness occurs. This is general fitness guidance, not treatment advice.', comfort: ['gentle', 'steady', 'energetic'], goals: ['everyday', 'endurance', 'strength', 'team'], focuses: ['mood', 'heart', 'mobility', 'strength-bone'], locationActivities: ['Walking', 'Running', 'Football', 'Basketball', 'Volleyball', 'Calisthenics', 'Strength training'], instructionUrl: 'https://www.nhs.uk/live-well/exercise/strength-and-flex-exercise-plan-how-to-videos/', instructionLabel: 'Open NHS warm-up and posture videos',
+  },
 ]
 
 const intensiveSessions: Record<IntensiveSession, { name: string; summary: string; requiredActivities: string[]; steps: string[]; instructionUrl: string; instructionLabel: string }> = {
@@ -227,6 +272,11 @@ function App() {
   const [showPrivateSummary, setShowPrivateSummary] = useState(false)
   const [intensiveSession, setIntensiveSession] = useState<IntensiveSession>('intervals')
   const [showIntensivePlan, setShowIntensivePlan] = useState(false)
+  const [exerciseCategory, setExerciseCategory] = useState<ExerciseCategory>('all')
+  const [communityPosts, setCommunityPosts] = useState<CommunityPost[]>(communitySeedPosts)
+  const [communityKind, setCommunityKind] = useState<CommunityPostKind>('activity')
+  const [communityActivity, setCommunityActivity] = useState('Walking')
+  const [communityMessage, setCommunityMessage] = useState('')
   const selectedLocation = locations.find((location) => location.id === selectedId) ?? locations[0]
   const visibleLocations = useMemo(() => {
     const withDistance = locations.map((location) => ({
@@ -257,6 +307,15 @@ function App() {
       return location ? [{ exercise, location }] : []
     }).slice(0, 4)
   }, [activityGoal, ageRange, movementComfort, visibleLocations, wellbeingFocus])
+  const movementLibrary = useMemo(() => {
+    const categoryIds = exerciseCategory === 'all' ? undefined : exerciseCategoryIds[exerciseCategory]
+    return exerciseLibrary.filter((exercise) => !categoryIds || categoryIds.includes(exercise.id)).slice(0, 6)
+  }, [exerciseCategory])
+  const adultCommunityAccess = !['0-4', '5-8', '9-12', '13-15', '16-17'].includes(ageRange)
+  const communityPostsWithLocation = useMemo(() => communityPosts.map((post) => ({
+    ...post,
+    location: locations.find((location) => location.id === post.locationId) ?? locations[0],
+  })), [communityPosts])
   const activeChallengeDays = useMemo(() => {
     const today = new Date(`${todayInKrakow()}T00:00:00`)
     const activeDays = new Set<string>()
@@ -393,6 +452,35 @@ function App() {
     } catch {
       // The browser tab has still been cleared.
     }
+  }
+
+  const registerCommunityInterest = (postId: string) => {
+    setCommunityPosts((current) => current.map((post) => post.id === postId && post.interested < post.capacity
+      ? { ...post, interested: post.interested + 1 }
+      : post))
+    setCommunityMessage('Interest saved in this browser demo only. No contact details, location, or health information were shared.')
+  }
+
+  const createCommunityRequest = () => {
+    const activityLabel = communityActivity
+    const description = communityKind === 'team'
+      ? `${activityLabel} — need players`
+      : communityKind === 'guidance'
+        ? `${activityLabel} guidance offer`
+        : `${activityLabel} activity request`
+    setCommunityPosts((current) => [{
+      id: `community-${Date.now()}`,
+      kind: communityKind,
+      activity: description,
+      locationId: selectedLocation.id,
+      timing: 'A future planned session',
+      capacity: communityKind === 'team' ? 6 : 8,
+      interested: 1,
+      note: communityKind === 'guidance'
+        ? 'Demo guidance offer. A live service must verify credentials, role boundaries and safeguarding before publishing.'
+        : 'Demo request. Confirm venue availability and agree details through a moderated service before meeting.',
+    }, ...current])
+    setCommunityMessage('Your request has been added to this browser-only demo. It is not visible to other people and does not send an invitation.')
   }
 
   const publicTransportUrl = userLocation
@@ -567,6 +655,91 @@ function App() {
                 <p className="no-recommendations">{wellbeingFocus === 'condition' ? 'No condition-specific activity recommendation is shown. The app does not assess symptoms, injuries, treatment or recovery needs.' : 'No suitable place match is available in this pilot for those choices yet. Try another movement-comfort level or browse the map; this does not mean an activity is unsuitable for you.'}</p>
               )}
             </div>
+          )}
+        </section>
+
+        <section className="movement-library" aria-labelledby="movement-library-heading">
+          <div>
+            <p className="eyebrow">Build your activity menu</p>
+            <h3 id="movement-library-heading">Explore targeted movement ideas</h3>
+            <p>Choose a category to see specific, source-linked ideas. These are general learning resources—not a diagnosis, prescription or guarantee that a venue is suitable.</p>
+          </div>
+          <label className="movement-filter">
+            Exercise category
+            <select onChange={(event) => setExerciseCategory(event.target.value as ExerciseCategory)} value={exerciseCategory}>
+              {Object.entries(exerciseCategoryLabel).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+            </select>
+          </label>
+          <div className="movement-library-cards">
+            {movementLibrary.map((exercise) => (
+              <article className="movement-library-card" key={exercise.id}>
+                <h4>{exercise.name}</h4>
+                <p>{exercise.summary}</p>
+                <p className="movement-safety">{exercise.safetyNote}</p>
+                <a href={exercise.instructionUrl} rel="noreferrer" target="_blank">{exercise.instructionLabel} ↗</a>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="community-panel" aria-labelledby="community-heading">
+          <div>
+            <p className="eyebrow">Community layer — prototype</p>
+            <h3 id="community-heading">Plan an activity together</h3>
+            <p>Group activity can be motivating, but the app does not broadcast your live location. This board uses planned sessions at public facilities, never health details or direct contact information.</p>
+          </div>
+          {!adultCommunityAccess ? (
+            <p className="community-adult-note">Community coordination is designed as an adult-only feature. A live version for young people would need separate consent, safeguarding and supervision arrangements.</p>
+          ) : (
+            <>
+              <div className="community-safety-note">
+                <strong>Prototype boundaries:</strong> examples and new requests exist only in this browser tab. A real service would need account protection, moderation and reporting, venue rules, and verified coach/trainer roles before it could connect people.
+              </div>
+              <div className="community-posts" aria-live="polite">
+                {communityPostsWithLocation.map((post) => (
+                  <article className="community-post" key={post.id}>
+                    <span className={`community-kind ${post.kind}`}>{communityPostLabel[post.kind]}</span>
+                    <h4>{post.activity}</h4>
+                    <p className="community-location"><button onClick={() => selectLocation(post.location)} type="button">{post.location.name}</button> · {post.timing}</p>
+                    <p>{post.note}</p>
+                    <div className="community-post-footer">
+                      <span>{post.interested} of {post.capacity} places interested</span>
+                      <button disabled={post.interested >= post.capacity} onClick={() => registerCommunityInterest(post.id)} type="button">{post.interested >= post.capacity ? 'Interest list full' : 'I’m interested — demo'}</button>
+                    </div>
+                  </article>
+                ))}
+              </div>
+              <form className="community-request" onSubmit={(event) => { event.preventDefault(); createCommunityRequest() }}>
+                <div>
+                  <p className="eyebrow">Try a request</p>
+                  <h4>Create a browser-only activity request</h4>
+                  <p>It uses the currently selected location: <strong>{selectedLocation.name}</strong>.</p>
+                </div>
+                <label>
+                  Request type
+                  <select onChange={(event) => setCommunityKind(event.target.value as CommunityPostKind)} value={communityKind}>
+                    <option value="activity">Find activity companions</option>
+                    <option value="team">Request players for a team sport</option>
+                    <option value="guidance">Offer volunteer movement guidance</option>
+                  </select>
+                </label>
+                <label>
+                  Activity
+                  <select onChange={(event) => setCommunityActivity(event.target.value)} value={communityActivity}>
+                    <option value="Walking">Walking</option>
+                    <option value="Running">Running</option>
+                    <option value="Basketball">Basketball</option>
+                    <option value="Volleyball">Volleyball</option>
+                    <option value="Football">Football</option>
+                    <option value="Bodyweight strength">Bodyweight strength</option>
+                    <option value="Mobility warm-up">Mobility warm-up</option>
+                  </select>
+                </label>
+                <button type="submit">Add request to demo</button>
+              </form>
+              {communityMessage && <p className="community-message" role="status">{communityMessage}</p>}
+              <p className="community-footnote">Do not arrange a first meeting in a secluded place or share an address, medical information, personal number, or live location. Check the facility’s access rules before travelling.</p>
+            </>
           )}
         </section>
 
