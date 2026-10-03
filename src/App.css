@@ -174,6 +174,13 @@ h2 { margin-bottom: 0; color: #183d35; font-family: Georgia, serif; font-size: c
 .community-panel > div:first-child > p:last-child { color: #405d6d; }
 .community-safety-note, .community-adult-note { margin: 14px 0 0; padding: 11px 12px; border-radius: 8px; color: #365564; background: #eaf4f8; font-size: .84rem; line-height: 1.45; }
 .community-adult-note { color: #624b21; background: #fff4dd; }
+.community-details { margin-top: 10px; border: 1px solid #c8dce5; border-radius: 8px; background: #fff; }
+.community-details summary { padding: 10px 12px; color: #31586a; cursor: pointer; font-size: .82rem; font-weight: 800; }
+.community-details summary:hover { color: #1c607c; }
+.community-details[open] summary { border-bottom: 1px solid #dceaf0; }
+.community-details .community-demo-path, .community-details .guidance-directory { margin-left: 12px; margin-right: 12px; }
+.community-guidance { margin-top: 14px; }
+.community-request-details .community-request { margin: 0 12px 12px; }
 .community-demo-path { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 13px 0 0; padding: 0; list-style: none; counter-reset: community-demo; }
 .community-demo-path li { position: relative; min-height: 54px; padding: 11px 11px 11px 40px; border: 1px solid #c8dce5; border-radius: 8px; color: #405d6d; background: #fff; font-size: .8rem; line-height: 1.42; }
 .community-demo-path li::before { position: absolute; top: 11px; left: 11px; display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; color: #fff; background: #26718d; content: counter(community-demo); counter-increment: community-demo; font-size: .72rem; font-weight: 800; }

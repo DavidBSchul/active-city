@@ -1372,30 +1372,34 @@ function App() {
         <section className="community-panel" aria-labelledby="community-heading" hidden={activeView !== 'community'}>
           <div>
             <p className="eyebrow">Move with others</p>
-            <h3 id="community-heading">A little company can help</h3>
-            <p>Sometimes it is easier to show up with other people. For now, this space lets you explore ideas at public places and add them to your own plan—it does not share your location, health details or contact information.</p>
+            <h3 id="community-heading">Move with other people</h3>
+            <p>Browse a few public-place ideas, then add one to your own plan. This is a private demo: it never contacts anyone or shares your details.</p>
           </div>
           {!adultCommunityAccess ? (
             <p className="community-adult-note">Community coordination is designed as an adult-only feature. A live version for young people would need separate consent, safeguarding and supervision arrangements.</p>
           ) : (
             <>
               <div className="community-safety-note">
-                <strong>For now:</strong> you can add an idea to your own plan or look at the place it is linked to. It will not contact anyone for you. A future live service would need the right safeguarding, moderation, venue rules and verified coach or trainer roles in place first.
+                <strong>Private demo.</strong> Nothing here creates a group, shares a location or sends a message.
               </div>
-              <ol className="community-demo-path" aria-label="How the community planning journey works">
-                <li><strong>Keep it safe:</strong> confirm this is an adult profile and agree to the community rules.</li>
-                <li><strong>Choose a public place:</strong> add an idea to your plan or have a look at the place first.</li>
-                <li><strong>Keep it private:</strong> anything you create stays as a draft in this browser tab.</li>
-              </ol>
+              <details className="community-details">
+                <summary>How a live community service would stay safe</summary>
+                <ol className="community-demo-path" aria-label="How the community planning journey works">
+                  <li>Adult-only community access and clear rules.</li>
+                  <li>Public venues, moderation and venue approval.</li>
+                  <li>Private drafts until a trusted local operator is ready.</li>
+                </ol>
+                <p className="community-footnote">For a future live service: meet only in public places, and never share an address, medical information or a live location.</p>
+              </details>
               <form className="community-access-form" onSubmit={(event) => { event.preventDefault(); enableCommunityActions() }}>
                 <div>
-                  <p className="eyebrow">A quick safety check</p>
-                  <h4>Unlock planning ideas</h4>
-                  <p>This does not make an account or send anything. It simply opens the planning options in this tab.</p>
+                  <p className="eyebrow">Before you explore</p>
+                  <h4>Use the demo safely</h4>
+                  <p>No account. Nothing is sent.</p>
                 </div>
                 <label><input checked={adultDeclaration} onChange={(event) => setAdultDeclaration(event.target.checked)} type="checkbox" /> I confirm this is an 18+ community profile.</label>
-                <label><input checked={communityRulesAccepted} onChange={(event) => setCommunityRulesAccepted(event.target.checked)} type="checkbox" /> I will not share health details, a home address, a live location, or arrange unsafe meetings.</label>
-                <button type="submit">Enable local planning</button>
+                <label><input checked={communityRulesAccepted} onChange={(event) => setCommunityRulesAccepted(event.target.checked)} type="checkbox" /> I will keep personal details and live locations private.</label>
+                <button type="submit">Use planning tools</button>
               </form>
               {communityAccessMessage && <p className="community-access-message" role="status">{communityAccessMessage}</p>}
               <div className="community-posts" aria-live="polite">
@@ -1404,27 +1408,28 @@ function App() {
                     <span className={`community-kind ${post.kind}`}>{communityPostLabel[post.kind]}</span>
                     <h4>{post.activity}</h4>
                     <p className="community-location"><button onClick={() => selectLocation(post.location)} type="button">{post.location.name}</button> · {post.timing}</p>
-                    <p>{post.note}</p>
-                    <p className="moderation-state">Status: {post.moderation}</p>
+                    <p className="moderation-state">Sample only · no contact</p>
                     <div className="community-post-footer">
-                      <span>Personal planning action</span>
-                      <button disabled={!communityActionsEnabled} onClick={() => addCommunityActivityToPlan(post.id)} type="button">Add to my Today plan</button>
+                      <span>Plan it for yourself</span>
+                      <button disabled={!communityActionsEnabled} onClick={() => addCommunityActivityToPlan(post.id)} type="button">Add to Today</button>
                     </div>
                     <button className="report-action" disabled={flaggedItemIds.includes(post.id)} onClick={() => flagCommunityItem(post.id)} type="button">{flaggedItemIds.includes(post.id) ? 'Flagged in this tab' : 'Flag concern in this tab'}</button>
                   </article>
                 ))}
               </div>
+              <details className="community-details community-guidance">
+                <summary>Guides and trainers — future pilot</summary>
               <section className="guidance-directory" aria-labelledby="guidance-heading">
                 <div>
                   <p className="eyebrow">Guides and trainers</p>
                   <h4 id="guidance-heading">Getting a little extra support</h4>
-                  <p>A volunteer could offer general encouragement. A trainer would need proper checks before people could contact them here. Neither replaces healthcare advice.</p>
+                  <p>Volunteer encouragement and trainer support would need local checks before anyone could be contacted. Neither replaces healthcare advice.</p>
                 </div>
                 <div className="verification-workflow">
                   <div>
                     <p className="eyebrow">Trainer verification</p>
                     <h5>{trainerVerificationState === 'demo-review' ? 'Local checklist prepared' : 'Before a trainer can go live'}</h5>
-                    <p><strong>Who verifies?</strong> A named city, NGO, or venue operator must appoint trained reviewers. Real review would check identity, appropriate qualification, insurance where relevant, role boundaries, safeguarding and a moderation agreement. This pilot never asks for or stores documents.</p>
+                    <p>A city, NGO or venue operator would appoint reviewers. This pilot does not collect documents or verify anyone.</p>
                   </div>
                   <button disabled={!communityActionsEnabled || trainerVerificationState === 'demo-review'} onClick={startTrainerVerificationDemo} type="button">{trainerVerificationState === 'demo-review' ? 'Checklist prepared' : 'Prepare verification checklist'}</button>
                 </div>
@@ -1432,9 +1437,9 @@ function App() {
                   <div>
                     <p className="eyebrow">Volunteer application</p>
                     <h5 id="volunteer-application-heading">Offer general movement support safely</h5>
-                    <p>{volunteerApplicationState === 'draft-review' ? 'Draft review started. A live launch would need identity checks, safeguarding, role-boundary review, any required qualifications or insurance, a written volunteer agreement, moderation and venue approval before this person could be listed.' : 'A volunteer can offer general encouragement, warm-up or activity-company support—not healthcare, rehabilitation, diagnosis or individual exercise assessment.'}</p>
+                    <p>{volunteerApplicationState === 'draft-review' ? 'Draft review is ready. A real service would need identity, safeguarding, role and venue checks before listing anyone.' : 'Volunteers can offer general encouragement, not healthcare, rehabilitation or individual assessment.'}</p>
                   </div>
-                  <label><input checked={volunteerSafetyAcknowledged} onChange={(event) => setVolunteerSafetyAcknowledged(event.target.checked)} type="checkbox" /> I understand this is a safety acknowledgement, not a liability waiver. I would not give medical advice, collect health details, arrange unsafe meetings, or appear publicly until a real service completes verification.</label>
+                  <label><input checked={volunteerSafetyAcknowledged} onChange={(event) => setVolunteerSafetyAcknowledged(event.target.checked)} type="checkbox" /> I understand this is a safety check, not a liability waiver. I would not give medical advice, collect health details or appear publicly before verification.</label>
                   <button disabled={!communityActionsEnabled || volunteerApplicationState === 'draft-review'} onClick={startVolunteerApplicationDemo} type="button">{volunteerApplicationState === 'draft-review' ? 'Application draft prepared' : 'Prepare application draft'}</button>
                 </section>
                 <div className="guidance-offers">
@@ -1478,36 +1483,39 @@ function App() {
                   <button disabled={!communityActionsEnabled} type="submit">Save private listing draft</button>
                 </form>
               </section>
-              <form className="community-request" onSubmit={(event) => { event.preventDefault(); createCommunityRequest() }}>
-                <div>
-                  <p className="eyebrow">Try a request</p>
-                  <h4>Create a private activity-request draft</h4>
-                  <p>It uses the currently selected location: <strong>{selectedLocation.name}</strong>.</p>
-                </div>
-                <label>
-                  Request type
-                  <select onChange={(event) => setCommunityKind(event.target.value as CommunityPostKind)} value={communityKind}>
-                    <option value="activity">Find activity companions</option>
-                    <option value="team">Request players for a team sport</option>
-                    <option value="guidance">Offer volunteer movement guidance</option>
-                  </select>
-                </label>
-                <label>
-                  Activity
-                  <select onChange={(event) => setCommunityActivity(event.target.value)} value={communityActivity}>
-                    <option value="Walking">Walking</option>
-                    <option value="Running">Running</option>
-                    <option value="Basketball">Basketball</option>
-                    <option value="Volleyball">Volleyball</option>
-                    <option value="Football">Football</option>
-                    <option value="Bodyweight strength">Bodyweight strength</option>
-                    <option value="Mobility warm-up">Mobility warm-up</option>
-                  </select>
-                </label>
-                <button disabled={!communityActionsEnabled} type="submit">Save private request draft</button>
-              </form>
+              </details>
+              <details className="community-details community-request-details">
+                <summary>Create a private activity request</summary>
+                <form className="community-request" onSubmit={(event) => { event.preventDefault(); createCommunityRequest() }}>
+                  <div>
+                    <p className="eyebrow">Try a request</p>
+                    <h4>Plan a walk, game or session</h4>
+                    <p>Uses: <strong>{selectedLocation.name}</strong>.</p>
+                  </div>
+                  <label>
+                    Request type
+                    <select onChange={(event) => setCommunityKind(event.target.value as CommunityPostKind)} value={communityKind}>
+                      <option value="activity">Find activity companions</option>
+                      <option value="team">Request players for a team sport</option>
+                      <option value="guidance">Offer volunteer movement guidance</option>
+                    </select>
+                  </label>
+                  <label>
+                    Activity
+                    <select onChange={(event) => setCommunityActivity(event.target.value)} value={communityActivity}>
+                      <option value="Walking">Walking</option>
+                      <option value="Running">Running</option>
+                      <option value="Basketball">Basketball</option>
+                      <option value="Volleyball">Volleyball</option>
+                      <option value="Football">Football</option>
+                      <option value="Bodyweight strength">Bodyweight strength</option>
+                      <option value="Mobility warm-up">Mobility warm-up</option>
+                    </select>
+                  </label>
+                  <button disabled={!communityActionsEnabled} type="submit">Save private draft</button>
+                </form>
+              </details>
               {(guidanceMessage || communityMessage) && <p className="community-message" role="status">{guidanceMessage || communityMessage}</p>}
-              <p className="community-footnote">Do not arrange a first meeting in a secluded place or share an address, medical information, personal number, or live location. Check the facility’s access rules before travelling.</p>
             </>
           )}
         </section>
