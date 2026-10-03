@@ -23,6 +23,7 @@
 - Expanded the strength/bodyweight category with NHS-linked sit-to-stands, calf raises, supported sideways leg lifts and supported rear leg extensions, all paired with clear surface, support and stop-if-unwell boundaries.
 - Developed the volunteer/trainer concept into a separate guidance-directory prototype. It distinguishes a volunteer movement guide from a personal trainer, displays role boundaries, activity focus, planned venue and availability, and makes every interest or new-offer action browser-only until a live service can verify and moderate it.
 - Added the next safety-layer prototype: a local adult/community-rules setup, demo-only connection requests, visible sample-versus-draft moderation states, local report controls, and a trainer verification journey that lists the checks a real service must complete while deliberately collecting no credentials or documents.
+- Added an original AI-generated Kraków riverside hero illustration and refreshed the visual direction around its lake-blue, deep-navy, leaf-green and warm-amber palette. The illustration is documented as generated/referenced visual material in `docs/DATA_SOURCES.md`.
 
 ### Next priority
 

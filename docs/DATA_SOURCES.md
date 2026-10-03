@@ -5,6 +5,10 @@
 - **OpenStreetMap contributors** — map tiles and initial place discovery records. Licence: Open Database Licence (ODbL). Attribution is shown beside the map and links to the OpenStreetMap copyright page.
 - **Status:** imported pilot records are not field-verified. Equipment, access, accessibility, opening hours, and cost are recorded as unknown unless explicitly supported.
 
+## Visual asset provenance
+
+- **`public/active-city-hero.png`** — a new AI-generated editorial illustration for the app’s hero area, created on 2026-10-03 with the built-in image-generation workflow. It uses a user-supplied AI illustration only as visual-direction reference (Kraków riverside, blue/green palette and outdoor movement); it does not reuse that image or its generated lettering/logo. The final asset contains no text, logo or branding. Disclose this generated asset in the HackYeah submission/presentation if required by the competition rules.
+
 ## Documented outdoor gyms
 
 - **Olszanica outdoor gym, ul. Grzegorza Korzeniaka 20** — Kraków’s official city service reports six strength-training devices, one double cardio device, and two calisthenics devices, plus benches and a rules board. Source published 2025-08-15.

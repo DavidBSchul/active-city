@@ -599,13 +599,19 @@ function App() {
   return (
     <main>
       <header className="hero">
-        <p className="eyebrow">Krakow pilot · Milestone 1</p>
-        <h1>Active City</h1>
-        <p className="tagline">Your city. Your space. Your workout.</p>
-        <p className="intro">
-          Start with a place you can use today. Browse public recreation spaces, inspect what is known about
-          them, and keep unknown details visible instead of guessing.
-        </p>
+        <div className="hero-copy">
+          <p className="eyebrow">Krakow pilot · Milestone 1</p>
+          <h1>Active City</h1>
+          <p className="tagline">Your city. Your space. Your workout.</p>
+          <p className="intro">
+            Start with a place you can use today. Browse public recreation spaces, inspect what is known about
+            them, and keep unknown details visible instead of guessing.
+          </p>
+          <p className="hero-strapline">Move · Meet · Explore</p>
+        </div>
+        <figure className="hero-art">
+          <img alt="Illustration of adults walking, cycling and using outdoor fitness equipment beside the Vistula in Krakow" src="/active-city-hero.png" />
+        </figure>
       </header>
 
       <section aria-labelledby="map-heading" className="discovery">
