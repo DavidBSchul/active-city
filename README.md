@@ -16,6 +16,7 @@ The app currently provides:
 - Venue-matched exercise ideas and a high-energy session builder for people who select energetic activity.
 - A category-based movement library with NHS-linked walking/running, expanded strength/bodyweight, mobility and balance resources.
 - An adult-only, browser-only community-board prototype for activity companions, team-sport player requests and a separate unverified volunteer-guide/personal-trainer directory; it does not expose live locations or connect people.
+- A visible three-step safety-first community-demo path: acknowledge rules, choose a public facility, then review a local draft rather than publish.
 - A local safety layer for that prototype: adult and community-rule confirmation, draft/moderation states, report controls, and a no-document trainer-verification journey.
 - A private post-activity reflection and optional three-movement-day challenge; data stays in the browser unless the person explicitly opts into device storage.
 - A browser-only “Today’s plan” that links place selection, a documented activity, travel planning and post-activity reflection.

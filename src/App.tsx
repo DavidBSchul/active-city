@@ -904,6 +904,11 @@ function App() {
               <div className="community-safety-note">
                 <strong>Prototype boundaries:</strong> examples and new requests exist only in this browser tab. A real service would need account protection, moderation and reporting, venue rules, and verified coach/trainer roles before it could connect people.
               </div>
+              <ol className="community-demo-path" aria-label="How the local community demo works">
+                <li><strong>Set the boundary:</strong> confirm an adult demo profile and the community rules.</li>
+                <li><strong>Choose a public place:</strong> use an existing example or create a sample request linked to the currently selected facility.</li>
+                <li><strong>Review, do not publish:</strong> every new request is labelled as a draft in this browser tab; report controls are demonstration-only.</li>
+              </ol>
               <form className="community-access-form" onSubmit={(event) => { event.preventDefault(); enableCommunityActions() }}>
                 <div>
                   <p className="eyebrow">Safety setup</p>

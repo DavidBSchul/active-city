@@ -28,7 +28,8 @@
 - Added a browser-only “Today’s plan” flow that joins the selected facility, one documented activity, a travel choice, route planning and the post-activity reflection into one clear user journey. It does not create bookings, save plans or make individual exercise/safety decisions.
 - Verified and upgraded Park Lotników Polskich from an imported discovery point to a municipal-source-backed outdoor sport profile. The profile covers only the documented street-workout area, multi-purpose court, pumptrack, skatepark and running route; it avoids inventing individual device, court-availability or booking details.
 - Added an activity filter that updates both the interactive-map markers and the equivalent text list together. It provides concise choices for walking, running/cycling, strength/bodyweight, team sport and waterfront activity; no personal information is needed or retained.
+- Added a three-step community-demo path that makes the prototype’s safety-first sequence explicit: acknowledge adult/rules boundary, choose a public facility, then review a local draft rather than publish it.
 
 ### Next priority
 
-Continue verifying pilot locations against durable municipal sources, then shape the community prototype into a concise demo journey.
+Continue verifying pilot locations against durable municipal sources, then prepare concise submission-ready demo and project materials.
