@@ -1,0 +1,742 @@
+import { useEffect, useMemo, useState } from 'react'
+import { CircleMarker, MapContainer, Polyline, TileLayer, Tooltip } from 'react-leaflet'
+import { locations, type RecreationLocation } from './data/locations'
+import './App.css'
+
+const KRAKOW_CENTER: [number, number] = [50.0614, 19.9366]
+type Coordinates = { latitude: number; longitude: number }
+type TravelMode = 'walking' | 'running' | 'transit'
+type RouteData = { coordinates: [number, number][]; distanceKm: number; minutes: number; calories: number }
+type RoutingResponse = { routes?: Array<{ distance: number; geometry: { coordinates: [number, number][] } }> }
+type AgeRange = '0-4' | '5-8' | '9-12' | '13-15' | '16-17' | '18-24' | '25-34' | '35-44' | '45-54' | '55-64' | '65-74' | '75-plus'
+type MovementComfort = 'gentle' | 'steady' | 'energetic'
+type ActivityGoal = 'everyday' | 'endurance' | 'strength' | 'team' | 'waterfront'
+type WellbeingFocus = 'general' | 'mood' | 'heart' | 'mobility' | 'strength-bone' | 'condition'
+type PostActivityFeeling = 'energised' | 'calmer' | 'about-the-same' | 'tired' | 'drained'
+type WellbeingCheckIn = { id: string; date: string; locationName: string; feeling: PostActivityFeeling; note: string }
+type IntensiveSession = 'intervals' | 'strength-circuit' | 'court-conditioning'
+
+const WELLBEING_STORAGE_KEY = 'active-city-wellbeing-checkins-v1'
+const WELLBEING_CONSENT_KEY = 'active-city-wellbeing-save-on-device-v1'
+
+const activityMatches: Record<ActivityGoal, Record<MovementComfort, string[]>> = {
+  everyday: {
+    gentle: ['Walking', 'Gentle mobility', 'Outdoor movement', 'Outdoor recreation', 'Walking and viewpoints'],
+    steady: ['Walking', 'Gentle mobility', 'Outdoor movement', 'Outdoor recreation', 'Walking and viewpoints', 'Cycling'],
+    energetic: ['Walking', 'Outdoor movement', 'Outdoor recreation', 'Walking and viewpoints', 'Running', 'Cycling'],
+  },
+  endurance: {
+    gentle: ['Walking', 'Walking and viewpoints'],
+    steady: ['Walking', 'Walking and viewpoints', 'Running', 'Cycling'],
+    energetic: ['Running', 'Cycling', 'Seasonal swimming at designated bathing areas'],
+  },
+  strength: {
+    gentle: ['Gentle mobility', 'Outdoor movement'],
+    steady: ['Strength training', 'Calisthenics', 'Bodyweight strength', 'Outdoor fitness', 'Street workout'],
+    energetic: ['Strength training', 'Calisthenics', 'Bodyweight strength', 'Outdoor fitness', 'Street workout'],
+  },
+  team: {
+    gentle: [],
+    steady: ['Basketball', 'Volleyball', 'Beach volleyball'],
+    energetic: ['Football', 'Basketball', 'Volleyball', 'Beach volleyball'],
+  },
+  waterfront: {
+    gentle: ['Walking and viewpoints', 'Waterfront relaxation', 'Nature observation', 'Walking'],
+    steady: ['Walking and viewpoints', 'Waterfront relaxation', 'Nature observation', 'Walking', 'Cycling'],
+    energetic: ['Walking and viewpoints', 'Running', 'Cycling', 'Seasonal swimming at designated bathing areas'],
+  },
+}
+
+const wellbeingMatches: Record<Exclude<WellbeingFocus, 'general' | 'condition'>, Record<MovementComfort, string[]>> = {
+  mood: activityMatches.everyday,
+  heart: activityMatches.endurance,
+  mobility: {
+    gentle: ['Walking', 'Gentle mobility', 'Walking and viewpoints'],
+    steady: ['Walking', 'Gentle mobility', 'Walking and viewpoints', 'Cycling'],
+    energetic: ['Walking', 'Walking and viewpoints', 'Cycling', 'Running'],
+  },
+  'strength-bone': activityMatches.strength,
+}
+
+const ageGuide: Record<AgeRange, string> = {
+  '0-4': 'This pilot does not recommend independent activities for children under five. Use local rules and caregiver judgement.',
+  '5-8': 'For children, activity choices need caregiver judgement, supervision and local facility rules.',
+  '9-12': 'For children, activity choices need caregiver judgement, supervision and local facility rules.',
+  '13-15': 'For young people, activity choices need local facility rules and appropriate supervision where needed.',
+  '16-17': 'For young people, activity choices need local facility rules and appropriate supervision where needed.',
+  '18-24': 'For adults, WHO provides broad public-health guidance on regular aerobic and muscle-strengthening activity.',
+  '25-34': 'For adults, WHO provides broad public-health guidance on regular aerobic and muscle-strengthening activity.',
+  '35-44': 'For adults, WHO provides broad public-health guidance on regular aerobic and muscle-strengthening activity.',
+  '45-54': 'For adults, WHO provides broad public-health guidance on regular aerobic and muscle-strengthening activity.',
+  '55-64': 'For adults, WHO provides broad public-health guidance on regular aerobic and muscle-strengthening activity.',
+  '65-74': 'For older adults, WHO notes the value of activity adjusted to functional ability, including balance and strength work where suitable.',
+  '75-plus': 'For older adults, WHO notes the value of activity adjusted to functional ability, including balance and strength work where suitable.',
+}
+
+const goalLabel: Record<ActivityGoal, string> = {
+  everyday: 'Build an everyday movement habit',
+  endurance: 'Build cardio endurance',
+  strength: 'Build strength and mobility',
+  team: 'Play a team sport',
+  waterfront: 'Enjoy waterfront activity',
+}
+
+const wellbeingLabel: Record<WellbeingFocus, string> = {
+  general: 'General wellbeing',
+  mood: 'Stress and mood',
+  heart: 'Heart and aerobic fitness',
+  mobility: 'Mobility and everyday movement',
+  'strength-bone': 'Strength and bone health',
+  condition: 'An existing health condition, injury or recovery',
+}
+
+const feelingLabel: Record<PostActivityFeeling, string> = {
+  energised: 'More energised',
+  calmer: 'Calmer',
+  'about-the-same': 'About the same',
+  tired: 'Tired',
+  drained: 'Drained',
+}
+
+const feelingMessage: Record<PostActivityFeeling, string> = {
+  energised: 'Nice work. Noticing what made this activity feel doable can help you repeat it.',
+  calmer: 'You made space for a reset. A short activity can still be a meaningful part of a routine.',
+  'about-the-same': 'Showing up still counts. Use the next check-in to notice what you would change.',
+  tired: 'Rest and recovery are part of a sustainable routine. Choose your next step based on how you feel.',
+  drained: 'A gentler next step may be more suitable. If this feeling is persistent, severe or worrying, seek individual support.',
+}
+
+function todayInKrakow() {
+  return new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Warsaw' }).format(new Date())
+}
+
+type ExerciseIdea = {
+  id: string
+  name: string
+  summary: string
+  safetyNote: string
+  comfort: MovementComfort[]
+  goals: ActivityGoal[]
+  focuses: Exclude<WellbeingFocus, 'general' | 'condition'>[]
+  locationActivities: string[]
+  instructionUrl: string
+  instructionLabel: string
+}
+
+const exerciseLibrary: ExerciseIdea[] = [
+  {
+    id: 'fast-walk', name: 'Fast walk', summary: 'A brisk walking option for building an everyday movement habit or aerobic fitness.', safetyNote: 'Choose a route and pace that feel manageable; build time and pace gradually.', comfort: ['gentle', 'steady', 'energetic'], goals: ['everyday', 'endurance', 'waterfront'], focuses: ['mood', 'heart', 'mobility'], locationActivities: ['Walking', 'Walking and viewpoints'], instructionUrl: 'https://www.nhs.uk/live-well/exercise/walking-for-health/', instructionLabel: 'Open NHS walking guide',
+  },
+  {
+    id: 'run-walk', name: 'Run–walk intervals', summary: 'A paced running-and-walking option for people comfortable with steady activity.', safetyNote: 'Use the gradual plan rather than jumping straight to sprints; stop if you feel pain or become unwell.', comfort: ['steady', 'energetic'], goals: ['everyday', 'endurance'], focuses: ['mood', 'heart'], locationActivities: ['Running'], instructionUrl: 'https://www.nhs.uk/better-health/get-active/get-running-with-couch-to-5k/couch-to-5k-running-plan/', instructionLabel: 'Open NHS Couch to 5K plan',
+  },
+  {
+    id: 'short-sprints', name: 'Short sprint efforts', summary: 'A higher-intensity running option for people already comfortable with energetic exercise.', safetyNote: 'Warm up first, use a clear and even surface, and build speed gradually rather than sprinting cold.', comfort: ['energetic'], goals: ['endurance', 'team'], focuses: ['heart'], locationActivities: ['Running', 'Football'], instructionUrl: 'https://www.nhs.uk/live-well/exercise/knee-pain-and-other-running-injuries/', instructionLabel: 'Open NHS running safety guide',
+  },
+  {
+    id: 'standing-press-up', name: 'Standing press-up', summary: 'A gentle upper-body movement that needs only a stable wall or other suitable fixed surface.', safetyNote: 'Use the video’s form guidance; choose a stable surface and stop if anything hurts.', comfort: ['gentle', 'steady'], goals: ['strength', 'everyday'], focuses: ['strength-bone', 'mobility'], locationActivities: ['Gentle mobility', 'Outdoor movement', 'Outdoor fitness'], instructionUrl: 'https://www.nhs.uk/live-well/exercise/strength-and-flex-exercise-plan-how-to-videos/', instructionLabel: 'Open NHS press-up how-to video',
+  },
+  {
+    id: 'bodyweight-squat', name: 'Bodyweight squat', summary: 'A lower-body movement to practise with a controlled range and no equipment.', safetyNote: 'Use the NHS video to check form and only move through a comfortable range.', comfort: ['steady', 'energetic'], goals: ['strength'], focuses: ['strength-bone', 'mobility'], locationActivities: ['Strength training', 'Outdoor fitness', 'Bodyweight strength'], instructionUrl: 'https://www.nhs.uk/live-well/exercise/strength-and-flex-exercise-plan-how-to-videos/', instructionLabel: 'Open NHS squat how-to video',
+  },
+  {
+    id: 'pull-up', name: 'Pull-up', summary: 'A bar-based upper-body movement for a documented calisthenics or bodyweight-training area.', safetyNote: 'For energetic users only. Inspect the bar, use the form video, and do not use damaged equipment.', comfort: ['energetic'], goals: ['strength'], focuses: ['strength-bone'], locationActivities: ['Calisthenics', 'Bodyweight strength'], instructionUrl: 'https://www.nhs.uk/live-well/exercise/strength-and-flex-exercise-plan-how-to-videos/', instructionLabel: 'Open NHS pull-up how-to video',
+  },
+  {
+    id: 'yoga-mobility', name: 'Yoga and mobility flow', summary: 'A movement and flexibility option that can be done in a calm, open part of a park.', safetyNote: 'Use a level-labelled video and a clear, dry space; do not treat a general video as care for pain or injury.', comfort: ['gentle', 'steady', 'energetic'], goals: ['everyday', 'strength', 'waterfront'], focuses: ['mood', 'mobility', 'strength-bone'], locationActivities: ['Gentle mobility', 'Outdoor movement', 'Walking and viewpoints'], instructionUrl: 'https://www.nhs.uk/live-well/exercise/pilates-and-yoga/', instructionLabel: 'Open NHS yoga and Pilates videos',
+  },
+  {
+    id: 'sideways-walk', name: 'Sideways walking and balance practice', summary: 'A gentle controlled-movement option for an everyday mobility focus.', safetyNote: 'Use a clear surface and stay near a stable support if you need one; this is not a substitute for falls assessment or rehabilitation.', comfort: ['gentle', 'steady'], goals: ['everyday'], focuses: ['mobility'], locationActivities: ['Walking', 'Gentle mobility', 'Outdoor movement'], instructionUrl: 'https://www.nhs.uk/live-well/exercise/balance-exercises/', instructionLabel: 'Open NHS illustrated balance guide',
+  },
+]
+
+const intensiveSessions: Record<IntensiveSession, { name: string; summary: string; requiredActivities: string[]; steps: string[]; instructionUrl: string; instructionLabel: string }> = {
+  intervals: {
+    name: 'High-energy intervals',
+    summary: 'A run, pitch or court session that alternates faster efforts with easy recovery.',
+    requiredActivities: ['Running', 'Football', 'Basketball'],
+    steps: ['Warm up first with an easy walk or jog.', 'Use short, controlled faster efforts with easy walking or jogging recovery between them.', 'Finish with an easy walk and stop if pain, dizziness or unusual breathlessness occurs.'],
+    instructionUrl: 'https://www.nhs.uk/better-health/get-active/get-running-with-couch-to-5k/couch-to-5k-running-plan/',
+    instructionLabel: 'Open NHS run–walk interval guidance',
+  },
+  'strength-circuit': {
+    name: 'High-energy bodyweight circuit',
+    summary: 'A bodyweight session using suitable documented outdoor-gym or calisthenics equipment.',
+    requiredActivities: ['Strength training', 'Calisthenics', 'Bodyweight strength', 'Outdoor fitness'],
+    steps: ['Warm up and inspect every bar or surface before using it.', 'Choose a pull-up or assisted pull-up, push-up and squat variation that you can control with good form.', 'Take recovery when form changes, then cool down before leaving the site.'],
+    instructionUrl: 'https://www.nhs.uk/live-well/exercise/strength-and-flex-exercise-plan-how-to-videos/',
+    instructionLabel: 'Open NHS strength and form videos',
+  },
+  'court-conditioning': {
+    name: 'Court or pitch conditioning',
+    summary: 'A fast-paced session for a clear, permitted outdoor court or pitch.',
+    requiredActivities: ['Football', 'Basketball', 'Volleyball', 'Beach volleyball'],
+    steps: ['Confirm the court or pitch is available, clear and permitted for training.', 'Warm up before using quick direction changes or short faster efforts.', 'Use generous recovery and finish while your movement remains controlled.'],
+    instructionUrl: 'https://www.nhs.uk/live-well/exercise/knee-pain-and-other-running-injuries/',
+    instructionLabel: 'Open NHS running warm-up and safety guidance',
+  },
+}
+
+function labelForStatus(status: RecreationLocation['verificationStatus']) {
+  return status === 'imported' ? 'Imported, not field-verified' : 'Documented in a public source'
+}
+
+function distanceInKm(from: Coordinates, to: Coordinates) {
+  const earthRadiusKm = 6371
+  const toRadians = (value: number) => (value * Math.PI) / 180
+  const latitudeDifference = toRadians(to.latitude - from.latitude)
+  const longitudeDifference = toRadians(to.longitude - from.longitude)
+  const a = Math.sin(latitudeDifference / 2) ** 2
+    + Math.cos(toRadians(from.latitude)) * Math.cos(toRadians(to.latitude)) * Math.sin(longitudeDifference / 2) ** 2
+  return earthRadiusKm * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+}
+
+function parseCoordinates(value: string): Coordinates | null {
+  const parts = value.trim().split(/[\s,]+/).map(Number)
+  if (parts.length !== 2 || parts.some((part) => !Number.isFinite(part))) return null
+  const [latitude, longitude] = parts
+  if (latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) return null
+  return { latitude, longitude }
+}
+
+function calorieEstimate(mode: Exclude<TravelMode, 'transit'>, minutes: number, weightKg: number) {
+  const met = mode === 'walking' ? 3.5 : 9.8
+  return Math.round((met * 3.5 * weightKg * minutes) / 200)
+}
+
+function App() {
+  const [selectedId, setSelectedId] = useState(locations[0].id)
+  const [locationInput, setLocationInput] = useState('')
+  const [userLocation, setUserLocation] = useState<Coordinates | null>(null)
+  const [locationError, setLocationError] = useState('')
+  const [travelMode, setTravelMode] = useState<TravelMode>('walking')
+  const [weightKg, setWeightKg] = useState('70')
+  const [route, setRoute] = useState<RouteData | null>(null)
+  const [routeStatus, setRouteStatus] = useState('')
+  const [ageRange, setAgeRange] = useState<AgeRange>('25-34')
+  const [movementComfort, setMovementComfort] = useState<MovementComfort>('steady')
+  const [activityGoal, setActivityGoal] = useState<ActivityGoal>('everyday')
+  const [wellbeingFocus, setWellbeingFocus] = useState<WellbeingFocus>('general')
+  const [showRecommendations, setShowRecommendations] = useState(false)
+  const [postActivityFeeling, setPostActivityFeeling] = useState<PostActivityFeeling>('energised')
+  const [checkInNote, setCheckInNote] = useState('')
+  const [checkIns, setCheckIns] = useState<WellbeingCheckIn[]>([])
+  const [saveOnDevice, setSaveOnDevice] = useState(false)
+  const [storageReady, setStorageReady] = useState(false)
+  const [checkInMessage, setCheckInMessage] = useState('')
+  const [showPrivateSummary, setShowPrivateSummary] = useState(false)
+  const [intensiveSession, setIntensiveSession] = useState<IntensiveSession>('intervals')
+  const [showIntensivePlan, setShowIntensivePlan] = useState(false)
+  const selectedLocation = locations.find((location) => location.id === selectedId) ?? locations[0]
+  const visibleLocations = useMemo(() => {
+    const withDistance = locations.map((location) => ({
+      ...location,
+      distanceKm: userLocation ? distanceInKm(userLocation, location) : undefined,
+    }))
+    return userLocation ? withDistance.sort((first, second) => first.distanceKm! - second.distanceKm!) : withDistance
+  }, [userLocation])
+  const recommendations = useMemo(() => {
+    const matches = wellbeingFocus === 'general'
+      ? activityMatches[activityGoal][movementComfort]
+      : wellbeingFocus === 'condition' ? [] : wellbeingMatches[wellbeingFocus][movementComfort]
+    if (ageRange === '0-4' || matches.length === 0) return []
+    const chosenIds = new Set<string>()
+    return visibleLocations.flatMap((location) => {
+      const matchingActivity = matches.find((activity) => location.activities.includes(activity))
+      if (!matchingActivity || chosenIds.has(location.id)) return []
+      chosenIds.add(location.id)
+      return [{ location, matchingActivity }]
+    }).slice(0, 3)
+  }, [activityGoal, ageRange, movementComfort, visibleLocations, wellbeingFocus])
+  const exerciseIdeas = useMemo(() => {
+    if (ageRange === '0-4' || wellbeingFocus === 'condition') return []
+    return exerciseLibrary.flatMap((exercise) => {
+      const suitsFocus = wellbeingFocus === 'general' ? exercise.goals.includes(activityGoal) : exercise.focuses.includes(wellbeingFocus)
+      if (!suitsFocus || !exercise.comfort.includes(movementComfort)) return []
+      const location = visibleLocations.find((candidate) => exercise.locationActivities.some((activity) => candidate.activities.includes(activity)))
+      return location ? [{ exercise, location }] : []
+    }).slice(0, 4)
+  }, [activityGoal, ageRange, movementComfort, visibleLocations, wellbeingFocus])
+  const activeChallengeDays = useMemo(() => {
+    const today = new Date(`${todayInKrakow()}T00:00:00`)
+    const activeDays = new Set<string>()
+    checkIns.forEach((checkIn) => {
+      const loggedDay = new Date(`${checkIn.date}T00:00:00`)
+      const difference = Math.round((today.getTime() - loggedDay.getTime()) / 86_400_000)
+      if (difference >= 0 && difference < 7) activeDays.add(checkIn.date)
+    })
+    return activeDays.size
+  }, [checkIns])
+  const privateSummary = useMemo(() => {
+    const lines = checkIns.slice(0, 14).map((checkIn) => `${checkIn.date} | ${checkIn.locationName} | ${feelingLabel[checkIn.feeling]}${checkIn.note ? ` | Note: ${checkIn.note}` : ''}`)
+    return ['Active City private activity reflection', 'Generated locally for the user to review before sharing.', 'This is a personal reflection, not a clinical record.', '', ...lines].join('\n')
+  }, [checkIns])
+  const selectedIntensiveSession = intensiveSessions[intensiveSession]
+  const intensiveVenueMatch = selectedIntensiveSession.requiredActivities.some((activity) => selectedLocation.activities.includes(activity))
+
+  useEffect(() => {
+    try {
+      if (window.localStorage.getItem(WELLBEING_CONSENT_KEY) === 'yes') {
+        const saved = window.localStorage.getItem(WELLBEING_STORAGE_KEY)
+        const parsed = saved ? JSON.parse(saved) : []
+        if (Array.isArray(parsed)) setCheckIns(parsed.filter((entry): entry is WellbeingCheckIn => typeof entry?.id === 'string' && typeof entry?.date === 'string' && typeof entry?.locationName === 'string' && typeof entry?.feeling === 'string' && typeof entry?.note === 'string'))
+        setSaveOnDevice(true)
+      }
+    } catch {
+      // A private check-in can still work for this browser session if storage is unavailable.
+    }
+    setStorageReady(true)
+  }, [])
+
+  useEffect(() => {
+    if (!storageReady || !saveOnDevice) return
+    try {
+      window.localStorage.setItem(WELLBEING_CONSENT_KEY, 'yes')
+      window.localStorage.setItem(WELLBEING_STORAGE_KEY, JSON.stringify(checkIns))
+    } catch {
+      setCheckInMessage('Your check-in is available in this browser tab, but this device could not save it for later.')
+    }
+  }, [checkIns, saveOnDevice, storageReady])
+
+  const selectLocation = (location: RecreationLocation) => {
+    setSelectedId(location.id)
+    setRoute(null)
+    setRouteStatus('')
+    document.getElementById('location-profile')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+  }
+
+  const updateLocation = () => {
+    if (!locationInput.trim()) {
+      setUserLocation(null)
+      setLocationError('')
+      return
+    }
+    const coordinates = parseCoordinates(locationInput)
+    if (!coordinates) {
+      setLocationError('Enter latitude and longitude, for example: 50.0614, 19.9366.')
+      return
+    }
+    setUserLocation(coordinates)
+    setLocationError('')
+    setRoute(null)
+    setRouteStatus('')
+  }
+
+  const showPedestrianRoute = async () => {
+    if (!userLocation) {
+      setRouteStatus('Enter your location before requesting a route.')
+      return
+    }
+    const numericWeight = Number(weightKg)
+    if (!Number.isFinite(numericWeight) || numericWeight <= 0 || numericWeight > 350) {
+      setRouteStatus('Enter a weight between 1 and 350 kg to calculate a general calorie estimate.')
+      return
+    }
+
+    setRouteStatus('Finding a pedestrian route…')
+    setRoute(null)
+    try {
+      const endpoint = new URL('https://routing.openstreetmap.de/routed-foot/route/v1/driving/')
+      endpoint.pathname += `${userLocation.longitude},${userLocation.latitude};${selectedLocation.longitude},${selectedLocation.latitude}`
+      endpoint.search = 'overview=full&geometries=geojson'
+      const response = await fetch(endpoint)
+      const payload = await response.json() as RoutingResponse
+      const routeResult = payload.routes?.[0]
+      if (!response.ok || !routeResult) throw new Error('No route returned')
+      const distanceKm = routeResult.distance / 1000
+      const speedKmPerHour = travelMode === 'walking' ? 4.8 : 8.5
+      const minutes = Math.max(1, Math.round((distanceKm / speedKmPerHour) * 60))
+      setRoute({
+        coordinates: routeResult.geometry.coordinates.map(([longitude, latitude]) => [latitude, longitude]),
+        distanceKm,
+        minutes,
+        calories: calorieEstimate(travelMode === 'running' ? 'running' : 'walking', minutes, numericWeight),
+      })
+      setRouteStatus('')
+    } catch {
+      setRouteStatus('The pedestrian routing service is unavailable. Try again shortly or use the public-transport handoff.')
+    }
+  }
+
+  const addCheckIn = () => {
+    const entry: WellbeingCheckIn = {
+      id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+      date: todayInKrakow(),
+      locationName: selectedLocation.name,
+      feeling: postActivityFeeling,
+      note: checkInNote.trim(),
+    }
+    setCheckIns((current) => [entry, ...current].slice(0, 90))
+    setCheckInNote('')
+    setCheckInMessage(feelingMessage[postActivityFeeling])
+    setShowPrivateSummary(false)
+  }
+
+  const updateDeviceSaving = (enabled: boolean) => {
+    setSaveOnDevice(enabled)
+    if (!enabled) {
+      try {
+        window.localStorage.removeItem(WELLBEING_CONSENT_KEY)
+        window.localStorage.removeItem(WELLBEING_STORAGE_KEY)
+      } catch {
+        setCheckInMessage('Saving is off for future check-ins. This browser could not clear its previous saved copy.')
+      }
+    }
+  }
+
+  const clearCheckIns = () => {
+    setCheckIns([])
+    setShowPrivateSummary(false)
+    setCheckInMessage('Your check-ins have been cleared from this browser tab and, if enabled, this device.')
+    try {
+      window.localStorage.removeItem(WELLBEING_STORAGE_KEY)
+    } catch {
+      // The browser tab has still been cleared.
+    }
+  }
+
+  const publicTransportUrl = userLocation
+    ? `https://www.google.com/maps/dir/?api=1&origin=${userLocation.latitude},${userLocation.longitude}&destination=${selectedLocation.latitude},${selectedLocation.longitude}&travelmode=transit`
+    : undefined
+
+  return (
+    <main>
+      <header className="hero">
+        <p className="eyebrow">Krakow pilot · Milestone 1</p>
+        <h1>Active City</h1>
+        <p className="tagline">Your city. Your space. Your workout.</p>
+        <p className="intro">
+          Start with a place you can use today. Browse public recreation spaces, inspect what is known about
+          them, and keep unknown details visible instead of guessing.
+        </p>
+      </header>
+
+      <section aria-labelledby="map-heading" className="discovery">
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">Explore</p>
+            <h2 id="map-heading">Krakow recreation spaces</h2>
+          </div>
+          <p className="location-count">{locations.length} pilot locations</p>
+        </div>
+
+        <form className="distance-form" onSubmit={(event) => { event.preventDefault(); updateLocation() }}>
+          <div>
+            <label htmlFor="location-input">Sort places by your location</label>
+            <input
+              aria-describedby="location-help location-error"
+              id="location-input"
+              onChange={(event) => setLocationInput(event.target.value)}
+              placeholder="Latitude, longitude — e.g. 50.0614, 19.9366"
+              type="text"
+              value={locationInput}
+            />
+          </div>
+          <button type="submit">Sort by distance</button>
+          <p id="location-help">Used only in this browser tab. Distances are straight-line estimates.</p>
+          {locationError && <p className="location-error" id="location-error" role="alert">{locationError}</p>}
+          {userLocation && <p className="location-sorted">Showing nearest places first from {userLocation.latitude.toFixed(4)}, {userLocation.longitude.toFixed(4)}.</p>}
+        </form>
+        <p className="coverage-note">A source-backed selection of outdoor gyms, courts, pitches and waterfront activities is shown. This is a growing citywide pilot, not yet a complete municipal inventory.</p>
+
+        <section className="preference-panel" aria-labelledby="preference-heading">
+          <div>
+            <p className="eyebrow">Personalised discovery</p>
+            <h3 id="preference-heading">Find an activity idea</h3>
+            <p className="preference-intro">Choose broad preferences, not medical details. They stay only in this browser tab and are used to match known activities at the mapped places.</p>
+          </div>
+          <form className="preference-form" onSubmit={(event) => { event.preventDefault(); setShowRecommendations(true) }}>
+            <label>
+              Age range
+              <select onChange={(event) => setAgeRange(event.target.value as AgeRange)} value={ageRange}>
+                <option value="0-4">0–4</option>
+                <option value="5-8">5–8</option>
+                <option value="9-12">9–12</option>
+                <option value="13-15">13–15</option>
+                <option value="16-17">16–17</option>
+                <option value="18-24">18–24</option>
+                <option value="25-34">25–34</option>
+                <option value="35-44">35–44</option>
+                <option value="45-54">45–54</option>
+                <option value="55-64">55–64</option>
+                <option value="65-74">65–74</option>
+                <option value="75-plus">75+</option>
+              </select>
+            </label>
+            <label>
+              Movement comfort today
+              <select onChange={(event) => setMovementComfort(event.target.value as MovementComfort)} value={movementComfort}>
+                <option value="gentle">Gentle or getting started</option>
+                <option value="steady">Comfortable with steady activity</option>
+                <option value="energetic">Comfortable with energetic activity</option>
+              </select>
+            </label>
+            <label>
+              Activity or health goal
+              <select onChange={(event) => setActivityGoal(event.target.value as ActivityGoal)} value={activityGoal}>
+                <option value="everyday">Build an everyday movement habit</option>
+                <option value="endurance">Build cardio endurance</option>
+                <option value="strength">Build strength and mobility</option>
+                <option value="team">Play a team sport</option>
+                <option value="waterfront">Enjoy waterfront activity</option>
+              </select>
+            </label>
+            <label>
+              Wellbeing focus
+              <select onChange={(event) => setWellbeingFocus(event.target.value as WellbeingFocus)} value={wellbeingFocus}>
+                <option value="general">General wellbeing</option>
+                <option value="mood">Stress and mood</option>
+                <option value="heart">Heart and aerobic fitness</option>
+                <option value="mobility">Mobility and everyday movement</option>
+                <option value="strength-bone">Strength and bone health</option>
+                <option value="condition">Existing health condition, injury or recovery</option>
+              </select>
+            </label>
+            <button type="submit">Show activity ideas</button>
+          </form>
+          {showRecommendations && (
+            <div className="recommendation-results" aria-live="polite">
+              <p className="recommendation-guide">{ageGuide[ageRange]} {wellbeingFocus === 'condition' ? 'For an existing condition, injury or recovery, get individual advice from a qualified health professional before using this tool for activity decisions.' : `These are place-and-activity matches for “${goalLabel[activityGoal]}” with a “${wellbeingLabel[wellbeingFocus]}” focus, not medical or training advice.`} <a href="https://www.who.int/publications/i/item/9789240014886" rel="noreferrer" target="_blank">Read WHO’s general physical-activity guidance.</a></p>
+              {recommendations.length > 0 ? (
+                <div>
+                  <div className="recommendation-cards">
+                    {recommendations.map(({ location, matchingActivity }) => (
+                      <button className="recommendation-card" key={location.id} onClick={() => selectLocation(location)} type="button">
+                        <span className="category-dot" style={{ background: location.color }} />
+                        <span><strong>{matchingActivity} at {location.name}</strong><span>{userLocation ? `${location.distanceKm!.toFixed(1)} km away · ` : ''}{location.verificationStatus === 'documented' ? 'Public source documented' : 'Check details before use'}</span></span>
+                      </button>
+                    ))}
+                  </div>
+                  {exerciseIdeas.length > 0 && (
+                    <section className="exercise-ideas" aria-labelledby="exercise-ideas-heading">
+                      <div>
+                        <p className="eyebrow">Instructional ideas</p>
+                        <h4 id="exercise-ideas-heading">Specific movements to explore</h4>
+                        <p>Links open trusted instructional videos or illustrated guides. The mapped venue is a suggested setting, not a guarantee that equipment is available or safe.</p>
+                      </div>
+                      <div className="exercise-cards">
+                        {exerciseIdeas.map(({ exercise, location }) => (
+                          <article className="exercise-card" key={exercise.id}>
+                            <span className="exercise-tag">{movementComfort} comfort</span>
+                            <h5>{exercise.name}</h5>
+                            <p>{exercise.summary}</p>
+                            <p className="exercise-venue">Suggested setting: <button onClick={() => selectLocation(location)} type="button">{location.name}</button></p>
+                            <p className="exercise-safety">{exercise.safetyNote}</p>
+                            <a href={exercise.instructionUrl} rel="noreferrer" target="_blank">{exercise.instructionLabel} ↗</a>
+                          </article>
+                        ))}
+                      </div>
+                    </section>
+                  )}
+                  <section className="intensive-panel" aria-labelledby="intensive-heading">
+                    <div>
+                      <p className="eyebrow">More intensity</p>
+                      <h4 id="intensive-heading">Build a high-energy session</h4>
+                      <p>Choose an intensive style when you want a harder session. The plan opens only for the “energetic” comfort setting and still depends on the venue being available and safe.</p>
+                    </div>
+                    <div className="intensive-controls">
+                      <label>
+                        Session style
+                        <select onChange={(event) => { setIntensiveSession(event.target.value as IntensiveSession); setShowIntensivePlan(false) }} value={intensiveSession}>
+                          <option value="intervals">High-energy intervals</option>
+                          <option value="strength-circuit">High-energy bodyweight circuit</option>
+                          <option value="court-conditioning">Court or pitch conditioning</option>
+                        </select>
+                      </label>
+                      <button onClick={() => setShowIntensivePlan(true)} type="button">Show intensive session</button>
+                    </div>
+                    {showIntensivePlan && (
+                      <div className="intensive-result" aria-live="polite">
+                        {movementComfort !== 'energetic' ? (
+                          <p>Switch “Movement comfort today” to <strong>Comfortable with energetic activity</strong> before using a high-energy session. The standard activity ideas remain available for your current setting.</p>
+                        ) : !intensiveVenueMatch ? (
+                          <p><strong>{selectedLocation.name}</strong> does not have a documented activity match for this session. Select a venue with {selectedIntensiveSession.requiredActivities.join(', ')} before starting.</p>
+                        ) : (
+                          <>
+                            <h5>{selectedIntensiveSession.name} at {selectedLocation.name}</h5>
+                            <p>{selectedIntensiveSession.summary}</p>
+                            <ol>{selectedIntensiveSession.steps.map((step) => <li key={step}>{step}</li>)}</ol>
+                            <a href={selectedIntensiveSession.instructionUrl} rel="noreferrer" target="_blank">{selectedIntensiveSession.instructionLabel} ↗</a>
+                          </>
+                        )}
+                      </div>
+                    )}
+                  </section>
+                </div>
+              ) : (
+                <p className="no-recommendations">{wellbeingFocus === 'condition' ? 'No condition-specific activity recommendation is shown. The app does not assess symptoms, injuries, treatment or recovery needs.' : 'No suitable place match is available in this pilot for those choices yet. Try another movement-comfort level or browse the map; this does not mean an activity is unsuitable for you.'}</p>
+              )}
+            </div>
+          )}
+        </section>
+
+        <section className="wellbeing-panel" aria-labelledby="wellbeing-heading">
+          <div>
+            <p className="eyebrow">After your activity</p>
+            <h3 id="wellbeing-heading">Private wellbeing check-in</h3>
+            <p className="wellbeing-intro">Capture how you feel after an activity. This is a personal reflection, not a mental-health assessment or clinical record.</p>
+          </div>
+          <form className="checkin-form" onSubmit={(event) => { event.preventDefault(); addCheckIn() }}>
+            <label>
+              How do you feel after activity?
+              <select onChange={(event) => setPostActivityFeeling(event.target.value as PostActivityFeeling)} value={postActivityFeeling}>
+                <option value="energised">More energised</option>
+                <option value="calmer">Calmer</option>
+                <option value="about-the-same">About the same</option>
+                <option value="tired">Tired</option>
+                <option value="drained">Drained</option>
+              </select>
+            </label>
+            <p className="checkin-location">Activity location: <strong>{selectedLocation.name}</strong></p>
+            <label className="note-field">
+              Optional private note
+              <textarea maxLength={500} onChange={(event) => setCheckInNote(event.target.value)} placeholder="What made this activity easier or harder today?" value={checkInNote} />
+            </label>
+            <label className="save-choice"><input checked={saveOnDevice} onChange={(event) => updateDeviceSaving(event.target.checked)} type="checkbox" /> Save these entries on this device</label>
+            <button type="submit">Add today’s check-in</button>
+          </form>
+          <div className="challenge-card" aria-live="polite">
+            <div>
+              <p className="eyebrow">Optional challenge</p>
+              <h4>Three movement days this week</h4>
+              <p><strong>{Math.min(activeChallengeDays, 3)} of 3 days logged</strong> in the last seven days. Track a day of movement, not a performance score.</p>
+            </div>
+            <div className="challenge-progress" aria-label={`${Math.min(activeChallengeDays, 3)} of 3 movement days logged`}><span style={{ width: `${Math.min((activeChallengeDays / 3) * 100, 100)}%` }} /></div>
+          </div>
+          {checkInMessage && <p className="checkin-message" role="status">{checkInMessage}</p>}
+          {checkIns.length > 0 && (
+            <div className="checkin-history">
+              <div className="history-heading"><h4>Recent reflections</h4><button onClick={clearCheckIns} type="button">Clear check-ins</button></div>
+              <ul>{checkIns.slice(0, 3).map((checkIn) => <li key={checkIn.id}><strong>{checkIn.date}</strong> · {checkIn.locationName} · {feelingLabel[checkIn.feeling]}{checkIn.note ? ` — ${checkIn.note}` : ''}</li>)}</ul>
+              <button className="summary-button" onClick={() => setShowPrivateSummary(true)} type="button">Prepare a private summary to review</button>
+              {showPrivateSummary && <><p className="summary-note">Review this before manually copying or sharing it. Active City does not send it anywhere.</p><textarea aria-label="Private activity reflection summary" className="private-summary" readOnly value={privateSummary} /></>}
+            </div>
+          )}
+          <p className="wellbeing-safety">If you feel in immediate danger or are at risk of harming yourself or someone else, contact local emergency services. For persistent or worrying changes in mood, energy or wellbeing, seek support from a qualified health professional.</p>
+        </section>
+
+        <section className="route-panel" aria-labelledby="route-heading">
+          <div>
+            <p className="eyebrow">Travel layer</p>
+            <h3 id="route-heading">Route to {selectedLocation.name}</h3>
+          </div>
+          <label>
+            Travel mode
+            <select onChange={(event) => { setTravelMode(event.target.value as TravelMode); setRoute(null); setRouteStatus('') }} value={travelMode}>
+              <option value="walking">Walking</option>
+              <option value="running">Running</option>
+              <option value="transit">Public transport</option>
+            </select>
+          </label>
+          {travelMode !== 'transit' && (
+            <label>
+              Weight for estimate (kg)
+              <input min="1" max="350" onChange={(event) => setWeightKg(event.target.value)} type="number" value={weightKg} />
+            </label>
+          )}
+          {travelMode === 'transit' ? (
+            publicTransportUrl ? <a className="route-action" href={publicTransportUrl} rel="noreferrer" target="_blank">Plan public transport</a> : <p className="route-help">Enter your location to plan a public-transport journey.</p>
+          ) : (
+            <button className="route-action" onClick={showPedestrianRoute} type="button">Show {travelMode} route</button>
+          )}
+          <div className="route-summary" aria-live="polite">
+            {routeStatus && <p>{routeStatus}</p>}
+            {route && <p><strong>{route.distanceKm.toFixed(1)} km · about {route.minutes} min · about {route.calories} kcal</strong><br />General estimate based on the selected mode and entered weight; it is not medical guidance.</p>}
+          </div>
+        </section>
+
+        <div className="map-frame" aria-label="Interactive map of Krakow recreation spaces">
+          <MapContainer center={KRAKOW_CENTER} zoom={12} scrollWheelZoom={false} aria-label="Krakow map">
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            {userLocation && (
+              <CircleMarker center={[userLocation.latitude, userLocation.longitude]} pathOptions={{ color: '#153f78', fillColor: '#4b9ed6', fillOpacity: 1, weight: 3 }} radius={10}>
+                <Tooltip direction="top" offset={[0, -8]}>Your entered location</Tooltip>
+              </CircleMarker>
+            )}
+            {route && <Polyline pathOptions={{ color: travelMode === 'running' ? '#db5b36' : '#245f50', weight: 5, opacity: 0.85 }} positions={route.coordinates} />}
+            {visibleLocations.map((location) => (
+              <CircleMarker
+                center={[location.latitude, location.longitude]}
+                eventHandlers={{ click: () => selectLocation(location) }}
+                key={location.id}
+                pathOptions={{
+                  color: location.id === selectedLocation.id ? '#183d35' : '#ffffff',
+                  fillColor: location.color,
+                  fillOpacity: 1,
+                  weight: location.id === selectedLocation.id ? 4 : 2,
+                }}
+                radius={location.id === selectedLocation.id ? 11 : 8}
+              >
+                <Tooltip direction="top" offset={[0, -8]}>{location.name}</Tooltip>
+              </CircleMarker>
+            ))}
+          </MapContainer>
+        </div>
+        <p className="map-note">
+          Map tiles © OpenStreetMap contributors. Select a marker or use the accessible location list below.
+        </p>
+      </section>
+
+      <section className="content-grid" aria-label="Location discovery details">
+        <div className="location-list" aria-labelledby="list-heading">
+          <div className="section-heading compact">
+            <div>
+              <p className="eyebrow">Text alternative</p>
+              <h2 id="list-heading">Browse by location</h2>
+            </div>
+          </div>
+          <div className="cards">
+            {visibleLocations.map((location) => (
+              <button
+                aria-pressed={location.id === selectedLocation.id}
+                className={`location-card ${location.id === selectedLocation.id ? 'selected' : ''}`}
+                key={location.id}
+                onClick={() => selectLocation(location)}
+                type="button"
+              >
+                <span className="category-dot" style={{ background: location.color }} />
+                <span>
+                  <strong>{location.name}</strong>
+                  <span className="card-meta">{location.distanceKm === undefined ? '' : `${location.distanceKm.toFixed(1)} km away · `}{location.category}</span>
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <article className="profile" id="location-profile" aria-labelledby="profile-heading">
+          <p className="eyebrow">Selected facility profile</p>
+          <h2 id="profile-heading">{selectedLocation.name}</h2>
+          <p className="profile-description">{selectedLocation.description}</p>
+
+          <dl>
+            <div><dt>Category</dt><dd>{selectedLocation.category}</dd></div>
+            <div><dt>Known activities</dt><dd>{selectedLocation.activities.join(', ')}</dd></div>
+            <div><dt>Equipment</dt><dd>{selectedLocation.equipment}</dd></div>
+            <div><dt>Access and cost</dt><dd>{selectedLocation.access}</dd></div>
+            <div><dt>Accessibility</dt><dd>{selectedLocation.accessibility}</dd></div>
+            <div><dt>Verification</dt><dd><span className="status">{labelForStatus(selectedLocation.verificationStatus)}</span></dd></div>
+          </dl>
+
+          <p className="source-note">
+            <a href={selectedLocation.sourceUrl} rel="noreferrer" target="_blank">
+              {selectedLocation.sourceLabel ?? 'View source map'}
+            </a>
+            {' · '}Last recorded: {selectedLocation.lastReported}
+          </p>
+        </article>
+      </section>
+
+      <aside className="safety-note">
+        <strong>Good to know:</strong> location records are a starting point, not a guarantee of access, condition,
+        or suitability. Check local signs and conditions before starting an activity. If you have a health concern,
+        injury, symptoms, or need individual exercise advice, speak with a qualified health professional.
+      </aside>
+    </main>
+  )
+}
+
+export default App

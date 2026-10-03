@@ -1,0 +1,123 @@
+# HackTribe project submission — draft
+
+**Status:** ready to paste into HackTribe after the team confirms the bracketed details. Do not publish until the team has reviewed the copy, added the final repository link, and chosen a cover image.
+
+## Project name
+
+Active City
+
+## Published
+
+Keep as a draft until the team has reviewed the copy, added the final repository link, and chosen a cover image. Publish once those checks are complete.
+
+## Problem
+
+Public places to be active can be hard to find and even harder to trust: people may not know which nearby parks, outdoor gyms and courts actually offer the activity they want, whether equipment is documented, or how to get there. That creates friction before a walk, run or workout even begins.
+
+The World Health Organization identifies insufficient physical activity as a major public-health issue and recommends making movement opportunities easier to access across everyday life. In Kraków, the information people need is spread across different municipal pages, map records and on-site notices. A person looking for a free outdoor gym, a volleyball court or a low-pressure walking route should not need to assemble that information themselves.
+
+## Solution
+
+Active City turns fragmented public recreation information into a clear, privacy-first activity journey:
+
+1. Explore 19 Kraków pilot locations on an interactive map or accessible text list.
+2. Open a place profile to see its documented activities, equipment, access caveats and source link.
+3. Enter an approximate starting point to sort places by distance and choose walking, running or public transport.
+4. Choose a narrow age band, movement comfort and goal to discover suitable non-medical activity ideas.
+5. Select a higher-energy interval, bodyweight or court/pitch session when energetic activity is appropriate for the person’s self-described comfort.
+6. Optionally reflect on how the activity felt and build a private three-movement-day challenge. Check-ins stay on the device by default.
+
+This combines motivation, practical next steps and transparent data limits. It does not diagnose, prescribe exercise or share health data with providers.
+
+## Challenge
+
+Sport & Healthcare
+
+## Idea stage
+
+New idea / hackathon prototype.
+
+## What was done so far and project goal
+
+Before the event, the team reviewed the challenge and identified public, reusable location sources. No pre-existing product is being represented as a completed solution.
+
+During HackYeah, the team is building and validating the prototype: a React and TypeScript map experience, source-backed facility profiles, route and distance tools, non-medical activity discovery, an intensive-workout option, and a privacy-first wellbeing reflection. The goal is a clear, demonstrable Kraków pilot that helps a person go from “I want to move” to a realistic next activity at a nearby public place.
+
+All implementation activity is recorded in `docs/DEVELOPMENT_LOG.md`; the team should check this wording against the organizer’s confirmed start-time clarification before submitting.
+
+## Team status
+
+[Confirm: complete / looking for teammates]
+
+## Current team size
+
+[Confirm number]
+
+## Needed skills
+
+If the team is still recruiting, select:
+
+- Design & UX
+- Frontend Developer
+- Pitching & Storytelling
+
+Otherwise, leave this section empty.
+
+## Skills comment
+
+Looking for a UX designer to strengthen accessibility and onboarding, a frontend developer to help verify the pilot and improve mobile polish, and a storyteller to shape a short judging presentation. Familiarity with inclusive exercise communication, local open data or GIS is welcome.
+
+## Video presentation
+
+Not yet recorded. Record a short listed YouTube walkthrough after finalising the prototype and replace this with the URL.
+
+## Website
+
+Use the deployed demo URL when available. Do not add `http://127.0.0.1:5173` because it works only on the development computer.
+
+## Code repository
+
+[Insert GitHub URL after the repository is created and pushed.]
+
+## Instructions on how to open project
+
+```text
+Requirements: Node.js 18 or newer.
+
+1. Clone the repository.
+2. Run: npm install
+3. Run: npm run dev
+4. Open the local URL shown in the terminal.
+
+Quality checks:
+- npm run lint
+- npm run build
+
+The application is a frontend prototype. It uses public map tiles and makes on-demand route requests only when a person asks for a walking or running route. No API key is required to run the current version.
+```
+
+## Presentation
+
+Create and upload a PDF or PPTX under 10 MB. Suggested six-slide structure:
+
+1. **Active City** — “From intention to a real place to move in Kraków.”
+2. **The friction** — public activity information is scattered and uncertain.
+3. **The journey** — discover → verify → route → move → reflect.
+4. **Live prototype** — map, facility evidence, accessible text list, and distance sorting.
+5. **Responsible personalisation** — non-medical suggestions, energetic pathway and device-first reflections.
+6. **Impact and next steps** — validate more sites, co-design with residents, and add current municipal availability data.
+
+## Cover image brief
+
+Create a 1600 × 900 PNG or JPG: a clean Kraków map-style background with three simple pins (outdoor gym, court, waterfront), an illustrated walking route, and the words **Active City — Your next move, nearby**. Use original or properly licensed assets and credit/disclose them where required.
+
+## Final pre-publish checklist
+
+- [ ] Confirm the organizer’s start-time clarification and adjust the “done so far” wording if necessary.
+- [ ] Confirm team status, team size, member names and any needed skills.
+- [ ] Create the GitHub repository, push the commit, and paste its public URL.
+- [ ] Add a deployed demo URL if one is available.
+- [ ] Make a cover image with rights-cleared assets.
+- [ ] Record a short listed YouTube demo, if time allows.
+- [ ] Export the final presentation as PDF/PPTX under 10 MB.
+- [ ] Disclose use of AI tools and external/reused assets in the presentation/submission as required by the competition rules.
