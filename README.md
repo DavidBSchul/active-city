@@ -42,5 +42,6 @@ Copy-ready project fields and the final upload checklist are in [`docs/HACKTRIBE
 - Vite 5 (Node 18-compatible)
 - Leaflet + React Leaflet
 - OpenStreetMap tiles and attribution
+- City-theme foundation: Kraków is the pilot with its own landmark illustration and palette tokens; later cities can provide their own theme asset and colours.
 
 See [`docs/DEVELOPMENT_LOG.md`](docs/DEVELOPMENT_LOG.md), [`docs/DATA_SOURCES.md`](docs/DATA_SOURCES.md), and [`docs/HACKTRIBE_SUBMISSION.md`](docs/HACKTRIBE_SUBMISSION.md) for provenance, data limitations, and submission preparation.

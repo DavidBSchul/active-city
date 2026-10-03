@@ -1,6 +1,7 @@
 main { max-width: 1180px; margin: 0 auto; padding: 32px 24px 56px; }
-.hero { display: grid; grid-template-columns: minmax(320px, .88fr) minmax(360px, 1.12fr); min-height: 340px; margin-bottom: 24px; overflow: hidden; border: 1px solid rgba(8, 63, 105, .12); border-radius: 24px; background: var(--active-navy); box-shadow: 0 20px 46px rgba(8, 63, 105, .16); }
-.hero-copy { position: relative; z-index: 1; display: flex; flex-direction: column; justify-content: center; padding: clamp(28px, 5vw, 56px); color: #fff; background: linear-gradient(135deg, #073f69 0%, #075580 58%, #117a75 100%); }
+.city-theme--krakow { --city-navy: #083f69; --city-lake: #1599d5; --city-leaf: #4a9728; --city-teal: #167d73; --city-amber: #f4a928; --city-ink: #143f50; --city-copy: #456773; --city-border: #bfdbe2; --city-mist: #eef8f7; --city-sky-mist: #f3fbff; --city-leaf-mist: #f4faef; --city-amber-mist: #fff8e9; }
+.hero { display: grid; grid-template-columns: minmax(320px, .88fr) minmax(360px, 1.12fr); min-height: 340px; margin-bottom: 24px; overflow: hidden; border: 1px solid rgba(8, 63, 105, .12); border-radius: 24px; background: var(--city-navy); box-shadow: 0 20px 46px rgba(8, 63, 105, .16); }
+.hero-copy { position: relative; z-index: 1; display: flex; flex-direction: column; justify-content: center; padding: clamp(28px, 5vw, 56px); color: #fff; background: linear-gradient(135deg, var(--city-navy) 0%, #075580 58%, var(--city-teal) 100%); }
 .hero-copy::after { position: absolute; right: -70px; bottom: -100px; width: 250px; height: 250px; border: 24px solid rgba(244, 169, 40, .82); border-radius: 50%; content: ''; opacity: .72; }
 .hero-copy > * { position: relative; z-index: 1; }
 .hero-art { min-height: 100%; margin: 0; background: #e2f4fb; }
@@ -205,4 +206,50 @@ dd { margin: 5px 0 0; line-height: 1.45; }
 .status { display: inline-block; padding: 3px 8px; border-radius: 999px; background: #fff2df; color: #865113; font-size: .85rem; font-weight: 700; }
 .source-note a { color: #245f50; font-weight: 800; }
 .safety-note { margin-top: 24px; padding: 16px 18px; border-left: 5px solid #ec8d30; background: #fff2df; color: #5e471e; line-height: 1.55; }
+.city-theme--krakow .eyebrow, .city-theme--krakow .location-count, .city-theme--krakow .challenge-card .eyebrow { color: var(--city-teal); }
+.city-theme--krakow h1, .city-theme--krakow h2, .city-theme--krakow .preference-panel h3, .city-theme--krakow .exercise-ideas h4, .city-theme--krakow .route-panel h3 { color: var(--city-ink); }
+.city-theme--krakow .hero h1 { color: #fff; }
+.city-theme--krakow .discovery, .city-theme--krakow .profile, .city-theme--krakow .location-list { border-color: var(--city-border); box-shadow: 0 12px 32px rgba(8, 63, 105, .08); }
+.city-theme--krakow .distance-form label, .city-theme--krakow .preference-form label, .city-theme--krakow .route-panel label { color: var(--city-ink); }
+.city-theme--krakow .distance-form input, .city-theme--krakow .preference-form select, .city-theme--krakow .route-panel select, .city-theme--krakow .route-panel input { border-color: var(--city-border); color: var(--city-ink); }
+.city-theme--krakow .distance-form button, .city-theme--krakow .preference-form button, .city-theme--krakow .route-action { background: var(--city-teal); }
+.city-theme--krakow .distance-form button:hover, .city-theme--krakow .preference-form button:hover, .city-theme--krakow .route-action:hover { background: var(--city-navy); }
+.city-theme--krakow .coverage-note, .city-theme--krakow .wellbeing-safety { color: #755b22; }
+.city-theme--krakow .preference-panel { border-color: #b8d8cb; background: var(--city-leaf-mist); }
+.city-theme--krakow .recommendation-results, .city-theme--krakow .exercise-ideas { border-color: #c7e0d6; }
+.city-theme--krakow .recommendation-guide, .city-theme--krakow .no-recommendations, .city-theme--krakow .preference-intro, .city-theme--krakow .exercise-card p, .city-theme--krakow .profile-description, .city-theme--krakow .route-summary { color: var(--city-copy); }
+.city-theme--krakow .recommendation-guide a, .city-theme--krakow .exercise-card a, .city-theme--krakow .exercise-venue button, .city-theme--krakow .source-note a { color: var(--city-teal); }
+.city-theme--krakow .recommendation-card, .city-theme--krakow .exercise-card { border-color: #badbd1; }
+.city-theme--krakow .recommendation-card:hover { border-color: var(--city-leaf); background: var(--city-leaf-mist); }
+.city-theme--krakow .intensive-panel { border-color: #f0c56d; background: var(--city-amber-mist); }
+.city-theme--krakow .intensive-panel h4, .city-theme--krakow .intensive-controls label, .city-theme--krakow .intensive-result h5 { color: #8a5611; }
+.city-theme--krakow .intensive-controls button { background: #d17b18; }
+.city-theme--krakow .intensive-controls button:hover { background: #a75a0c; }
+.city-theme--krakow .movement-library { border-color: #b9d9c7; background: var(--city-leaf-mist); }
+.city-theme--krakow .movement-library h3, .city-theme--krakow .movement-library h4, .city-theme--krakow .movement-filter { color: var(--city-ink); }
+.city-theme--krakow .movement-library-card { border-color: #cce1d4; }
+.city-theme--krakow .movement-library-card a { color: var(--city-teal); }
+.city-theme--krakow .community-panel { border-color: var(--city-border); background: var(--city-sky-mist); }
+.city-theme--krakow .community-panel h3, .city-theme--krakow .community-panel h4, .city-theme--krakow .guidance-offer h5, .city-theme--krakow .guidance-offer-form h5 { color: var(--city-ink); }
+.city-theme--krakow .community-safety-note, .city-theme--krakow .community-access-form { border-color: var(--city-border); background: #fff; }
+.city-theme--krakow .community-access-form button, .city-theme--krakow .verification-workflow button { background: var(--city-navy); }
+.city-theme--krakow .community-access-form button:hover, .city-theme--krakow .verification-workflow button:hover { background: var(--city-teal); }
+.city-theme--krakow .community-post, .city-theme--krakow .guidance-offer { border-color: var(--city-border); }
+.city-theme--krakow .community-post-footer button, .city-theme--krakow .community-request button { background: var(--city-lake); }
+.city-theme--krakow .community-post-footer button:hover, .city-theme--krakow .community-request button:hover { background: var(--city-navy); }
+.city-theme--krakow .guidance-offer-form { border-color: #b9d9c7; background: var(--city-leaf-mist); }
+.city-theme--krakow .guidance-footer button, .city-theme--krakow .guidance-offer-form button { background: var(--city-leaf); }
+.city-theme--krakow .guidance-footer button:hover, .city-theme--krakow .guidance-offer-form button:hover { background: #347b1b; }
+.city-theme--krakow .wellbeing-panel { border-color: #b9d7df; background: var(--city-mist); }
+.city-theme--krakow .wellbeing-panel h3, .city-theme--krakow .wellbeing-panel h4, .city-theme--krakow .checkin-form label, .city-theme--krakow .checkin-location { color: var(--city-ink); }
+.city-theme--krakow .checkin-form select, .city-theme--krakow .checkin-form textarea, .city-theme--krakow .private-summary { border-color: var(--city-border); color: var(--city-ink); }
+.city-theme--krakow .checkin-form button, .city-theme--krakow .summary-button { background: var(--city-teal); }
+.city-theme--krakow .checkin-form button:hover, .city-theme--krakow .summary-button:hover { background: var(--city-navy); }
+.city-theme--krakow .challenge-card { border-color: #b9d7df; }
+.city-theme--krakow .challenge-progress { background: #d9edf0; }
+.city-theme--krakow .challenge-progress span { background: var(--city-lake); }
+.city-theme--krakow .route-panel { border-color: var(--city-border); background: var(--city-mist); }
+.city-theme--krakow .location-card:hover, .city-theme--krakow .location-card.selected { border-color: var(--city-lake); background: var(--city-sky-mist); }
+.city-theme--krakow .location-card[aria-pressed="true"] { box-shadow: inset 4px 0 var(--city-amber); }
+.city-theme--krakow .status, .city-theme--krakow .safety-note { border-color: var(--city-amber); background: var(--city-amber-mist); color: #765b22; }
 @media (max-width: 720px) { main { padding: 20px 16px 40px; } .hero { grid-template-columns: 1fr; min-height: 0; border-radius: 18px; } .hero-copy { min-height: 300px; padding: 34px 28px; } .hero-art img { min-height: 230px; object-position: 57% center; } .discovery, .location-list, .profile { padding: 16px; } .content-grid { grid-template-columns: 1fr; } .map-frame { height: 52vh; min-height: 290px; } dl { grid-template-columns: 1fr; } .distance-form { grid-template-columns: 1fr; } .distance-form button { width: 100%; } .preference-form, .recommendation-cards, .exercise-cards, .movement-library-cards, .community-access-form, .community-posts, .guidance-offers, .guidance-offer-form, .community-request, .checkin-form, .challenge-card, .intensive-controls, .route-panel { grid-template-columns: 1fr; } .verification-workflow { align-items: stretch; flex-direction: column; } .checkin-form .save-choice { grid-column: auto; } .preference-form button, .checkin-form button, .intensive-controls button, .community-access-form button, .guidance-offer-form button, .community-request button, .route-action { width: 100%; } }

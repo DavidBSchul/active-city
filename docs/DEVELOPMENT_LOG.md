@@ -24,6 +24,7 @@
 - Developed the volunteer/trainer concept into a separate guidance-directory prototype. It distinguishes a volunteer movement guide from a personal trainer, displays role boundaries, activity focus, planned venue and availability, and makes every interest or new-offer action browser-only until a live service can verify and moderate it.
 - Added the next safety-layer prototype: a local adult/community-rules setup, demo-only connection requests, visible sample-versus-draft moderation states, local report controls, and a trainer verification journey that lists the checks a real service must complete while deliberately collecting no credentials or documents.
 - Added an original AI-generated Kraków riverside hero illustration and refreshed the visual direction around its lake-blue, deep-navy, leaf-green and warm-amber palette. The illustration is documented as generated/referenced visual material in `docs/DATA_SOURCES.md`.
+- Turned the visual direction into a city-theme foundation. Kraków is the active pilot theme: its named landmark hero and palette tokens now style the journey panels, controls, activity states and community area. A future city can supply its own hero asset and equivalent theme tokens without rewriting the interface.
 
 ### Next priority
 

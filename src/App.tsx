@@ -4,6 +4,12 @@ import { locations, type RecreationLocation } from './data/locations'
 import './App.css'
 
 const KRAKOW_CENTER: [number, number] = [50.0614, 19.9366]
+const pilotCity = {
+  id: 'krakow',
+  name: 'Krakow',
+  heroImage: '/active-city-hero.png',
+  heroAlt: 'Illustration of adults walking, cycling and using outdoor fitness equipment beside the Vistula in Krakow',
+}
 type Coordinates = { latitude: number; longitude: number }
 type TravelMode = 'walking' | 'running' | 'transit'
 type RouteData = { coordinates: [number, number][]; distanceKm: number; minutes: number; calories: number }
@@ -597,7 +603,7 @@ function App() {
     : undefined
 
   return (
-    <main>
+    <main className={`city-theme city-theme--${pilotCity.id}`}>
       <header className="hero">
         <div className="hero-copy">
           <p className="eyebrow">Krakow pilot · Milestone 1</p>
@@ -610,7 +616,7 @@ function App() {
           <p className="hero-strapline">Move · Meet · Explore</p>
         </div>
         <figure className="hero-art">
-          <img alt="Illustration of adults walking, cycling and using outdoor fitness equipment beside the Vistula in Krakow" src="/active-city-hero.png" />
+          <img alt={pilotCity.heroAlt} src={pilotCity.heroImage} />
         </figure>
       </header>
 
