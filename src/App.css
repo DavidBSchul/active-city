@@ -81,6 +81,15 @@ h2 { margin-bottom: 0; color: #183d35; font-family: Georgia, serif; font-size: c
 .community-panel > div:first-child > p:last-child { color: #405d6d; }
 .community-safety-note, .community-adult-note { margin: 14px 0 0; padding: 11px 12px; border-radius: 8px; color: #365564; background: #eaf4f8; font-size: .84rem; line-height: 1.45; }
 .community-adult-note { color: #624b21; background: #fff4dd; }
+.community-access-form { display: grid; grid-template-columns: minmax(210px, 1.15fr) minmax(180px, 1fr) minmax(220px, 1.25fr) auto; gap: 12px; align-items: end; margin-top: 13px; padding: 13px; border: 1px solid #b6cfda; border-radius: 9px; background: #fff; }
+.community-access-form h4, .verification-workflow h5 { margin: 0; font-size: 1rem; }
+.community-access-form p, .verification-workflow p { margin: 5px 0 0; color: #486474; font-size: .8rem; line-height: 1.4; }
+.community-access-form label { color: #31586a; font-size: .78rem; font-weight: 700; line-height: 1.4; }
+.community-access-form input { margin: 0 7px 0 0; accent-color: #26718d; }
+.community-access-form button, .verification-workflow button { min-height: 38px; padding: 8px 11px; border: 0; border-radius: 7px; color: #fff; background: #1c607c; cursor: pointer; font-size: .8rem; font-weight: 800; }
+.community-access-form button:hover, .verification-workflow button:hover { background: #164b62; }
+.community-access-form button:disabled, .verification-workflow button:disabled { cursor: not-allowed; background: #91a8b1; }
+.community-access-message { margin: 10px 0 0; color: #21586f; font-size: .84rem; font-weight: 700; line-height: 1.4; }
 .community-posts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 13px; }
 .community-post { display: flex; flex-direction: column; align-items: flex-start; padding: 13px; border: 1px solid #c8dce5; border-radius: 9px; background: #fff; }
 .community-kind { display: inline-block; padding: 3px 7px; border-radius: 999px; font-size: .71rem; font-weight: 800; }
@@ -91,10 +100,13 @@ h2 { margin-bottom: 0; color: #183d35; font-family: Georgia, serif; font-size: c
 .community-post p { margin: 0 0 8px; color: #486474; font-size: .82rem; line-height: 1.42; }
 .community-post .community-location { color: #2e586d; font-weight: 700; }
 .community-location button { padding: 0; border: 0; color: #1e637f; background: none; cursor: pointer; font: inherit; font-weight: 800; text-decoration: underline; }
+.moderation-state { padding: 7px 8px; border-radius: 6px; color: #6a5223 !important; background: #fff7e6; font-size: .75rem !important; font-weight: 800; }
 .community-post-footer { display: flex; justify-content: space-between; align-items: center; gap: 8px; width: 100%; margin-top: auto; padding-top: 5px; color: #5d7580; font-size: .75rem; font-weight: 700; }
 .community-post-footer button, .community-request button { min-height: 34px; padding: 7px 9px; border: 0; border-radius: 7px; color: #fff; background: #26718d; cursor: pointer; font-size: .78rem; font-weight: 800; }
 .community-post-footer button:hover, .community-request button:hover { background: #1a5971; }
 .community-post-footer button:disabled { cursor: not-allowed; background: #91a8b1; }
+.report-action { align-self: flex-start; margin-top: 9px; padding: 0; border: 0; color: #8f412c; background: none; cursor: pointer; font: inherit; font-size: .76rem; font-weight: 800; text-decoration: underline; }
+.report-action:disabled { color: #849097; cursor: default; text-decoration: none; }
 .community-request { display: grid; grid-template-columns: minmax(190px, 1.2fr) minmax(150px, .7fr) minmax(150px, .7fr) auto; gap: 12px; align-items: end; margin-top: 14px; padding: 13px; border: 1px dashed #a9c7d3; border-radius: 9px; background: #fff; }
 .community-request h4 { font-size: 1rem; }
 .community-request p { margin: 5px 0 0; color: #486474; font-size: .8rem; line-height: 1.4; }
@@ -103,6 +115,8 @@ h2 { margin-bottom: 0; color: #183d35; font-family: Georgia, serif; font-size: c
 .community-footnote { margin: 12px 0 0; color: #6d5929; font-size: .8rem; line-height: 1.45; }
 .guidance-directory { margin-top: 14px; padding-top: 14px; border-top: 1px solid #c8dce5; }
 .guidance-directory > div:first-child > p:last-child { color: #486474; font-size: .83rem; line-height: 1.45; }
+.verification-workflow { display: flex; justify-content: space-between; align-items: end; gap: 14px; margin-top: 12px; padding: 12px; border: 1px solid #d6dfba; border-radius: 8px; background: #fbfcf6; }
+.verification-workflow .eyebrow { color: #657142; }
 .guidance-offers { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
 .guidance-offer { display: flex; flex-direction: column; padding: 13px; border: 1px solid #c8dce5; border-radius: 9px; background: #fff; }
 .guidance-role { align-self: flex-start; display: inline-block; padding: 3px 7px; border-radius: 999px; font-size: .7rem; font-weight: 800; }
@@ -181,4 +195,4 @@ dd { margin: 5px 0 0; line-height: 1.45; }
 .status { display: inline-block; padding: 3px 8px; border-radius: 999px; background: #fff2df; color: #865113; font-size: .85rem; font-weight: 700; }
 .source-note a { color: #245f50; font-weight: 800; }
 .safety-note { margin-top: 24px; padding: 16px 18px; border-left: 5px solid #ec8d30; background: #fff2df; color: #5e471e; line-height: 1.55; }
-@media (max-width: 720px) { main { padding: 20px 16px 40px; } .discovery, .location-list, .profile { padding: 16px; } .content-grid { grid-template-columns: 1fr; } .map-frame { height: 52vh; min-height: 290px; } dl { grid-template-columns: 1fr; } .distance-form { grid-template-columns: 1fr; } .distance-form button { width: 100%; } .preference-form, .recommendation-cards, .exercise-cards, .movement-library-cards, .community-posts, .guidance-offers, .guidance-offer-form, .community-request, .checkin-form, .challenge-card, .intensive-controls, .route-panel { grid-template-columns: 1fr; } .checkin-form .save-choice { grid-column: auto; } .preference-form button, .checkin-form button, .intensive-controls button, .guidance-offer-form button, .community-request button, .route-action { width: 100%; } }
+@media (max-width: 720px) { main { padding: 20px 16px 40px; } .discovery, .location-list, .profile { padding: 16px; } .content-grid { grid-template-columns: 1fr; } .map-frame { height: 52vh; min-height: 290px; } dl { grid-template-columns: 1fr; } .distance-form { grid-template-columns: 1fr; } .distance-form button { width: 100%; } .preference-form, .recommendation-cards, .exercise-cards, .movement-library-cards, .community-access-form, .community-posts, .guidance-offers, .guidance-offer-form, .community-request, .checkin-form, .challenge-card, .intensive-controls, .route-panel { grid-template-columns: 1fr; } .verification-workflow { align-items: stretch; flex-direction: column; } .checkin-form .save-choice { grid-column: auto; } .preference-form button, .checkin-form button, .intensive-controls button, .community-access-form button, .guidance-offer-form button, .community-request button, .route-action { width: 100%; } }

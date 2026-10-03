@@ -22,6 +22,7 @@
 - Added an adult-only community activity-board prototype: browser-only interest markers, activity-companion requests, team-sport player requests and clearly unverified volunteer-guidance examples. It deliberately does not transmit data, expose live locations, collect contact details or connect users. The interface documents the verification, moderation, safeguarding and reporting requirements needed before a future live version.
 - Expanded the strength/bodyweight category with NHS-linked sit-to-stands, calf raises, supported sideways leg lifts and supported rear leg extensions, all paired with clear surface, support and stop-if-unwell boundaries.
 - Developed the volunteer/trainer concept into a separate guidance-directory prototype. It distinguishes a volunteer movement guide from a personal trainer, displays role boundaries, activity focus, planned venue and availability, and makes every interest or new-offer action browser-only until a live service can verify and moderate it.
+- Added the next safety-layer prototype: a local adult/community-rules setup, demo-only connection requests, visible sample-versus-draft moderation states, local report controls, and a trainer verification journey that lists the checks a real service must complete while deliberately collecting no credentials or documents.
 
 ### Next priority
 
