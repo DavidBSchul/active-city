@@ -77,7 +77,7 @@ Use the deployed demo URL when available. Do not add `http://127.0.0.1:5173` bec
 
 ## Code repository
 
-[Insert GitHub URL after the repository is created and pushed.]
+https://github.com/DavidBSchul/active-city
 
 ## Instructions on how to open project
 
@@ -115,7 +115,7 @@ Create a 1600 × 900 PNG or JPG: a clean Kraków map-style background with three
 
 - [ ] Confirm the organizer’s start-time clarification and adjust the “done so far” wording if necessary.
 - [ ] Confirm team status, team size, member names and any needed skills.
-- [ ] Create the GitHub repository, push the commit, and paste its public URL.
+- [x] Create the GitHub repository, push the commit, and paste its public URL.
 - [ ] Add a deployed demo URL if one is available.
 - [ ] Make a cover image with rights-cleared assets.
 - [ ] Record a short listed YouTube demo, if time allows.
