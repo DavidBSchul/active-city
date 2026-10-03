@@ -1,22 +1,38 @@
 main { max-width: 1180px; margin: 0 auto; padding: 32px 24px 56px; }
 .city-theme--krakow { --city-navy: #083f69; --city-lake: #1599d5; --city-leaf: #4a9728; --city-teal: #167d73; --city-amber: #f4a928; --city-ink: #143f50; --city-copy: #456773; --city-border: #bfdbe2; --city-mist: #eef8f7; --city-sky-mist: #f3fbff; --city-leaf-mist: #f4faef; --city-amber-mist: #fff8e9; }
-.hero { display: grid; grid-template-columns: minmax(320px, .88fr) minmax(360px, 1.12fr); min-height: 340px; margin-bottom: 24px; overflow: hidden; border: 1px solid rgba(8, 63, 105, .12); border-radius: 24px; background: var(--city-navy); box-shadow: 0 20px 46px rgba(8, 63, 105, .16); }
-.hero-copy { position: relative; z-index: 1; display: flex; flex-direction: column; justify-content: center; padding: clamp(28px, 5vw, 56px); color: #fff; background: linear-gradient(135deg, var(--city-navy) 0%, #075580 58%, var(--city-teal) 100%); }
-.hero-copy::after { position: absolute; right: -70px; bottom: -100px; width: 250px; height: 250px; border: 24px solid rgba(244, 169, 40, .82); border-radius: 50%; content: ''; opacity: .72; }
+.hero { display: grid; grid-template-columns: minmax(360px, 1.15fr) minmax(300px, .85fr); min-height: 336px; margin-bottom: 24px; overflow: hidden; border: 1px solid #b9d4df; border-radius: 16px; background: #fff; box-shadow: 0 10px 30px rgba(8, 63, 105, .08); }
+.hero-copy { position: relative; z-index: 1; display: flex; flex-direction: column; justify-content: center; padding: clamp(30px, 5vw, 56px); color: #fff; background: var(--city-navy); }
+.hero-copy::after { position: absolute; right: -58px; bottom: -72px; width: 210px; height: 210px; border: 18px solid rgba(244, 169, 40, .88); border-radius: 50%; content: ''; opacity: .82; }
 .hero-copy > * { position: relative; z-index: 1; }
-.hero-art { min-height: 100%; margin: 0; background: #e2f4fb; }
-.hero-art img { display: block; width: 100%; height: 100%; min-height: 340px; object-fit: cover; object-position: 53% center; }
+.city-signature { position: relative; display: grid; grid-template-rows: auto minmax(120px, 1fr) auto auto; min-height: 336px; padding: 22px 25px 24px; overflow: hidden; color: var(--city-ink); background: linear-gradient(145deg, #f5fbfc 0%, #e2f3f4 100%); }
+.city-signature::before { position: absolute; inset: 0; background-image: linear-gradient(rgba(21, 153, 213, .1) 1px, transparent 1px), linear-gradient(90deg, rgba(21, 153, 213, .1) 1px, transparent 1px); background-size: 28px 28px; content: ''; opacity: .7; }
+.city-signature > * { position: relative; z-index: 1; }
+.city-signature-meta { display: flex; justify-content: space-between; gap: 12px; color: #246782; font-size: .72rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+.route-graphic { position: relative; min-height: 146px; margin: 8px -8px 0; }
+.route-line { position: absolute; display: block; height: 48px; border: 6px solid var(--city-lake); border-color: var(--city-lake) transparent transparent; border-radius: 50%; transform: rotate(-12deg); }
+.route-line--one { top: 35px; left: -20px; width: 78%; }
+.route-line--two { top: 63px; right: -27px; width: 67%; border-color: var(--city-teal) transparent transparent; transform: rotate(158deg); }
+.route-stop { position: absolute; width: 14px; height: 14px; border: 4px solid #fff; border-radius: 50%; background: var(--city-amber); box-shadow: 0 0 0 2px rgba(8, 63, 105, .12); }
+.route-stop--one { top: 28px; left: 16%; }
+.route-stop--two { top: 73px; left: 49%; background: var(--city-lake); }
+.route-stop--three { top: 42px; right: 12%; background: var(--city-teal); }
+.city-signature-copy { max-width: 360px; }
+.city-signature-copy .eyebrow { margin-bottom: 5px; color: var(--city-teal); }
+.city-signature-copy strong { display: block; color: var(--city-navy); font-size: clamp(2rem, 4vw, 3.3rem); font-weight: 900; letter-spacing: .06em; line-height: .95; }
+.city-signature-copy p:last-child { margin: 8px 0 0; color: #3c6775; font-size: .84rem; line-height: 1.45; }
+.city-signature-facts { display: flex; flex-wrap: wrap; gap: 7px; margin: 17px 0 0; padding: 0; list-style: none; }
+.city-signature-facts li { padding: 5px 7px; border: 1px solid #acd1d8; border-radius: 999px; color: #266074; background: rgba(255, 255, 255, .78); font-size: .7rem; font-weight: 800; }
 .eyebrow { margin: 0 0 8px; color: #51736a; font-size: .78rem; font-weight: 800; letter-spacing: .11em; text-transform: uppercase; }
 .hero .eyebrow { color: #ccecf1; }
 h1, h2, p { margin-top: 0; }
 h1 { margin-bottom: 4px; color: #183d35; font-family: Georgia, serif; font-size: clamp(3rem, 7vw, 5.4rem); line-height: .94; letter-spacing: -.045em; }
-.hero h1 { color: #fff; text-shadow: 0 2px 10px rgba(0, 0, 0, .14); }
+.hero h1 { color: #fff; text-shadow: none; }
 h2 { margin-bottom: 0; color: #183d35; font-family: Georgia, serif; font-size: clamp(1.65rem, 3.5vw, 2.3rem); line-height: 1.05; }
 .tagline { margin-bottom: 22px; color: #d86d21; font-size: 1.15rem; font-weight: 800; }
 .hero .tagline { color: #ffe1a2; }
 .intro { max-width: 650px; color: #435a53; font-size: 1.07rem; line-height: 1.65; }
 .hero .intro { max-width: 470px; color: #edf9fb; }
-.hero-strapline { align-self: flex-start; margin: 4px 0 0; padding: 7px 10px; border: 1px solid rgba(255, 255, 255, .32); border-radius: 999px; color: #fff; background: rgba(4, 44, 70, .22); font-size: .78rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.hero-strapline { align-self: flex-start; margin: 4px 0 0; padding: 7px 10px; border: 1px solid rgba(255, 255, 255, .32); border-radius: 6px; color: #fff; background: rgba(4, 44, 70, .22); font-size: .78rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
 .discovery, .profile, .location-list { background: #fff; border: 1px solid #dfe3db; border-radius: 18px; box-shadow: 0 12px 32px rgba(39, 68, 58, .06); }
 .shared-progress, .profile-hub { margin-bottom: 16px; padding: 18px; border: 1px solid #bcd5e0; border-radius: 14px; background: #f5fafc; }
 .shared-progress h2, .profile-hub h2 { margin-bottom: 7px; color: #264a5e; font-size: clamp(1.35rem, 3vw, 1.85rem); }
@@ -358,4 +374,4 @@ dd { margin: 5px 0 0; line-height: 1.45; }
 .city-theme--krakow .location-card:hover, .city-theme--krakow .location-card.selected { border-color: var(--city-lake); background: var(--city-sky-mist); }
 .city-theme--krakow .location-card[aria-pressed="true"] { box-shadow: inset 4px 0 var(--city-amber); }
 .city-theme--krakow .status, .city-theme--krakow .safety-note { border-color: var(--city-amber); background: var(--city-amber-mist); color: #765b22; }
-@media (max-width: 720px) { main { padding: 20px 16px 40px; } .hero { grid-template-columns: 1fr; min-height: 0; border-radius: 18px; } .hero-copy { min-height: 300px; padding: 34px 28px; } .hero-art img { min-height: 230px; object-position: 57% center; } .discovery, .location-list, .profile, .shared-progress, .profile-hub { padding: 16px; } .content-grid { grid-template-columns: 1fr; } .map-frame { height: 52vh; min-height: 290px; } dl { grid-template-columns: 1fr; } .distance-form { grid-template-columns: 1fr; } .distance-form button { width: 100%; } .location-actions { display: grid; grid-template-columns: 1fr; } .profile-creator, .today-plan-controls, .today-plan-result, .preference-form, .recommendation-cards, .exercise-cards, .movement-library-cards, .community-demo-path, .community-access-form, .community-posts, .guidance-offers, .guidance-offer-form, .volunteer-application, .community-request, .checkin-form, .challenge-card, .intensive-controls, .route-panel, .today-session-outline ol { grid-template-columns: 1fr; } .today-plan-actions { justify-content: flex-start; } .verification-workflow { align-items: stretch; flex-direction: column; } .checkin-form .save-choice { grid-column: auto; } .today-plan-controls button, .preference-form button, .checkin-form button, .intensive-controls button, .community-access-form button, .guidance-offer-form button, .volunteer-application button, .community-request button, .route-action { width: 100%; } }
+@media (max-width: 720px) { main { padding: 20px 16px 40px; } .hero { grid-template-columns: 1fr; min-height: 0; border-radius: 14px; } .hero-copy { min-height: 280px; padding: 34px 28px; } .city-signature { min-height: 290px; padding: 20px; } .discovery, .location-list, .profile, .shared-progress, .profile-hub { padding: 16px; } .content-grid { grid-template-columns: 1fr; } .map-frame { height: 52vh; min-height: 290px; } dl { grid-template-columns: 1fr; } .distance-form { grid-template-columns: 1fr; } .distance-form button { width: 100%; } .location-actions { display: grid; grid-template-columns: 1fr; } .profile-creator, .today-plan-controls, .today-plan-result, .preference-form, .recommendation-cards, .exercise-cards, .movement-library-cards, .community-demo-path, .community-access-form, .community-posts, .guidance-offers, .guidance-offer-form, .volunteer-application, .community-request, .checkin-form, .challenge-card, .intensive-controls, .route-panel, .today-session-outline ol { grid-template-columns: 1fr; } .today-plan-actions { justify-content: flex-start; } .verification-workflow { align-items: stretch; flex-direction: column; } .checkin-form .save-choice { grid-column: auto; } .today-plan-controls button, .preference-form button, .checkin-form button, .intensive-controls button, .community-access-form button, .guidance-offer-form button, .volunteer-application button, .community-request button, .route-action { width: 100%; } }

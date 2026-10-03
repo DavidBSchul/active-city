@@ -7,8 +7,6 @@ const KRAKOW_CENTER: [number, number] = [50.0614, 19.9366]
 const pilotCity = {
   id: 'krakow',
   name: 'Krakow',
-  heroImage: '/active-city-hero.png',
-  heroAlt: 'Illustration of adults walking, cycling and using outdoor fitness equipment beside the Vistula in Krakow',
 }
 type Coordinates = { latitude: number; longitude: number }
 type TravelMode = 'walking' | 'running' | 'transit'
@@ -939,9 +937,26 @@ function App() {
           </p>
           <p className="hero-strapline">Move · Meet · Explore</p>
         </div>
-        <figure className="hero-art">
-          <img alt={pilotCity.heroAlt} src={pilotCity.heroImage} />
-        </figure>
+        <aside aria-label="Krakow pilot identity" className="city-signature">
+          <div className="city-signature-meta"><span>Active City / 01</span><span>Kraków pilot</span></div>
+          <div aria-hidden="true" className="route-graphic">
+            <span className="route-line route-line--one" />
+            <span className="route-line route-line--two" />
+            <span className="route-stop route-stop--one" />
+            <span className="route-stop route-stop--two" />
+            <span className="route-stop route-stop--three" />
+          </div>
+          <div className="city-signature-copy">
+            <p className="eyebrow">A practical city movement guide</p>
+            <strong>KRAKÓW</strong>
+            <p>Source-backed places, clear travel trade-offs and a plan for the time you actually have.</p>
+          </div>
+          <ul aria-label="Active City Krakow features" className="city-signature-facts">
+            <li>14 documented places</li>
+            <li>Time-aware plans</li>
+            <li>Privacy first</li>
+          </ul>
+        </aside>
       </header>
 
       {sharedProgress && (

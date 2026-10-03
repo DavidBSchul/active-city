@@ -7,7 +7,7 @@
 
 ## Visual asset provenance
 
-- **`public/active-city-hero.png`** — a new AI-generated editorial illustration for the app’s hero area, created on 2026-10-03 with the built-in image-generation workflow. It uses a user-supplied AI illustration only as visual-direction reference (Kraków riverside, blue/green palette and outdoor movement); it does not reuse that image or its generated lettering/logo. The final asset contains no text, logo or branding. Disclose this generated asset in the HackYeah submission/presentation if required by the competition rules.
+- **`public/active-city-hero.png`** — an AI-generated editorial illustration created on 2026-10-03 as early visual-direction material. It is retained in the repository but is no longer shown in the application interface; the active hero uses original CSS typography and route-line graphics instead. The image used a user-supplied AI illustration only as visual-direction reference and does not reuse its lettering or logo. Disclose the retained generated asset in the HackYeah submission/presentation if required by the competition rules.
 
 ## Documented outdoor gyms
 
