@@ -645,7 +645,7 @@ function App() {
       setRoute(null)
       setRouteStatus('')
     } catch {
-      setLocationError('We could not find that place in Kraków. Try a neighbourhood, street, landmark, or use your device location.')
+      setLocationError('We could not find that spot in Kraków. Try a neighbourhood, street or landmark—or use your device location.')
     } finally {
       setIsLocating(false)
     }
@@ -653,7 +653,7 @@ function App() {
 
   const useDeviceLocation = () => {
     if (!navigator.geolocation) {
-      setLocationError('This browser does not support device location. Search for a neighbourhood, street, or landmark instead.')
+      setLocationError('Your browser cannot share its location here. Try a neighbourhood, street or landmark instead.')
       return
     }
     setIsLocating(true)
@@ -666,7 +666,7 @@ function App() {
         setIsLocating(false)
       },
       () => {
-        setLocationError('Location permission was not granted. Search for a neighbourhood, street, or landmark instead.')
+        setLocationError('No problem—location was not shared. Try a neighbourhood, street or landmark instead.')
         setIsLocating(false)
       },
       { enableHighAccuracy: false, maximumAge: 300_000, timeout: 10_000 },
@@ -692,12 +692,12 @@ function App() {
 
   const showPedestrianRoute = async () => {
     if (!userLocation) {
-      setRouteStatus('Enter your location before requesting a route.')
+      setRouteStatus('Add a starting point first, then we can look for a route.')
       return
     }
     const numericWeight = Number(weightKg)
     if (!Number.isFinite(numericWeight) || numericWeight <= 0 || numericWeight > 350) {
-      setRouteStatus('Enter a weight between 1 and 350 kg to calculate a general calorie estimate.')
+      setRouteStatus('Add a weight between 1 and 350 kg to see a general calorie estimate.')
       return
     }
 
@@ -722,7 +722,7 @@ function App() {
       })
       setRouteStatus('')
     } catch {
-      setRouteStatus('The pedestrian routing service is unavailable. Try again shortly or use the public-transport handoff.')
+      setRouteStatus('We could not get a walking route just now. Try again in a moment or use the public-transport option.')
     }
   }
 
@@ -777,19 +777,19 @@ function App() {
       note: shareIncludeNotes ? entry.note : '',
     }))
     if (entries.length === 0) {
-      setShareMessage('Select at least one reflection before creating a link.')
+      setShareMessage('Choose at least one reflection to share first.')
       return
     }
     const payload: SharedProgress = { profileName: activeProfile.name, relationship: activeProfile.relationship, entries }
     setShareLink(`${window.location.origin}${window.location.pathname}${SHARE_HASH_PREFIX}${encodeURIComponent(JSON.stringify(payload))}`)
-    setShareMessage('A read-only link is ready. Anyone with it can view the selected information.')
+    setShareMessage('Your link is ready. Anyone with it can see only the reflections you chose.')
   }
 
   const copyShareLink = async () => {
     if (!shareLink) return
     try {
       await navigator.clipboard.writeText(shareLink)
-      setShareMessage('Link copied. Send it only to someone you trust.')
+      setShareMessage('Link copied. Share it only with someone you trust.')
     } catch {
       setShareMessage('Copy was not available in this browser. You can select and copy the link below manually.')
     }
@@ -797,7 +797,7 @@ function App() {
 
   const addCommunityActivityToPlan = (postId: string) => {
     if (!communityActionsEnabled) {
-      setCommunityAccessMessage('Complete the local safety setup before adding an activity to your plan.')
+      setCommunityAccessMessage('Tick the two safety statements first, then you can add this to your plan.')
       return
     }
     const post = communityPosts.find((item) => item.id === postId)
@@ -809,13 +809,13 @@ function App() {
     setTodayPlan({ locationId: location.id, activity, travelMode, timeBudgetMinutes: planDurationMinutes })
     setRoute(null)
     setRouteStatus('')
-    setCommunityMessage(`${activity} at ${location.name} was added to ${activeProfile.name}'s Today plan. No request or contact details were sent.`)
+    setCommunityMessage(`${activity} at ${location.name} is now in ${activeProfile.name}'s plan. No one else has been contacted.`)
     moveToPlanStep('today-plan-heading')
   }
 
   const createCommunityRequest = () => {
     if (!communityActionsEnabled) {
-      setCommunityAccessMessage('Complete the local safety setup before creating a private request draft.')
+      setCommunityAccessMessage('Tick the two safety statements first, then you can make a private draft.')
       return
     }
     const activityLabel = communityActivity
@@ -837,12 +837,12 @@ function App() {
         ? 'Private guidance draft. A live service must verify credentials, role boundaries and safeguarding before publishing.'
         : 'Private request draft. Confirm venue availability and agree details through a moderated service before meeting.',
     }, ...current])
-    setCommunityMessage('Your request is saved as a private draft in this browser tab. It is not visible to other people and does not send an invitation.')
+    setCommunityMessage('Your idea is saved as a private draft in this browser tab. It is not visible to anyone else and does not send an invitation.')
   }
 
   const registerGuidanceInterest = (offerId: string) => {
     if (!communityActionsEnabled) {
-      setCommunityAccessMessage('Complete the local safety setup before reviewing this pilot listing.')
+      setCommunityAccessMessage('Tick the two safety statements first, then you can review this listing.')
       return
     }
     const offer = guidanceOffers.find((item) => item.id === offerId)
@@ -852,7 +852,7 @@ function App() {
     setPlannedActivity(location.activities[0])
     setRoute(null)
     setRouteStatus('')
-    setGuidanceMessage(`${location.name} is selected so you can review the public facility and the guide's stated boundary. This listing is not contactable until a real service verifies it.`)
+    setGuidanceMessage(`${location.name} is selected so you can look at the place and what this guide could offer. This is not a contactable listing yet.`)
     moveToPlanStep('location-profile')
   }
 
@@ -928,14 +928,13 @@ function App() {
     <main className={`city-theme city-theme--${pilotCity.id}`}>
       <header className="hero">
         <div className="hero-copy">
-          <p className="eyebrow">Krakow pilot · Milestone 1</p>
+          <p className="eyebrow">Kraków · at your pace</p>
           <h1>Active City</h1>
-          <p className="tagline">Your city. Your space. Your workout.</p>
+          <p className="tagline">A little more movement, your way.</p>
           <p className="intro">
-            Start with a place you can use today. Browse source-backed recreation spaces, inspect documented
-            details, and check on-site conditions before you travel.
+            Got half an hour? An hour? Find a nearby place, see what is there, and make a plan that feels doable today.
           </p>
-          <p className="hero-strapline">Move · Meet · Explore</p>
+          <p className="hero-strapline">Find a place · Make a plan · Get moving</p>
         </div>
         <aside aria-label="Krakow pilot identity" className="city-signature">
           <div className="city-signature-meta"><span>Active City / 01</span><span>Kraków pilot</span></div>
@@ -947,32 +946,32 @@ function App() {
             <span className="route-stop route-stop--three" />
           </div>
           <div className="city-signature-copy">
-            <p className="eyebrow">A practical city movement guide</p>
+            <p className="eyebrow">For the way you move</p>
             <strong>KRAKÓW</strong>
-            <p>Source-backed places, clear travel trade-offs and a plan for the time you actually have.</p>
+            <p>Find somewhere nearby, see whether the journey makes sense, and leave with a simple plan for today.</p>
           </div>
           <ul aria-label="Active City Krakow features" className="city-signature-facts">
-            <li>14 documented places</li>
-            <li>Time-aware plans</li>
-            <li>Privacy first</li>
+            <li>Places to try</li>
+            <li>Plans that fit your day</li>
+            <li>Your notes stay yours</li>
           </ul>
         </aside>
       </header>
 
       {sharedProgress && (
         <aside className="shared-progress" aria-labelledby="shared-progress-heading">
-          <p className="eyebrow">Read-only shared progress</p>
-          <h2 id="shared-progress-heading">{sharedProgress.profileName}’s selected activity reflections</h2>
-          <p>This link shows only the entries the sender selected. It does not create a profile, add entries to this device, or make health recommendations.</p>
+          <p className="eyebrow">Shared with you</p>
+          <h2 id="shared-progress-heading">A few reflections from {sharedProgress.profileName}</h2>
+          <p>This link shows only what they chose to share. It will not change anything on your device or make health recommendations.</p>
           <ul>{sharedProgress.entries.map((entry, index) => <li key={`${entry.date}-${entry.locationName}-${index}`}><strong>{entry.date}</strong> · {entry.locationName} · {feelingLabel[entry.feeling]}{entry.note ? ` — ${entry.note}` : ''}</li>)}</ul>
         </aside>
       )}
 
       <section className="profile-hub" aria-labelledby="profile-hub-heading">
         <div>
-          <p className="eyebrow">My Active City</p>
-          <h2 id="profile-hub-heading">Profiles on this device</h2>
-          <p>Keep separate activity choices and diary entries for yourself, someone you support, a child, or a household member. This is not an online account.</p>
+          <p className="eyebrow">Your space</p>
+          <h2 id="profile-hub-heading">Who is this plan for?</h2>
+          <p>Keep a separate space for yourself, someone you support, a child, or someone at home. No sign-in needed.</p>
         </div>
         <div className="profile-tabs" aria-label="Choose a profile">
           {profiles.map((profile) => <button aria-pressed={profile.id === activeProfile.id} className={profile.id === activeProfile.id ? 'selected' : ''} key={profile.id} onClick={() => activateProfile(profile)} type="button"><strong>{profile.name}</strong><span>{profileRelationshipLabel[profile.relationship]}</span></button>)}
@@ -1002,7 +1001,7 @@ function App() {
             <p className="eyebrow">Explore</p>
             <h2 id="map-heading">Krakow recreation spaces</h2>
           </div>
-          <p className="location-count">{documentedLocations.length} source-backed places</p>
+          <p className="location-count">{documentedLocations.length} places to explore</p>
         </div>
 
         <form className="distance-form" onSubmit={(event) => { event.preventDefault(); updateLocation() }}>
@@ -1021,24 +1020,24 @@ function App() {
             <button disabled={isLocating} type="submit">{isLocating ? 'Finding your place…' : 'Find nearby places'}</button>
             <button className="secondary-location-action" disabled={isLocating} onClick={useDeviceLocation} type="button">Use my device location</button>
           </div>
-          <p id="location-help">Search sends the place you type to OpenStreetMap only when you press the button. Device location is requested only after you choose it; neither is saved by Active City. Distances are straight-line estimates.</p>
+          <p id="location-help">We only look up a place after you tap the button. Choosing device location asks your browser first, and neither is saved here. Distances are a useful guide, not an exact route.</p>
           {locationError && <p className="location-error" id="location-error" role="alert">{locationError}</p>}
-          {userLocation && <p className="location-sorted">Showing nearest source-backed places first.</p>}
+          {userLocation && <p className="location-sorted">Here are the places closest to you first.</p>}
         </form>
         <label className="location-filter">
           Show places for
           <select onChange={(event) => setLocationActivityFilter(event.target.value as LocationActivityFilter)} value={locationActivityFilter}>
             {Object.entries(locationActivityFilterLabel).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
           </select>
-          <span>{filteredLocations.length} of {documentedLocations.length} source-backed places shown on the map and in the text list.</span>
+          <span>{filteredLocations.length} of {documentedLocations.length} places are on the map and in the list below.</span>
         </label>
-        <p className="coverage-note">Every place shown has a linked public source and documented activity or equipment information. Wider discovery records are kept out of this public view until their details are checked.</p>
+        <p className="coverage-note">We have started with places we can link back to a public source. More places are being checked before they appear here.</p>
 
         <section className="today-plan" aria-labelledby="today-plan-heading">
           <div>
-            <p className="eyebrow">One clear next step</p>
-            <h3 id="today-plan-heading">Build today’s plan</h3>
-            <p>Set the time you actually have, including the return journey. The plan combines the selected public place, documented activity, travel allowance and a short session outline. It stays in this browser tab.</p>
+            <p className="eyebrow">Make it work for today</p>
+            <h3 id="today-plan-heading">What have you got time for?</h3>
+            <p>Pick the time you have, including getting there and back. We will help you work out whether this place fits—and suggest a simple way to use the time you have left.</p>
           </div>
           <div className="today-plan-controls">
             <label>
@@ -1077,9 +1076,9 @@ function App() {
                 <p className="eyebrow">Today’s plan</p>
                 <h4>{todayPlan.activity} at {todayPlanLocation.name}</h4>
                 {todayPlanDistanceKm === undefined ? (
-                  <p>Set a starting point above to check whether this venue fits your time. Until then, this is a {todayPlan.timeBudgetMinutes}-minute movement outline without a travel allowance.</p>
+                  <p>Add a starting point above and we can check whether the journey fits. For now, here is a {todayPlan.timeBudgetMinutes}-minute movement outline without travel time.</p>
                 ) : (
-                  <p><strong>{todayPlanDistanceKm.toFixed(1)} km away</strong> as the straight-line planning distance. Allow about {todayPlanOneWayMinutes} minutes each way by {todayPlan.travelMode === 'transit' ? 'public transport' : todayPlan.travelMode}; this uses {todayPlanTravelMinutes} of your {todayPlan.timeBudgetMinutes} minutes for a return journey.</p>
+                  <p><strong>{todayPlanDistanceKm.toFixed(1)} km away</strong> as the crow-flies distance. Plan for around {todayPlanOneWayMinutes} minutes each way by {todayPlan.travelMode === 'transit' ? 'public transport' : todayPlan.travelMode}; that is {todayPlanTravelMinutes} of your {todayPlan.timeBudgetMinutes} minutes for getting there and back.</p>
                 )}
               </div>
               <div className="today-plan-actions">
@@ -1089,8 +1088,8 @@ function App() {
               </div>
               {todayPlanDistanceKm !== undefined && todayPlanActivityMinutes < 10 ? (
                 <div className="today-plan-warning">
-                  <strong>This place does not fit today’s time.</strong>
-                  <p>The return journey would leave less than 10 minutes for activity. Choose a closer documented place or increase the time available.</p>
+                  <strong>That is a lot of travelling for today.</strong>
+                  <p>The return journey would leave less than 10 minutes to move. A closer place—or a little more time—will make this feel more worthwhile.</p>
                   {nearbyPlanAlternatives.length > 0 ? (
                     <div className="nearby-plan-options">
                       <p>{nearbyPlanAlternatives[0].matchesActivity ? 'Closer places with the same documented activity:' : 'Closest documented places, with an activity available there:'}</p>
@@ -1101,25 +1100,25 @@ function App() {
               ) : (
                 <div className="today-session-outline">
                   <div>
-                    <p className="eyebrow">Session outline</p>
-                    <h5>{todayPlanActivityMinutes} minutes for movement</h5>
-                    <p>{todayPlanDistanceKm === undefined ? 'Travel is not included until you set a starting point.' : 'This is the time left after the estimated return journey.'}</p>
+                    <p className="eyebrow">Your movement time</p>
+                    <h5>{todayPlanActivityMinutes} minutes to get moving</h5>
+                    <p>{todayPlanDistanceKm === undefined ? 'Add travel time once you set a starting point.' : 'This is what is left once you have allowed for the journey.'}</p>
                   </div>
                   <ol>
                     {todayPlanSteps.map((step) => <li key={step.title}><strong>{step.minutes} min · {step.title}</strong><span>{step.detail}</span></li>)}
                   </ol>
                 </div>
               )}
-              <p className="today-plan-note">Travel times are planning estimates; route conditions, public-transport timetables and venue access can change. This is a general movement outline, not a workout prescription or safety assessment.</p>
+              <p className="today-plan-note">Journeys and access can change, so check the route, timetable and on-site signs before you go. This is a gentle starting point—not a prescription or a safety assessment.</p>
             </div>
           )}
         </section>
 
         <section className="preference-panel" aria-labelledby="preference-heading">
           <div>
-            <p className="eyebrow">Personalised discovery</p>
-            <h3 id="preference-heading">Find an activity idea</h3>
-            <p className="preference-intro">Choices for <strong>{activeProfile.name}</strong> use broad preferences, not medical details. They are used to match known activities at the mapped places.</p>
+            <p className="eyebrow">Start where you are</p>
+            <h3 id="preference-heading">What feels right today?</h3>
+            <p className="preference-intro">Tell us a little about what <strong>{activeProfile.name}</strong> is in the mood for. We use these broad choices to find ideas at the places on the map—not medical details.</p>
           </div>
           <form className="preference-form" onSubmit={(event) => { event.preventDefault(); setShowRecommendations(true) }}>
             <label>
@@ -1179,16 +1178,16 @@ function App() {
                     {recommendations.map(({ location, matchingActivity }) => (
                       <button className="recommendation-card" key={location.id} onClick={() => selectLocation(location)} type="button">
                         <span className="category-dot" style={{ background: location.color }} />
-                        <span><strong>{matchingActivity} at {location.name}</strong><span>{userLocation ? `${location.distanceKm!.toFixed(1)} km away · ` : ''}{location.verificationStatus === 'documented' ? 'Public source documented' : 'Check details before use'}</span></span>
+                        <span><strong>{matchingActivity} at {location.name}</strong><span>{userLocation ? `${location.distanceKm!.toFixed(1)} km away · ` : ''}See what is there before you go</span></span>
                       </button>
                     ))}
                   </div>
                   {exerciseIdeas.length > 0 && (
                     <section className="exercise-ideas" aria-labelledby="exercise-ideas-heading">
                       <div>
-                        <p className="eyebrow">Instructional ideas</p>
-                        <h4 id="exercise-ideas-heading">Specific movements to explore</h4>
-                        <p>Links open trusted instructional videos or illustrated guides. The mapped venue is a suggested setting, not a guarantee that equipment is available or safe.</p>
+                        <p className="eyebrow">A few ideas to get started</p>
+                        <h4 id="exercise-ideas-heading">Movements you could try</h4>
+                        <p>These links open clear how-to videos or guides. Have a look first, then check that the space and equipment feel right when you arrive.</p>
                       </div>
                       <div className="exercise-cards">
                         {exerciseIdeas.map(({ exercise, location }) => (
@@ -1206,9 +1205,9 @@ function App() {
                   )}
                   <section className="intensive-panel" aria-labelledby="intensive-heading">
                     <div>
-                      <p className="eyebrow">More intensity</p>
-                      <h4 id="intensive-heading">Build a high-energy session</h4>
-                      <p>Choose an intensive style when you want a harder session. The plan opens only for the “energetic” comfort setting and still depends on the venue being available and safe.</p>
+                      <p className="eyebrow">Feeling up for more?</p>
+                      <h4 id="intensive-heading">Try a more energetic session</h4>
+                      <p>Choose one when you fancy a harder workout. These are for the “energetic” setting, and the space still needs to be open, clear and right for the activity.</p>
                     </div>
                     <div className="intensive-controls">
                       <label>
@@ -1248,9 +1247,9 @@ function App() {
 
         <section className="movement-library" aria-labelledby="movement-library-heading">
           <div>
-            <p className="eyebrow">Build your activity menu</p>
-            <h3 id="movement-library-heading">Explore targeted movement ideas</h3>
-            <p>Choose a category to see specific, source-linked ideas. These are general learning resources—not a diagnosis, prescription or guarantee that a venue is suitable.</p>
+            <p className="eyebrow">Try something new</p>
+            <h3 id="movement-library-heading">A few ways to get moving</h3>
+            <p>Pick a category for simple ideas and helpful how-to guides. Take what feels useful and leave the rest—always check the space is suitable when you get there.</p>
           </div>
           <label className="movement-filter">
             Exercise category
@@ -1272,27 +1271,27 @@ function App() {
 
         <section className="community-panel" aria-labelledby="community-heading">
           <div>
-            <p className="eyebrow">Community layer — pilot design</p>
-            <h3 id="community-heading">Plan an activity together</h3>
-            <p>Group activity can be motivating, but the app does not broadcast your live location. This board uses planned sessions at public facilities, never health details or direct contact information.</p>
+            <p className="eyebrow">Move with others</p>
+            <h3 id="community-heading">A little company can help</h3>
+            <p>Sometimes it is easier to show up with other people. For now, this space lets you explore ideas at public places and add them to your own plan—it does not share your location, health details or contact information.</p>
           </div>
           {!adultCommunityAccess ? (
             <p className="community-adult-note">Community coordination is designed as an adult-only feature. A live version for young people would need separate consent, safeguarding and supervision arrangements.</p>
           ) : (
             <>
               <div className="community-safety-note">
-                <strong>What works today:</strong> buttons can add an activity to your personal Today plan or open its source-backed facility profile. Nothing connects you to another person. A live service would need account protection, moderation and reporting, venue rules, and verified coach/trainer roles first.
+                <strong>For now:</strong> you can add an idea to your own plan or look at the place it is linked to. It will not contact anyone for you. A future live service would need the right safeguarding, moderation, venue rules and verified coach or trainer roles in place first.
               </div>
               <ol className="community-demo-path" aria-label="How the community planning journey works">
-                <li><strong>Set the boundary:</strong> confirm an adult profile and the community rules.</li>
-                <li><strong>Choose a public place:</strong> add an illustrative activity to your personal plan or inspect the facility profile.</li>
-                <li><strong>Keep it private:</strong> new requests remain private drafts in this browser tab until a real moderated service exists.</li>
+                <li><strong>Keep it safe:</strong> confirm this is an adult profile and agree to the community rules.</li>
+                <li><strong>Choose a public place:</strong> add an idea to your plan or have a look at the place first.</li>
+                <li><strong>Keep it private:</strong> anything you create stays as a draft in this browser tab.</li>
               </ol>
               <form className="community-access-form" onSubmit={(event) => { event.preventDefault(); enableCommunityActions() }}>
                 <div>
-                  <p className="eyebrow">Safety setup</p>
-                  <h4>Enable local planning actions</h4>
-                  <p>This does not create an account or share data. It lets you use the personal planning actions in this tab.</p>
+                  <p className="eyebrow">A quick safety check</p>
+                  <h4>Unlock planning ideas</h4>
+                  <p>This does not make an account or send anything. It simply opens the planning options in this tab.</p>
                 </div>
                 <label><input checked={adultDeclaration} onChange={(event) => setAdultDeclaration(event.target.checked)} type="checkbox" /> I confirm this is an 18+ community profile.</label>
                 <label><input checked={communityRulesAccepted} onChange={(event) => setCommunityRulesAccepted(event.target.checked)} type="checkbox" /> I will not share health details, a home address, a live location, or arrange unsafe meetings.</label>
@@ -1317,9 +1316,9 @@ function App() {
               </div>
               <section className="guidance-directory" aria-labelledby="guidance-heading">
                 <div>
-                  <p className="eyebrow">Guidance directory — pilot design</p>
-                  <h4 id="guidance-heading">Meet a guide or trainer at a public facility</h4>
-                  <p>Volunteer guides can offer general encouragement. Personal trainers must show verified credentials and clear scope before a live listing can take enquiries. Neither role replaces healthcare advice.</p>
+                  <p className="eyebrow">Guides and trainers</p>
+                  <h4 id="guidance-heading">Getting a little extra support</h4>
+                  <p>A volunteer could offer general encouragement. A trainer would need proper checks before people could contact them here. Neither replaces healthcare advice.</p>
                 </div>
                 <div className="verification-workflow">
                   <div>
@@ -1415,9 +1414,9 @@ function App() {
 
         <section className="wellbeing-panel" aria-labelledby="wellbeing-heading">
           <div>
-            <p className="eyebrow">After your activity</p>
-            <h3 id="wellbeing-heading">Private wellbeing check-in for {activeProfile.name}</h3>
-            <p className="wellbeing-intro">Capture how you feel after an activity. This is a personal reflection, not a mental-health assessment or clinical record.</p>
+            <p className="eyebrow">Afterwards</p>
+            <h3 id="wellbeing-heading">How did that feel, {activeProfile.name}?</h3>
+            <p className="wellbeing-intro">Take a moment to notice how you feel. This is your own reflection—not a health assessment or clinical record.</p>
           </div>
           <form className="checkin-form" onSubmit={(event) => { event.preventDefault(); addCheckIn() }}>
             <label>
@@ -1440,7 +1439,7 @@ function App() {
           </form>
           <div className="challenge-card" aria-live="polite">
             <div>
-              <p className="eyebrow">Optional challenge</p>
+              <p className="eyebrow">A small nudge</p>
               <h4>Three movement days this week</h4>
               <p><strong>{Math.min(activeChallengeDays, 3)} of 3 days logged</strong> in the last seven days. Track a day of movement, not a performance score.</p>
             </div>
@@ -1475,8 +1474,8 @@ function App() {
 
         <section className="route-panel" aria-labelledby="route-heading">
           <div>
-            <p className="eyebrow">Travel layer</p>
-            <h3 id="route-heading">Route to {selectedLocation.name}</h3>
+            <p className="eyebrow">Getting there</p>
+            <h3 id="route-heading">Find your way to {selectedLocation.name}</h3>
           </div>
           <label>
             Travel mode
