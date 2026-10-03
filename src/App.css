@@ -31,6 +31,23 @@ h2 { margin-bottom: 0; color: #183d35; font-family: Georgia, serif; font-size: c
 .distance-form .location-error { color: #a73020; font-weight: 700; }
 .distance-form .location-sorted { color: #245f50; font-weight: 700; }
 .coverage-note { margin: 0 0 14px; color: #5e471e; font-size: .84rem; line-height: 1.45; }
+.today-plan { margin: 0 0 16px; padding: 16px; border: 1px solid #b8d8cb; border-radius: 12px; background: #f4faef; }
+.today-plan h3, .today-plan h4 { margin: 0; color: #183d35; font-family: Georgia, serif; }
+.today-plan h3 { font-size: 1.3rem; }
+.today-plan > div:first-child > p:last-child { max-width: 720px; margin: 7px 0 0; color: #435a53; font-size: .88rem; line-height: 1.45; }
+.today-plan-controls { display: grid; grid-template-columns: minmax(180px, 1.15fr) minmax(160px, .9fr) minmax(150px, .8fr) auto; gap: 12px; align-items: end; margin-top: 14px; }
+.today-plan-controls label { color: #25493f; font-size: .8rem; font-weight: 800; }
+.today-plan-place, .today-plan-controls select { display: block; box-sizing: border-box; width: 100%; min-height: 38px; margin-top: 5px; padding: 8px 9px; border: 1px solid #aebfb8; border-radius: 7px; color: #19332d; background: #fff; font: inherit; }
+.today-plan-place { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.today-plan-controls button { min-height: 38px; padding: 8px 12px; border: 0; border-radius: 7px; color: #fff; background: #245f50; cursor: pointer; font-weight: 800; white-space: nowrap; }
+.today-plan-controls button:hover { background: #183d35; }
+.today-plan-result { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px; align-items: center; margin-top: 14px; padding: 13px; border: 1px solid #c8e1d3; border-radius: 9px; background: #fff; }
+.today-plan-result h4 { font-size: 1.08rem; }
+.today-plan-result p { margin: 6px 0 0; color: #435a53; font-size: .83rem; line-height: 1.45; }
+.today-plan-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 7px; }
+.today-plan-actions button { padding: 7px 9px; border: 1px solid #77a796; border-radius: 7px; color: #1e5949; background: #eff8f2; cursor: pointer; font-size: .78rem; font-weight: 800; }
+.today-plan-actions button:hover { color: #fff; background: #245f50; }
+.today-plan-result .today-plan-note { grid-column: 1 / -1; margin: 0; color: #725320; font-size: .78rem; }
 .preference-panel { margin: 0 0 16px; padding: 16px; border: 1px solid #c9dcd5; border-radius: 12px; background: #f5faf7; }
 .preference-panel h3 { margin: 0; color: #183d35; font-family: Georgia, serif; font-size: 1.3rem; }
 .preference-intro { max-width: 720px; margin: 7px 0 0; color: #435a53; font-size: .9rem; line-height: 1.45; }
@@ -215,6 +232,15 @@ dd { margin: 5px 0 0; line-height: 1.45; }
 .city-theme--krakow .distance-form button, .city-theme--krakow .preference-form button, .city-theme--krakow .route-action { background: var(--city-teal); }
 .city-theme--krakow .distance-form button:hover, .city-theme--krakow .preference-form button:hover, .city-theme--krakow .route-action:hover { background: var(--city-navy); }
 .city-theme--krakow .coverage-note, .city-theme--krakow .wellbeing-safety { color: #755b22; }
+.city-theme--krakow .today-plan { border-color: #b8d8cb; background: var(--city-leaf-mist); }
+.city-theme--krakow .today-plan h3, .city-theme--krakow .today-plan h4, .city-theme--krakow .today-plan-controls label { color: var(--city-ink); }
+.city-theme--krakow .today-plan > div:first-child > p:last-child, .city-theme--krakow .today-plan-result p { color: var(--city-copy); }
+.city-theme--krakow .today-plan-place, .city-theme--krakow .today-plan-controls select { border-color: var(--city-border); color: var(--city-ink); }
+.city-theme--krakow .today-plan-controls button { background: var(--city-teal); }
+.city-theme--krakow .today-plan-controls button:hover { background: var(--city-navy); }
+.city-theme--krakow .today-plan-result { border-color: #c6e0d0; }
+.city-theme--krakow .today-plan-actions button { border-color: #9fc9ba; color: var(--city-teal); background: #eff9f3; }
+.city-theme--krakow .today-plan-actions button:hover { color: #fff; background: var(--city-teal); }
 .city-theme--krakow .preference-panel { border-color: #b8d8cb; background: var(--city-leaf-mist); }
 .city-theme--krakow .recommendation-results, .city-theme--krakow .exercise-ideas { border-color: #c7e0d6; }
 .city-theme--krakow .recommendation-guide, .city-theme--krakow .no-recommendations, .city-theme--krakow .preference-intro, .city-theme--krakow .exercise-card p, .city-theme--krakow .profile-description, .city-theme--krakow .route-summary { color: var(--city-copy); }
@@ -252,4 +278,4 @@ dd { margin: 5px 0 0; line-height: 1.45; }
 .city-theme--krakow .location-card:hover, .city-theme--krakow .location-card.selected { border-color: var(--city-lake); background: var(--city-sky-mist); }
 .city-theme--krakow .location-card[aria-pressed="true"] { box-shadow: inset 4px 0 var(--city-amber); }
 .city-theme--krakow .status, .city-theme--krakow .safety-note { border-color: var(--city-amber); background: var(--city-amber-mist); color: #765b22; }
-@media (max-width: 720px) { main { padding: 20px 16px 40px; } .hero { grid-template-columns: 1fr; min-height: 0; border-radius: 18px; } .hero-copy { min-height: 300px; padding: 34px 28px; } .hero-art img { min-height: 230px; object-position: 57% center; } .discovery, .location-list, .profile { padding: 16px; } .content-grid { grid-template-columns: 1fr; } .map-frame { height: 52vh; min-height: 290px; } dl { grid-template-columns: 1fr; } .distance-form { grid-template-columns: 1fr; } .distance-form button { width: 100%; } .preference-form, .recommendation-cards, .exercise-cards, .movement-library-cards, .community-access-form, .community-posts, .guidance-offers, .guidance-offer-form, .community-request, .checkin-form, .challenge-card, .intensive-controls, .route-panel { grid-template-columns: 1fr; } .verification-workflow { align-items: stretch; flex-direction: column; } .checkin-form .save-choice { grid-column: auto; } .preference-form button, .checkin-form button, .intensive-controls button, .community-access-form button, .guidance-offer-form button, .community-request button, .route-action { width: 100%; } }
+@media (max-width: 720px) { main { padding: 20px 16px 40px; } .hero { grid-template-columns: 1fr; min-height: 0; border-radius: 18px; } .hero-copy { min-height: 300px; padding: 34px 28px; } .hero-art img { min-height: 230px; object-position: 57% center; } .discovery, .location-list, .profile { padding: 16px; } .content-grid { grid-template-columns: 1fr; } .map-frame { height: 52vh; min-height: 290px; } dl { grid-template-columns: 1fr; } .distance-form { grid-template-columns: 1fr; } .distance-form button { width: 100%; } .today-plan-controls, .today-plan-result, .preference-form, .recommendation-cards, .exercise-cards, .movement-library-cards, .community-access-form, .community-posts, .guidance-offers, .guidance-offer-form, .community-request, .checkin-form, .challenge-card, .intensive-controls, .route-panel { grid-template-columns: 1fr; } .today-plan-actions { justify-content: flex-start; } .verification-workflow { align-items: stretch; flex-direction: column; } .checkin-form .save-choice { grid-column: auto; } .today-plan-controls button, .preference-form button, .checkin-form button, .intensive-controls button, .community-access-form button, .guidance-offer-form button, .community-request button, .route-action { width: 100%; } }

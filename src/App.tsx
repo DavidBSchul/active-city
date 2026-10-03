@@ -13,6 +13,7 @@ const pilotCity = {
 type Coordinates = { latitude: number; longitude: number }
 type TravelMode = 'walking' | 'running' | 'transit'
 type RouteData = { coordinates: [number, number][]; distanceKm: number; minutes: number; calories: number }
+type TodayPlan = { locationId: string; activity: string; travelMode: TravelMode }
 type RoutingResponse = { routes?: Array<{ distance: number; geometry: { coordinates: [number, number][] } }> }
 type AgeRange = '0-4' | '5-8' | '9-12' | '13-15' | '16-17' | '18-24' | '25-34' | '35-44' | '45-54' | '55-64' | '65-74' | '75-plus'
 type MovementComfort = 'gentle' | 'steady' | 'energetic'
@@ -286,6 +287,8 @@ function App() {
   const [userLocation, setUserLocation] = useState<Coordinates | null>(null)
   const [locationError, setLocationError] = useState('')
   const [travelMode, setTravelMode] = useState<TravelMode>('walking')
+  const [plannedActivity, setPlannedActivity] = useState(locations[0].activities[0])
+  const [todayPlan, setTodayPlan] = useState<TodayPlan | null>(null)
   const [weightKg, setWeightKg] = useState('70')
   const [route, setRoute] = useState<RouteData | null>(null)
   const [routeStatus, setRouteStatus] = useState('')
@@ -319,6 +322,7 @@ function App() {
   const [flaggedItemIds, setFlaggedItemIds] = useState<string[]>([])
   const [trainerVerificationState, setTrainerVerificationState] = useState<'not-started' | 'demo-review'>('not-started')
   const selectedLocation = locations.find((location) => location.id === selectedId) ?? locations[0]
+  const todayPlanLocation = todayPlan ? locations.find((location) => location.id === todayPlan.locationId) ?? locations[0] : null
   const visibleLocations = useMemo(() => {
     const withDistance = locations.map((location) => ({
       ...location,
@@ -405,6 +409,7 @@ function App() {
 
   const selectLocation = (location: RecreationLocation) => {
     setSelectedId(location.id)
+    setPlannedActivity(location.activities[0])
     setRoute(null)
     setRouteStatus('')
     document.getElementById('location-profile')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
@@ -425,6 +430,14 @@ function App() {
     setLocationError('')
     setRoute(null)
     setRouteStatus('')
+  }
+
+  const buildTodayPlan = () => {
+    setTodayPlan({ locationId: selectedLocation.id, activity: plannedActivity, travelMode })
+  }
+
+  const moveToPlanStep = (elementId: string) => {
+    document.getElementById(elementId)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
   const showPedestrianRoute = async () => {
@@ -647,6 +660,50 @@ function App() {
           {userLocation && <p className="location-sorted">Showing nearest places first from {userLocation.latitude.toFixed(4)}, {userLocation.longitude.toFixed(4)}.</p>}
         </form>
         <p className="coverage-note">A source-backed selection of outdoor gyms, courts, pitches and waterfront activities is shown. This is a growing citywide pilot, not yet a complete municipal inventory.</p>
+
+        <section className="today-plan" aria-labelledby="today-plan-heading">
+          <div>
+            <p className="eyebrow">One clear next step</p>
+            <h3 id="today-plan-heading">Build today’s plan</h3>
+            <p>Make a simple plan from the place you selected, an activity documented there, and how you want to travel. It stays in this browser tab.</p>
+          </div>
+          <div className="today-plan-controls">
+            <label>
+              Selected place
+              <span className="today-plan-place">{selectedLocation.name}</span>
+            </label>
+            <label>
+              Activity at this place
+              <select onChange={(event) => setPlannedActivity(event.target.value)} value={plannedActivity}>
+                {selectedLocation.activities.map((activity) => <option key={activity} value={activity}>{activity}</option>)}
+              </select>
+            </label>
+            <label>
+              Travel choice
+              <select onChange={(event) => { setTravelMode(event.target.value as TravelMode); setRoute(null); setRouteStatus('') }} value={travelMode}>
+                <option value="walking">Walk there</option>
+                <option value="running">Run there</option>
+                <option value="transit">Take public transport</option>
+              </select>
+            </label>
+            <button onClick={buildTodayPlan} type="button">Make today’s plan</button>
+          </div>
+          {todayPlan && todayPlanLocation && (
+            <div className="today-plan-result" aria-live="polite">
+              <div>
+                <p className="eyebrow">Today’s plan</p>
+                <h4>{todayPlan.activity} at {todayPlanLocation.name}</h4>
+                <p>First, check the facility profile and source record. Then {todayPlan.travelMode === 'transit' ? 'open a live public-transport journey' : `prepare a ${todayPlan.travelMode} route`} when you are ready.</p>
+              </div>
+              <div className="today-plan-actions">
+                <button onClick={() => moveToPlanStep('location-profile')} type="button">Review place details</button>
+                <button onClick={() => moveToPlanStep('route-heading')} type="button">Plan travel</button>
+                <button onClick={() => moveToPlanStep('wellbeing-heading')} type="button">Reflect afterwards</button>
+              </div>
+              <p className="today-plan-note">This plan is a prompt for your next step, not a booking, workout prescription or safety assessment.</p>
+            </div>
+          )}
+        </section>
 
         <section className="preference-panel" aria-labelledby="preference-heading">
           <div>

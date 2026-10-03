@@ -17,6 +17,7 @@ The app currently provides:
 - An adult-only, browser-only community-board prototype for activity companions, team-sport player requests and a separate unverified volunteer-guide/personal-trainer directory; it does not expose live locations or connect people.
 - A local safety layer for that prototype: adult and community-rule confirmation, draft/moderation states, report controls, and a no-document trainer-verification journey.
 - A private post-activity reflection and optional three-movement-day challenge; data stays in the browser unless the person explicitly opts into device storage.
+- A browser-only “Today’s plan” that links place selection, a documented activity, travel planning and post-activity reflection.
 
 ## Run locally
 
