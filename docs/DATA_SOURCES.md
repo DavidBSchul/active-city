@@ -54,13 +54,14 @@ An imported map feature must not be presented as confirmation that the location 
 ## Targeted movement library
 
 - The expanded movement library links out to the NHS **Strength and Flex exercise plan: How-to videos** for warm-up, posture and bodyweight-learning resources, and the NHS **Balance exercises** guide for sideways walking, heel-to-toe walking, supported one-leg stands, step-ups and simple grapevine steps.
+- The strength/bodyweight category also links to the NHS **Strength exercises** guide for sit-to-stands, mini-squats, calf raises, supported sideways leg lifts, supported rear leg extensions and wall press-ups. The app repeats the guide’s emphasis on stable support, controlled movement and gradual progression.
 - These are general educational resources. NHS advises people with a health problem, injury, symptoms, recent health event or uncertainty about suitability to seek individual healthcare advice before starting; the app preserves that boundary and tells people to stop if they feel pain or become unwell.
 
 ## Community activity-board prototype
 
 - The app’s activity board is deliberately a browser-only, non-networked prototype. Sample posts and newly created requests are not visible to other people; pressing interest does not send contact details, invite a person, or disclose live location.
 - The design uses planned sessions at mapped public facilities rather than real-time check-ins. It deliberately excludes health information, direct contact details and location sharing. It is adult-only in this prototype; supporting younger people would require separate consent, safeguarding and supervision rules.
-- Volunteer coach and trainer entries are labelled as unverified examples. A live service must provide identity/role verification, qualification and insurance checks where relevant, safeguarding policy, clear boundaries between general instruction and healthcare, moderation and reporting, and venue availability checks before connecting people.
+- Volunteer coach and trainer entries are labelled as unverified examples. The guidance directory separates volunteer movement guides (general encouragement only) from personal trainers. A live service must provide identity/role verification, qualification and insurance checks where relevant, safeguarding policy, clear boundaries between general instruction and healthcare, moderation and reporting, and venue availability checks before connecting people.
 - The social rationale is grounded in the World Health Organization’s **Commission on Social Connection** (2025), which identifies social connection as a health and wellbeing concern. This is rationale for carefully designed group participation, not a claim that a particular meeting is safe or suitable for any individual.
 
 ## Routing and travel estimates

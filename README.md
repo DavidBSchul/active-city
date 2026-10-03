@@ -13,8 +13,8 @@ The app currently provides:
 - Distance sorting from a voluntarily entered location, walking/running route previews, and a public-transport handoff.
 - Non-medical activity discovery based on an age band, movement comfort, goal and optional broad wellbeing focus.
 - Venue-matched exercise ideas and a high-energy session builder for people who select energetic activity.
-- A category-based movement library with NHS-linked walking/running, strength, mobility and balance resources.
-- An adult-only, browser-only community-board prototype for activity companions, team-sport player requests and unverified guidance offers; it does not expose live locations or connect people.
+- A category-based movement library with NHS-linked walking/running, expanded strength/bodyweight, mobility and balance resources.
+- An adult-only, browser-only community-board prototype for activity companions, team-sport player requests and a separate unverified volunteer-guide/personal-trainer directory; it does not expose live locations or connect people.
 - A private post-activity reflection and optional three-movement-day challenge; data stays in the browser unless the person explicitly opts into device storage.
 
 ## Run locally

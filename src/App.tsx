@@ -18,6 +18,8 @@ type IntensiveSession = 'intervals' | 'strength-circuit' | 'court-conditioning'
 type ExerciseCategory = 'all' | 'walk-run' | 'strength' | 'mobility-balance' | 'team'
 type CommunityPostKind = 'activity' | 'team' | 'guidance'
 type CommunityPost = { id: string; kind: CommunityPostKind; activity: string; locationId: string; timing: string; capacity: number; interested: number; note: string }
+type GuidanceRole = 'volunteer' | 'trainer'
+type GuidanceOffer = { id: string; role: GuidanceRole; title: string; locationId: string; availability: string; topics: string; scope: string; enquiries: number }
 
 const WELLBEING_STORAGE_KEY = 'active-city-wellbeing-checkins-v1'
 const WELLBEING_CONSENT_KEY = 'active-city-wellbeing-save-on-device-v1'
@@ -34,6 +36,16 @@ const communitySeedPosts: CommunityPost[] = [
   { id: 'mobility-klinowka', kind: 'guidance', activity: 'Outdoor mobility and warm-up basics', locationId: 'klinowka-parkour', timing: 'A planned weekend session', capacity: 8, interested: 3, note: 'Example volunteer listing. Any live service would verify the organiser and clearly state qualifications.' },
 ]
 
+const guidanceRoleLabel: Record<GuidanceRole, string> = {
+  volunteer: 'Volunteer movement guide',
+  trainer: 'Personal trainer',
+}
+
+const guidanceSeedOffers: GuidanceOffer[] = [
+  { id: 'volunteer-warmup', role: 'volunteer', title: 'General warm-up and outdoor movement buddy', locationId: 'parkowa-street-workout', availability: 'Planned weekend daytime session', topics: 'Warm-up basics, gentle mobility, using public equipment with care', scope: 'Unverified demo role. General movement support only—not healthcare, rehabilitation or individual fitness assessment.', enquiries: 2 },
+  { id: 'trainer-bodyweight', role: 'trainer', title: 'Bodyweight technique introduction', locationId: 'olszanica-outdoor-gym', availability: 'Planned weekday evening session', topics: 'Squat, supported press-up, pull-up progression and session warm-up', scope: 'Unverified demo trainer listing. A live service must verify identity, qualifications, insurance and scope before publication.', enquiries: 1 },
+]
+
 const exerciseCategoryLabel: Record<ExerciseCategory, string> = {
   all: 'All movement ideas',
   'walk-run': 'Walking and running',
@@ -44,7 +56,7 @@ const exerciseCategoryLabel: Record<ExerciseCategory, string> = {
 
 const exerciseCategoryIds: Record<Exclude<ExerciseCategory, 'all'>, string[]> = {
   'walk-run': ['fast-walk', 'run-walk', 'short-sprints', 'warm-up-posture'],
-  strength: ['standing-press-up', 'bodyweight-squat', 'pull-up'],
+  strength: ['standing-press-up', 'bodyweight-squat', 'pull-up', 'sit-to-stand', 'calf-raises', 'sideways-leg-lift', 'rear-leg-extension'],
   'mobility-balance': ['yoga-mobility', 'sideways-walk', 'heel-to-toe', 'one-leg-stand', 'step-up', 'grapevine'],
   team: ['short-sprints', 'warm-up-posture', 'bodyweight-squat'],
 }
@@ -193,6 +205,18 @@ const exerciseLibrary: ExerciseIdea[] = [
   {
     id: 'warm-up-posture', name: 'Warm-up and movement posture', summary: 'A preparation routine before a faster walk, run, court session or bodyweight workout.', safetyNote: 'Warm up before more demanding activity and stop if pain or illness occurs. This is general fitness guidance, not treatment advice.', comfort: ['gentle', 'steady', 'energetic'], goals: ['everyday', 'endurance', 'strength', 'team'], focuses: ['mood', 'heart', 'mobility', 'strength-bone'], locationActivities: ['Walking', 'Running', 'Football', 'Basketball', 'Volleyball', 'Calisthenics', 'Strength training'], instructionUrl: 'https://www.nhs.uk/live-well/exercise/strength-and-flex-exercise-plan-how-to-videos/', instructionLabel: 'Open NHS warm-up and posture videos',
   },
+  {
+    id: 'sit-to-stand', name: 'Sit-to-stand', summary: 'A controlled lower-body movement that starts and ends at a stable seat.', safetyNote: 'Only use a solid, stable seat or bench that will not move. Use the NHS guide and choose a comfortable range.', comfort: ['gentle', 'steady'], goals: ['everyday', 'strength'], focuses: ['mobility', 'strength-bone'], locationActivities: ['Outdoor movement', 'Outdoor fitness', 'Gentle mobility'], instructionUrl: 'https://www.nhs.uk/live-well/exercise/strength-exercises/', instructionLabel: 'Open NHS sit-to-stand guide',
+  },
+  {
+    id: 'calf-raises', name: 'Controlled calf raises', summary: 'A slow standing movement that works the lower legs with support if needed.', safetyNote: 'Start near a stable support on a clear, dry surface. Lift and lower in a controlled way rather than bouncing.', comfort: ['gentle', 'steady'], goals: ['everyday', 'strength'], focuses: ['mobility', 'strength-bone'], locationActivities: ['Walking', 'Outdoor movement', 'Outdoor fitness'], instructionUrl: 'https://www.nhs.uk/live-well/exercise/strength-exercises/', instructionLabel: 'Open NHS calf-raise guide',
+  },
+  {
+    id: 'sideways-leg-lift', name: 'Supported sideways leg lift', summary: 'A slow, supported standing movement for lower-body strength and control.', safetyNote: 'Keep a stable support within reach, move only as far as feels comfortable, and do not use it to self-treat pain or an injury.', comfort: ['gentle', 'steady'], goals: ['everyday', 'strength'], focuses: ['mobility', 'strength-bone'], locationActivities: ['Outdoor movement', 'Outdoor fitness', 'Gentle mobility'], instructionUrl: 'https://www.nhs.uk/live-well/exercise/strength-exercises/', instructionLabel: 'Open NHS sideways-leg-lift guide',
+  },
+  {
+    id: 'rear-leg-extension', name: 'Supported rear leg extension', summary: 'A controlled standing movement that emphasises the back of the leg and hip area.', safetyNote: 'Use a stable support, keep your back neutral, and stop if the movement causes pain or makes you feel unwell.', comfort: ['gentle', 'steady'], goals: ['everyday', 'strength'], focuses: ['mobility', 'strength-bone'], locationActivities: ['Outdoor movement', 'Outdoor fitness', 'Gentle mobility'], instructionUrl: 'https://www.nhs.uk/live-well/exercise/strength-exercises/', instructionLabel: 'Open NHS rear-leg-extension guide',
+  },
 ]
 
 const intensiveSessions: Record<IntensiveSession, { name: string; summary: string; requiredActivities: string[]; steps: string[]; instructionUrl: string; instructionLabel: string }> = {
@@ -277,6 +301,10 @@ function App() {
   const [communityKind, setCommunityKind] = useState<CommunityPostKind>('activity')
   const [communityActivity, setCommunityActivity] = useState('Walking')
   const [communityMessage, setCommunityMessage] = useState('')
+  const [guidanceOffers, setGuidanceOffers] = useState<GuidanceOffer[]>(guidanceSeedOffers)
+  const [guidanceRole, setGuidanceRole] = useState<GuidanceRole>('volunteer')
+  const [guidanceFocus, setGuidanceFocus] = useState('Warm-up and mobility')
+  const [guidanceMessage, setGuidanceMessage] = useState('')
   const selectedLocation = locations.find((location) => location.id === selectedId) ?? locations[0]
   const visibleLocations = useMemo(() => {
     const withDistance = locations.map((location) => ({
@@ -316,6 +344,10 @@ function App() {
     ...post,
     location: locations.find((location) => location.id === post.locationId) ?? locations[0],
   })), [communityPosts])
+  const guidanceOffersWithLocation = useMemo(() => guidanceOffers.map((offer) => ({
+    ...offer,
+    location: locations.find((location) => location.id === offer.locationId) ?? locations[0],
+  })), [guidanceOffers])
   const activeChallengeDays = useMemo(() => {
     const today = new Date(`${todayInKrakow()}T00:00:00`)
     const activeDays = new Set<string>()
@@ -481,6 +513,30 @@ function App() {
         : 'Demo request. Confirm venue availability and agree details through a moderated service before meeting.',
     }, ...current])
     setCommunityMessage('Your request has been added to this browser-only demo. It is not visible to other people and does not send an invitation.')
+  }
+
+  const registerGuidanceInterest = (offerId: string) => {
+    setGuidanceOffers((current) => current.map((offer) => offer.id === offerId ? { ...offer, enquiries: offer.enquiries + 1 } : offer))
+    setGuidanceMessage('Interest saved in this browser demo only. No profile, contact information or health details were sent.')
+  }
+
+  const addGuidanceOffer = () => {
+    const title = guidanceRole === 'trainer'
+      ? `${guidanceFocus} personal-training offer`
+      : `${guidanceFocus} volunteer movement offer`
+    setGuidanceOffers((current) => [{
+      id: `guidance-${Date.now()}`,
+      role: guidanceRole,
+      title,
+      locationId: selectedLocation.id,
+      availability: 'A future planned session',
+      topics: guidanceFocus,
+      scope: guidanceRole === 'trainer'
+        ? 'Demo trainer offer. A live listing requires identity, qualification, insurance and scope verification before it can receive enquiries.'
+        : 'Demo volunteer offer. General activity encouragement only—not healthcare, rehabilitation or individual fitness assessment.',
+      enquiries: 0,
+    }, ...current])
+    setGuidanceMessage('Your guidance offer was added to this browser-only demo. It has not been published or shared with anyone.')
   }
 
   const publicTransportUrl = userLocation
@@ -709,6 +765,51 @@ function App() {
                   </article>
                 ))}
               </div>
+              <section className="guidance-directory" aria-labelledby="guidance-heading">
+                <div>
+                  <p className="eyebrow">Guidance directory — prototype</p>
+                  <h4 id="guidance-heading">Meet a guide or trainer at a public facility</h4>
+                  <p>Volunteer guides can offer general encouragement. Personal trainers must show verified credentials and clear scope before a live listing can take enquiries. Neither role replaces healthcare advice.</p>
+                </div>
+                <div className="guidance-offers">
+                  {guidanceOffersWithLocation.map((offer) => (
+                    <article className="guidance-offer" key={offer.id}>
+                      <span className={`guidance-role ${offer.role}`}>{guidanceRoleLabel[offer.role]} · unverified demo</span>
+                      <h5>{offer.title}</h5>
+                      <p className="guidance-venue"><button onClick={() => selectLocation(offer.location)} type="button">{offer.location.name}</button> · {offer.availability}</p>
+                      <dl className="guidance-details">
+                        <div><dt>Focus</dt><dd>{offer.topics}</dd></div>
+                        <div><dt>Role boundary</dt><dd>{offer.scope}</dd></div>
+                      </dl>
+                      <div className="guidance-footer"><span>{offer.enquiries} demo enquiries</span><button onClick={() => registerGuidanceInterest(offer.id)} type="button">Request details — demo</button></div>
+                    </article>
+                  ))}
+                </div>
+                <form className="guidance-offer-form" onSubmit={(event) => { event.preventDefault(); addGuidanceOffer() }}>
+                  <div>
+                    <p className="eyebrow">Offer time or expertise</p>
+                    <h5>Build a sample guidance listing</h5>
+                    <p>Uses the selected facility: <strong>{selectedLocation.name}</strong>. This is not published.</p>
+                  </div>
+                  <label>
+                    Role
+                    <select onChange={(event) => setGuidanceRole(event.target.value as GuidanceRole)} value={guidanceRole}>
+                      <option value="volunteer">Volunteer movement guide</option>
+                      <option value="trainer">Personal trainer</option>
+                    </select>
+                  </label>
+                  <label>
+                    General focus
+                    <select onChange={(event) => setGuidanceFocus(event.target.value)} value={guidanceFocus}>
+                      <option value="Warm-up and mobility">Warm-up and mobility</option>
+                      <option value="Bodyweight strength basics">Bodyweight strength basics</option>
+                      <option value="Outdoor running basics">Outdoor running basics</option>
+                      <option value="Court or pitch warm-up">Court or pitch warm-up</option>
+                    </select>
+                  </label>
+                  <button type="submit">Add sample listing</button>
+                </form>
+              </section>
               <form className="community-request" onSubmit={(event) => { event.preventDefault(); createCommunityRequest() }}>
                 <div>
                   <p className="eyebrow">Try a request</p>
@@ -737,7 +838,7 @@ function App() {
                 </label>
                 <button type="submit">Add request to demo</button>
               </form>
-              {communityMessage && <p className="community-message" role="status">{communityMessage}</p>}
+              {(guidanceMessage || communityMessage) && <p className="community-message" role="status">{guidanceMessage || communityMessage}</p>}
               <p className="community-footnote">Do not arrange a first meeting in a secluded place or share an address, medical information, personal number, or live location. Check the facility’s access rules before travelling.</p>
             </>
           )}

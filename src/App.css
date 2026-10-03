@@ -101,6 +101,27 @@ h2 { margin-bottom: 0; color: #183d35; font-family: Georgia, serif; font-size: c
 .community-request label { color: #31586a; font-size: .8rem; font-weight: 800; }
 .community-message { margin: 11px 0 0; color: #21586f; font-size: .84rem; font-weight: 700; line-height: 1.4; }
 .community-footnote { margin: 12px 0 0; color: #6d5929; font-size: .8rem; line-height: 1.45; }
+.guidance-directory { margin-top: 14px; padding-top: 14px; border-top: 1px solid #c8dce5; }
+.guidance-directory > div:first-child > p:last-child { color: #486474; font-size: .83rem; line-height: 1.45; }
+.guidance-offers { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
+.guidance-offer { display: flex; flex-direction: column; padding: 13px; border: 1px solid #c8dce5; border-radius: 9px; background: #fff; }
+.guidance-role { align-self: flex-start; display: inline-block; padding: 3px 7px; border-radius: 999px; font-size: .7rem; font-weight: 800; }
+.guidance-role.volunteer { color: #245946; background: #e4f2ea; }
+.guidance-role.trainer { color: #754017; background: #fff0df; }
+.guidance-offer h5, .guidance-offer-form h5 { margin: 8px 0 5px; color: #264a5e; font-size: 1rem; }
+.guidance-offer p, .guidance-offer-form p { margin: 0; color: #486474; font-size: .82rem; line-height: 1.4; }
+.guidance-offer .guidance-venue { margin-bottom: 10px; color: #2e586d; font-weight: 700; }
+.guidance-venue button { padding: 0; border: 0; color: #1e637f; background: none; cursor: pointer; font: inherit; font-weight: 800; text-align: left; text-decoration: underline; }
+.guidance-details { display: grid; grid-template-columns: 1fr; gap: 8px; margin: 0; }
+.guidance-details div { padding-top: 8px; border-top: 1px solid #e0ebef; }
+.guidance-details dt { color: #5e7d8a; }
+.guidance-details dd { color: #486474; font-size: .8rem; }
+.guidance-footer { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: auto; padding-top: 12px; color: #5d7580; font-size: .76rem; font-weight: 700; }
+.guidance-footer button, .guidance-offer-form button { min-height: 34px; padding: 7px 9px; border: 0; border-radius: 7px; color: #fff; background: #566c39; cursor: pointer; font-size: .78rem; font-weight: 800; }
+.guidance-footer button:hover, .guidance-offer-form button:hover { background: #3f5428; }
+.guidance-offer-form { display: grid; grid-template-columns: minmax(190px, 1.2fr) minmax(150px, .7fr) minmax(150px, .7fr) auto; gap: 12px; align-items: end; margin-top: 12px; padding: 13px; border: 1px dashed #b6cc9b; border-radius: 9px; background: #f8fbf4; }
+.guidance-offer-form label { color: #506b3d; font-size: .8rem; font-weight: 800; }
+.guidance-offer-form select { display: block; box-sizing: border-box; width: 100%; min-height: 38px; margin-top: 5px; padding: 7px 9px; border: 1px solid #b7cba0; border-radius: 7px; color: #3f5630; background: #fff; font: inherit; }
 .wellbeing-panel { margin: 0 0 16px; padding: 16px; border: 1px solid #d8cce4; border-radius: 12px; background: #faf7fc; }
 .wellbeing-panel h3, .wellbeing-panel h4 { margin: 0; color: #403153; font-family: Georgia, serif; }
 .wellbeing-panel h3 { font-size: 1.3rem; }
@@ -160,4 +181,4 @@ dd { margin: 5px 0 0; line-height: 1.45; }
 .status { display: inline-block; padding: 3px 8px; border-radius: 999px; background: #fff2df; color: #865113; font-size: .85rem; font-weight: 700; }
 .source-note a { color: #245f50; font-weight: 800; }
 .safety-note { margin-top: 24px; padding: 16px 18px; border-left: 5px solid #ec8d30; background: #fff2df; color: #5e471e; line-height: 1.55; }
-@media (max-width: 720px) { main { padding: 20px 16px 40px; } .discovery, .location-list, .profile { padding: 16px; } .content-grid { grid-template-columns: 1fr; } .map-frame { height: 52vh; min-height: 290px; } dl { grid-template-columns: 1fr; } .distance-form { grid-template-columns: 1fr; } .distance-form button { width: 100%; } .preference-form, .recommendation-cards, .exercise-cards, .movement-library-cards, .community-posts, .community-request, .checkin-form, .challenge-card, .intensive-controls, .route-panel { grid-template-columns: 1fr; } .checkin-form .save-choice { grid-column: auto; } .preference-form button, .checkin-form button, .intensive-controls button, .community-request button, .route-action { width: 100%; } }
+@media (max-width: 720px) { main { padding: 20px 16px 40px; } .discovery, .location-list, .profile { padding: 16px; } .content-grid { grid-template-columns: 1fr; } .map-frame { height: 52vh; min-height: 290px; } dl { grid-template-columns: 1fr; } .distance-form { grid-template-columns: 1fr; } .distance-form button { width: 100%; } .preference-form, .recommendation-cards, .exercise-cards, .movement-library-cards, .community-posts, .guidance-offers, .guidance-offer-form, .community-request, .checkin-form, .challenge-card, .intensive-controls, .route-panel { grid-template-columns: 1fr; } .checkin-form .save-choice { grid-column: auto; } .preference-form button, .checkin-form button, .intensive-controls button, .guidance-offer-form button, .community-request button, .route-action { width: 100%; } }
