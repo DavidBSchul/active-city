@@ -260,6 +260,19 @@ const exerciseLibrary: ExerciseIdea[] = [
   },
 ]
 
+function exercisesForRecommendedActivity(activity: string, comfort: MovementComfort) {
+  const strengthLike = ['Strength training', 'Calisthenics', 'Bodyweight strength', 'Outdoor fitness', 'Street workout'].includes(activity)
+  if (!strengthLike) return []
+  const ids = comfort === 'gentle'
+    ? ['standing-press-up', 'sit-to-stand', 'calf-raises']
+    : comfort === 'energetic'
+      ? activity === 'Calisthenics' || activity === 'Bodyweight strength'
+        ? ['bodyweight-squat', 'pull-up', 'standing-press-up']
+        : ['bodyweight-squat', 'standing-press-up', 'calf-raises']
+      : ['bodyweight-squat', 'standing-press-up', 'calf-raises']
+  return ids.map((id) => exerciseLibrary.find((exercise) => exercise.id === id)).filter((exercise): exercise is ExerciseIdea => Boolean(exercise))
+}
+
 const intensiveSessions: Record<IntensiveSession, { name: string; summary: string; requiredActivities: string[]; steps: string[]; instructionUrl: string; instructionLabel: string }> = {
   intervals: {
     name: 'High-energy intervals',
@@ -477,7 +490,7 @@ function App() {
       const matchingActivity = matches.find((activity) => location.activities.includes(activity))
       if (!matchingActivity || chosenIds.has(location.id)) return []
       chosenIds.add(location.id)
-      return [{ location, matchingActivity }]
+      return [{ location, matchingActivity, recommendedExercises: exercisesForRecommendedActivity(matchingActivity, movementComfort) }]
     }).slice(0, 3)
   }, [activityGoal, ageRange, movementComfort, visibleLocations, wellbeingFocus])
   const exerciseIdeas = useMemo(() => {
@@ -1175,10 +1188,13 @@ function App() {
               {recommendations.length > 0 ? (
                 <div>
                   <div className="recommendation-cards">
-                    {recommendations.map(({ location, matchingActivity }) => (
+                    {recommendations.map(({ location, matchingActivity, recommendedExercises }) => (
                       <button className="recommendation-card" key={location.id} onClick={() => selectLocation(location)} type="button">
                         <span className="category-dot" style={{ background: location.color }} />
-                        <span><strong>{matchingActivity} at {location.name}</strong><span>{userLocation ? `${location.distanceKm!.toFixed(1)} km away · ` : ''}See what is there before you go</span></span>
+                        <span>
+                          {recommendedExercises.length > 0 ? <><strong>Try {recommendedExercises.map((exercise) => exercise.name).join(', ')}</strong><span>At {location.name} · {matchingActivity}</span></> : <><strong>{matchingActivity} at {location.name}</strong><span>Choose this place to see some ideas for getting started</span></>}
+                          <span className="recommendation-distance">{userLocation ? `${location.distanceKm!.toFixed(1)} km away · ` : ''}Tap to see the place and exercise guides</span>
+                        </span>
                       </button>
                     ))}
                   </div>

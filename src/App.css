@@ -121,6 +121,7 @@ h2 { margin-bottom: 0; color: #183d35; font-family: Georgia, serif; font-size: c
 .recommendation-card strong, .recommendation-card span span { display: block; }
 .recommendation-card strong { font-size: .86rem; line-height: 1.35; }
 .recommendation-card span span { margin-top: 3px; color: #61736d; font-size: .76rem; line-height: 1.35; }
+.recommendation-card .recommendation-distance { margin-top: 6px; color: #357060; font-weight: 700; }
 .exercise-ideas { margin-top: 16px; padding-top: 14px; border-top: 1px solid #c9dcd5; }
 .exercise-ideas h4 { margin: 0; color: #183d35; font-family: Georgia, serif; font-size: 1.12rem; }
 .exercise-ideas > div > p:last-child { margin: 6px 0 0; color: #61736d; font-size: .82rem; line-height: 1.45; }

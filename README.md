@@ -13,6 +13,7 @@ The app currently provides:
 - Nearby-place search from a neighbourhood, street or landmark, plus an optional browser device-location prompt; walking/running route previews and a public-transport handoff.
 - A concise activity filter that updates the map and text alternative together.
 - Non-medical activity discovery based on an age band, movement comfort, goal and optional broad wellbeing focus.
+- Strength and calisthenics recommendations name concrete, comfort-aware movements to try—such as bodyweight squats, standing press-ups, calf raises and, only at documented bar-based venues for the energetic setting, pull-up progressions.
 - Venue-matched exercise ideas and a high-energy session builder for people who select energetic activity.
 - A category-based movement library with NHS-linked walking/running, expanded strength/bodyweight, mobility and balance resources.
 - An adult-only, browser-only community-board pilot design for activity companions, team-sport player requests and a separate unverified volunteer-guide/personal-trainer directory; it never exposes live locations or connects people.
