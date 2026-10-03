@@ -8,7 +8,7 @@ The project is a HackYeah 2026 Sport & Healthcare submission in progress. It is 
 
 The app currently provides:
 
-- 19 Kraków pilot locations on an interactive map and an equivalent text alternative.
+- 21 Kraków pilot locations on an interactive map and an equivalent text alternative.
 - Source-linked profiles for outdoor gyms, outdoor courts/pitches, waterfront recreation and a documented park-sport hub at Park Lotników Polskich.
 - Distance sorting from a voluntarily entered location, walking/running route previews, and a public-transport handoff.
 - A concise activity filter that updates the map and text alternative together.

@@ -29,6 +29,8 @@ The app links each documented gym directly to its public source. Equipment can c
 - **KS Borek, ul. Żywiecka 13** — the ZIS municipal record identifies outdoor football, basketball and beach-volleyball facilities as well as a street-workout park. The operator’s booking and cost are intentionally left unconfirmed.
 - **Park Kurdwanów** — the Municipal Greenery Authority records a basketball-and-volleyball court modernised in 2022, another sports field and an outdoor gym.
 - **Park Krowoderski** — the Municipal Greenery Authority records several football pitches, a basketball court, volleyball court, street-workout equipment and a mini skating ramp.
+- **Orlik Kabel, ul. Myśliwska 67** — the ZIS municipal record lists an artificial-turf football pitch and an outdoor polyurethane court for basketball and volleyball, together with lighting, fencing and changing/sanitary facilities. The app makes no claim about current availability or booking.
+- **Park Ogród nad Sudołem, ul. Naczelna** — the Municipal Greenery Authority lists a grass volleyball court, outdoor gym, table-tennis tables and a pétanque court. The app retains a local-condition caveat.
 
 ## Documented waterfront activities
 
