@@ -24,6 +24,7 @@ The app currently provides:
 - Up to five device-local profiles for a person, someone they support, a child, or a household member; each keeps separate preferences, diary entries and challenge progress.
 - Opt-in, read-only progress links that include only reflections the user selects; the app creates no server copy or account.
 - A browser-only “Today’s plan” that turns a chosen documented activity into a time-budgeted session outline, reserves an estimated return journey, flags places that do not fit today’s time, and offers nearer documented alternatives where available.
+- A direct “I’m back — reflect” hand-off from a completed Today plan to the private weekly check-in, carrying the chosen place through without marking activity as completed automatically.
 - Four focused destinations instead of one long page: **Explore**, **Plan**, **My week**, and a clearly labelled **Community** future-pilot area.
 
 ## Run locally

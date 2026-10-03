@@ -4,6 +4,10 @@
 
 - Updated the HackYeah submission draft and final pitch deck to name **Fundacja Życie, Razem** as the Active City team, so the foundation is clearly credited in the public project materials.
 
+## 3 October 2026 — complete the personal journey
+
+- Connected a Today plan to its private post-activity reflection: after a person returns, they can open the relevant check-in with its planned place already selected. The app does not claim that the activity was completed or save anything until the person chooses to add their own reflection.
+
 ## 2026-10-03 — Milestone 1 started
 
 - The participant confirmed in the project chat that development may begin.

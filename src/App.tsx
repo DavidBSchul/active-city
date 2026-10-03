@@ -726,6 +726,15 @@ function App() {
     setRouteStatus('')
   }
 
+  const reflectOnTodayPlan = () => {
+    if (!todayPlanLocation || !todayPlan) return
+    setSelectedId(todayPlanLocation.id)
+    setPlannedActivity(todayPlan.activity)
+    setActiveView('week')
+    setCheckInMessage(`Your ${todayPlan.activity.toLowerCase()} plan at ${todayPlanLocation.name} is ready to reflect on. Add a note only if it would be useful to you.`)
+    window.setTimeout(() => document.getElementById('wellbeing-heading')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 0)
+  }
+
   const moveToPlanStep = (elementId: string) => {
     const viewByElement: Record<string, AppView> = {
       'location-profile': 'explore',
@@ -1155,7 +1164,7 @@ function App() {
               <div className="today-plan-actions">
                 <button onClick={() => moveToPlanStep('location-profile')} type="button">Review place details</button>
                 <button onClick={() => moveToPlanStep('route-heading')} type="button">Plan travel</button>
-                <button onClick={() => moveToPlanStep('wellbeing-heading')} type="button">Reflect afterwards</button>
+                <button onClick={reflectOnTodayPlan} type="button">I’m back — reflect</button>
               </div>
               {todayPlanDistanceKm !== undefined && todayPlanActivityMinutes < 10 ? (
                 <div className="today-plan-warning">
