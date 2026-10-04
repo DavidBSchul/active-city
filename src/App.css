@@ -405,4 +405,36 @@ dd { margin: 5px 0 0; line-height: 1.45; }
 .city-theme--krakow .location-card:hover, .city-theme--krakow .location-card.selected { border-color: var(--city-lake); background: var(--city-sky-mist); }
 .city-theme--krakow .location-card[aria-pressed="true"] { box-shadow: inset 4px 0 var(--city-amber); }
 .city-theme--krakow .status, .city-theme--krakow .safety-note { border-color: var(--city-amber); background: var(--city-amber-mist); color: #765b22; }
+
+/* A compact, familiar local-site treatment: plain, readable and mobile-first. */
+main { max-width: 960px; padding: 18px 14px 36px; }
+.hero { display: block; min-height: 0; margin-bottom: 12px; overflow: visible; border: 1px solid #aaa; border-radius: 0; background: #fff; box-shadow: none; }
+.hero-copy { display: block; min-height: 0; padding: 18px 20px; color: #222; background: #fff; }
+.hero-copy::after { display: none; }
+.hero .eyebrow, .city-theme--krakow .hero .eyebrow { margin-bottom: 5px; color: #555; font-size: .71rem; letter-spacing: .05em; }
+.hero h1, .city-theme--krakow .hero h1 { margin: 0; color: #222; font-family: Georgia, 'Times New Roman', serif; font-size: clamp(2rem, 8vw, 3.1rem); line-height: 1.05; letter-spacing: 0; }
+.hero .intro { max-width: 620px; margin: 8px 0 0; color: #333; font-size: .98rem; line-height: 1.45; }
+.app-navigation { gap: 0; margin-bottom: 12px; padding: 0; border: 1px solid #aaa; border-radius: 0; background: #f5f5f5; box-shadow: none; }
+.app-navigation a { display: flex; align-items: center; min-height: 42px; padding: 9px 12px; border: 0; border-right: 1px solid #bbb; border-radius: 0; color: #1a4f85; background: transparent; text-align: center; }
+.app-navigation a:last-child { border-right: 0; }
+.app-navigation a:hover { color: #fff; background: #1a4f85; }
+.app-navigation a.selected { border-color: #bbb; color: #fff; background: #1a4f85; box-shadow: none; }
+.app-navigation strong { font-size: .9rem; }
+.discovery, .profile, .location-list, .shared-progress, .profile-hub, .today-plan, .preference-panel, .movement-library, .community-panel, .wellbeing-panel, .route-panel { border: 1px solid #bbb; border-radius: 0; background: #fff; box-shadow: none; }
+.city-theme--krakow .shared-progress, .city-theme--krakow .profile-hub, .city-theme--krakow .today-plan, .city-theme--krakow .preference-panel, .city-theme--krakow .movement-library, .city-theme--krakow .community-panel, .city-theme--krakow .wellbeing-panel, .city-theme--krakow .route-panel { background: #fff; }
+.location-card, .recommendation-card, .exercise-card, .movement-library-card, .community-post, .guidance-offer, .today-plan-result, .today-session-outline, .weekly-pattern, .challenge-card, .community-access-form, .community-details, .community-request, .verification-workflow, .volunteer-application, .guidance-offer-form, .share-progress { border-radius: 0; box-shadow: none; }
+button, select, input, textarea, .route-action { border-radius: 2px !important; }
+.map-frame { border: 1px solid #aaa; border-radius: 0; }
+.city-theme--krakow .distance-form button, .city-theme--krakow .preference-form button, .city-theme--krakow .route-action, .city-theme--krakow .today-plan-controls button, .city-theme--krakow .checkin-form button, .city-theme--krakow .summary-button { background: #1a4f85; }
+.city-theme--krakow .distance-form button:hover, .city-theme--krakow .preference-form button:hover, .city-theme--krakow .route-action:hover, .city-theme--krakow .today-plan-controls button:hover, .city-theme--krakow .checkin-form button:hover, .city-theme--krakow .summary-button:hover { background: #12375e; }
+@media (max-width: 720px) { .hero-copy { min-height: 0; padding: 16px; } .app-navigation { grid-template-columns: repeat(2, minmax(0, 1fr)); } .app-navigation a { justify-content: center; min-height: 40px; } .discovery, .location-list, .profile, .shared-progress, .profile-hub { padding: 14px; } .section-heading { margin-bottom: 12px; } }
 @media (max-width: 720px) { main { padding: 20px 16px 40px; } .hero { grid-template-columns: 1fr; min-height: 0; border-radius: 14px; } .hero-copy { min-height: 280px; padding: 34px 28px; } .city-signature { min-height: 290px; padding: 20px; } .app-navigation { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; padding: 6px; } .app-navigation a { min-height: 54px; padding: 8px 9px; } .discovery, .location-list, .profile, .shared-progress, .profile-hub { padding: 16px; } .content-grid { grid-template-columns: 1fr; } .map-frame { height: 52vh; min-height: 290px; } dl { grid-template-columns: 1fr; } .distance-form { grid-template-columns: 1fr; } .distance-form button { width: 100%; } .location-actions { display: grid; grid-template-columns: 1fr; } .profile-creator, .today-plan-controls, .today-plan-result, .preference-form, .recommendation-cards, .exercise-cards, .movement-library-cards, .community-demo-path, .community-access-form, .community-posts, .guidance-offers, .guidance-offer-form, .volunteer-application, .community-request, .checkin-form, .challenge-card, .intensive-controls, .route-panel, .today-session-outline ol, .weekly-pattern { grid-template-columns: 1fr; } .weekly-pattern-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); } .weekly-next-step { grid-template-columns: 1fr; } .today-plan-actions { justify-content: flex-start; } .verification-workflow { align-items: stretch; flex-direction: column; } .checkin-form .save-choice { grid-column: auto; } .today-plan-controls button, .preference-form button, .checkin-form button, .intensive-controls button, .community-access-form button, .guidance-offer-form button, .volunteer-application button, .community-request button, .route-action, .weekly-next-step button { width: 100%; } }
+
+@media (max-width: 720px) {
+  main { padding: 14px 10px 28px; }
+  .hero { display: block; min-height: 0; border-radius: 0; }
+  .hero-copy { min-height: 0; padding: 16px; }
+  .app-navigation { gap: 0; padding: 0; }
+  .app-navigation a { min-height: 40px; padding: 8px; }
+  .discovery, .location-list, .profile, .shared-progress, .profile-hub { padding: 14px; }
+}

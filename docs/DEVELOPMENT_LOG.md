@@ -21,6 +21,10 @@
 
 - Replaced the read-only place label in Today’s plan with a place picker. A person can now change location without returning to Explore; the matching activity choices update at the same time, and any earlier plan is cleared before a fresh one is made.
 
+## 4 October 2026 — compact public-pilot presentation
+
+- Reworked the visual treatment for a familiar, low-friction local-site feel: compact text-only header, simple navigation, square borders, plain controls and mobile-first spacing. The decorative city-brand panel and repeated navigation copy were removed so the first action is visible quickly on a phone.
+
 ## 2026-10-03 — Milestone 1 started
 
 - The participant confirmed in the project chat that development may begin.

@@ -1022,45 +1022,21 @@ function App() {
     <main className={`city-theme city-theme--${pilotCity.id}`}>
       <header className="hero">
         <div className="hero-copy">
-          <p className="eyebrow">Kraków · at your pace</p>
-          <h1>Active City</h1>
-          <p className="tagline">A little more movement, your way.</p>
-          <p className="intro">
-            Got half an hour? An hour? Find a nearby place, see what is there, and make a plan that feels doable today.
-          </p>
-          <p className="hero-strapline">Find a place · Make a plan · Get moving</p>
+          <p className="eyebrow">Fundacja Życie, Razem · HackYeah 2026 prototype</p>
+          <h1>Active City Kraków</h1>
+          <p className="intro">Find a nearby public place to move, then make a plan for the time you have.</p>
         </div>
-        <aside aria-label="Krakow pilot identity" className="city-signature">
-          <div className="city-signature-meta"><span>Active City / 01</span><span>Kraków pilot</span></div>
-          <div aria-hidden="true" className="route-graphic">
-            <span className="route-line route-line--one" />
-            <span className="route-line route-line--two" />
-            <span className="route-stop route-stop--one" />
-            <span className="route-stop route-stop--two" />
-            <span className="route-stop route-stop--three" />
-          </div>
-          <div className="city-signature-copy">
-            <p className="eyebrow">For the way you move</p>
-            <strong>KRAKÓW</strong>
-            <p>Find somewhere nearby, see whether the journey makes sense, and leave with a simple plan for today.</p>
-          </div>
-          <ul aria-label="Active City Krakow features" className="city-signature-facts">
-            <li>Places to try</li>
-            <li>Plans that fit your day</li>
-            <li>Your notes stay yours</li>
-          </ul>
-        </aside>
       </header>
 
       <nav aria-label="Main sections" className="app-navigation">
         {([
-          ['explore', 'Explore', 'Find a place'],
-          ['plan', 'Plan', 'Make today work'],
-          ['week', 'My week', 'Keep track your way'],
-          ['community', 'Community', 'Future pilot'],
-        ] as Array<[AppView, string, string]>).map(([view, label, detail]) => (
+          ['explore', 'Explore'],
+          ['plan', 'Plan'],
+          ['week', 'My week'],
+          ['community', 'Community'],
+        ] as Array<[AppView, string]>).map(([view, label]) => (
           <a aria-current={activeView === view ? 'page' : undefined} className={activeView === view ? 'selected' : ''} href={`?view=${view}${window.location.hash}`} key={view} onClick={(event) => { event.preventDefault(); openView(view) }}>
-            <strong>{label}</strong><span>{detail}</span>
+            <strong>{label}</strong>
           </a>
         ))}
       </nav>
