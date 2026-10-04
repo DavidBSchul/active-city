@@ -1188,7 +1188,7 @@ function App() {
             <button disabled={isLocating} type="submit">{isLocating ? 'Finding your place…' : 'Find nearby places'}</button>
             <button className="secondary-location-action" disabled={isLocating} onClick={useDeviceLocation} type="button">Use my device location</button>
           </div>
-          <p id="location-help">We only look up a place after you tap the button. Choosing device location asks your browser first, and neither is saved here. Distances are a useful guide, not an exact route.</p>
+          <p id="location-help">We only search after you tap the button. A typed place or route request is sent to OpenStreetMap services to find it; Active City does not save it. Device location asks your browser first. <a href="/trust/privacy/">Privacy</a></p>
           {locationError && <p className="location-error" id="location-error" role="alert">{locationError}</p>}
           {userLocation && <p className="location-sorted">Here are the places closest to you first.</p>}
         </form>
