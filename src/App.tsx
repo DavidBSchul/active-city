@@ -1107,6 +1107,7 @@ function App() {
       <header className="hero">
         <div className="hero-copy">
           <img alt="Green Active City tree mark with subtle movement symbols" className="active-city-logo" src={`${import.meta.env.BASE_URL}active-city-logo.png`} />
+          <a className="foundation-home-link" href="https://zycie-razem.org.pl/"><span className="foundation-home-long">← Fundacja Życie, Razem home</span><span className="foundation-home-short">← Foundation home</span></a>
           <p className="eyebrow">Fundacja Życie, Razem · HackYeah 2026 prototype</p>
           <h1>Active City Kraków</h1>
           <p className="intro">Find a nearby public place to move, then make a plan for the time you have.</p>
@@ -1433,10 +1434,14 @@ function App() {
           <div className="movement-library-cards">
             {movementLibrary.map((exercise) => (
               <article className="movement-library-card" key={exercise.id}>
-                <h4>{exercise.name}</h4>
-                <p>{exercise.summary}</p>
-                <p className="movement-safety">{exercise.safetyNote}</p>
-                <a href={exercise.instructionUrl} rel="noreferrer" target="_blank">{exercise.instructionLabel} ↗</a>
+                <details>
+                  <summary><span>{exercise.name}</span><span aria-hidden="true">Details</span></summary>
+                  <div className="movement-library-details">
+                    <p>{exercise.summary}</p>
+                    <p className="movement-safety">{exercise.safetyNote}</p>
+                    <a href={exercise.instructionUrl} rel="noreferrer" target="_blank">{exercise.instructionLabel} ↗</a>
+                  </div>
+                </details>
               </article>
             ))}
           </div>

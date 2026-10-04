@@ -1,18 +1,20 @@
-# HackTribe project submission — draft
+# HackTribe project submission — paste-ready update
 
-**Status:** ready to paste into HackTribe after the team confirms the bracketed details. Do not publish until the team has reviewed the copy, added the final repository link, and chosen a cover image.
+## Keep / update these fields
 
-## Project name
-
-Active City
-
-## Team name
-
-Fundacja Życie, Razem
-
-## Published
-
-Keep as a draft until the team has reviewed the copy, added the final repository link, and chosen a cover image. Publish once those checks are complete.
+| Field | Action |
+| --- | --- |
+| Project name | Keep **Active City**. |
+| Published | Keep published. |
+| Challenge | Keep **Open Task: Sport & Healthcare**. |
+| Idea stage | Keep **New Idea**. |
+| Team status / size | Keep **Full team** / **1**. |
+| Needed skills / skills comment | Clear all selections and leave the comment blank: this team is not recruiting. |
+| Video | Leave empty; a video is recommended, not required. |
+| Website | Keep `https://zycie-razem.org.pl/active-city/`. |
+| Code repository | Keep `https://github.com/DavidBSchul/active-city`. |
+| Cover image | Replace the current cover with [`output/Active-City-HackYeah-2026-cover-v2.png`](../output/Active-City-HackYeah-2026-cover-v2.png). |
+| Presentation | Replace the current deck with [`output/Active-City-HackYeah-2026-Fundacja-Zycie-Razem-v3.pptx`](../output/Active-City-HackYeah-2026-Fundacja-Zycie-Razem-v3.pptx). |
 
 ## Problem
 
@@ -24,96 +26,37 @@ The World Health Organization identifies insufficient physical activity as a maj
 
 Active City turns fragmented public recreation information into a clear, privacy-first activity journey:
 
-1. Explore 22 Kraków pilot locations on an interactive map or accessible text list, then filter for walking, running/cycling, strength, team sport or waterfront activity.
-2. Open a place profile to see its documented activities, equipment, access caveats and source link.
-3. Build a simple “Today’s plan” from the selected place, one documented activity and a travel choice; enter an approximate starting point to sort by distance and choose walking, running or public transport.
-4. Create separate on-device profiles for a person, a person they support, a child, or a household member; each profile has its own broad preferences, progress and diary entries.
-5. Select a higher-energy interval, bodyweight or court/pitch session when energetic activity matches the person’s self-described comfort and the venue record.
-6. Optionally reflect on how the activity felt and build a private three-movement-day challenge. Check-ins stay on the device by default, and the person may create a read-only link containing only entries they explicitly select.
-7. Explore an adult-only community prototype for planned public-place activity requests and volunteer/trainer guidance. A volunteer application visibly requires a future verification sequence and safety agreement; it is explicitly browser-only, so no accounts, live locations, contact details, documents or connections are created.
+1. Explore 14 documented Kraków places on an interactive map or accessible text list.
+2. Open a place profile to see documented activities, equipment, access caveats and a public source link.
+3. Enter a neighbourhood, street or landmark to sort places by distance and choose walking, running or public-transport planning.
+4. Build a time-aware Today’s Plan. It reserves return travel and suggests a closer documented place when the selected one does not fit today’s time.
+5. Choose non-medical activity ideas from a narrow age band, movement comfort and goal; exercise cards name specific movements and link to instruction sources.
+6. Keep a private wellbeing diary: after an activity, record how it felt and an optional note, then see a light weekly pattern. Device saving is optional.
+7. Help keep future information current: a visitor can privately report equipment condition, description accuracy or busyness, or prepare a source-linked public-place suggestion. Nothing changes the public map until a future named reviewer verifies it.
 
-This combines motivation, practical next steps and transparent data limits. It does not diagnose, prescribe exercise or share health data with providers.
+This prototype does not diagnose, prescribe exercise, create user accounts, publish community requests, share health data with providers or automatically publish map updates.
 
-## Challenge
+## What’s done so far and goal of your project
 
-Sport & Healthcare
+During HackYeah, Fundacja Życie, Razem built and tested a React, TypeScript and Leaflet Kraków prototype: 14 source-backed facility profiles, a map and text alternative, distance and route tools, time-aware plans, concrete exercise ideas, local multi-profile use, a private wellbeing diary and local-only visitor-report/map-suggestion flows.
 
-## Idea stage
-
-New idea / hackathon prototype.
-
-## What was done so far and project goal
-
-During HackYeah, the team built and validated a React and TypeScript Kraków pilot: source-backed facility profiles, activity filters, distance and route tools, a guided “Today’s plan”, non-medical activity discovery, an intensive-workout option, privacy-first wellbeing reflection, multi-profile device-local progress, and a clearly bounded community prototype. Kraków is the first city theme; future city pilots can use their own landmark art and equivalent palette tokens without rewriting the experience.
-
-The goal is a clear, demonstrable journey from “I want to move” to a realistic next activity at a nearby public place. All implementation activity and source limits are recorded in `docs/DEVELOPMENT_LOG.md` and `docs/DATA_SOURCES.md`.
-
-## Team status
-
-[Confirm: complete / looking for teammates]
-
-## Current team size
-
-[Confirm number]
-
-## Needed skills
-
-If the team is still recruiting, select:
-
-- Design & UX
-- Frontend Developer
-- Pitching & Storytelling
-
-Otherwise, leave this section empty.
-
-## Skills comment
-
-Looking for a UX designer to strengthen accessibility and onboarding, a frontend developer to help verify the pilot and improve mobile polish, and a storyteller to shape a short judging presentation. Familiarity with inclusive exercise communication, local open data or GIS is welcome.
-
-## Video presentation
-
-Not yet recorded. Record a short listed YouTube walkthrough after finalising the prototype and replace this with the URL.
-
-## Website
-
-Use the deployed demo URL when available. Do not add `http://127.0.0.1:5173` because it works only on the development computer.
-
-## Code repository
-
-https://github.com/DavidBSchul/active-city
+The goal is a clear journey from “I want to move” to a realistic next activity at a nearby public place. The next pilot stage is field-checking more facilities with operators, testing time-aware plans with residents, and appointing a named review partner before any community information or new map location can be published.
 
 ## Instructions on how to open project
 
-```text
 Requirements: Node.js 18 or newer.
 
 1. Clone the repository.
-2. Run: npm install
-3. Run: npm run dev
+2. Run `npm ci`.
+3. Run `npm run dev`.
 4. Open the local URL shown in the terminal.
 
-Quality checks:
-- npm run lint
-- npm run build
+Quality checks: `npm run lint` and `npm run build`.
 
-The application is a frontend prototype. It uses public map tiles and makes on-demand route requests only when a person asks for a walking or running route. No API key is required to run the current version.
-```
+Optional browser smoke tests: run `npx playwright install chromium`, then `npm run test:smoke`.
 
-## Presentation
+The application is a frontend prototype. It uses public map tiles and makes on-demand route requests only when a person asks for a walking or running route. No API key is required.
 
-Upload [`output/Active-City-HackYeah-2026-Fundacja-Zycie-Razem.pptx`](../output/Active-City-HackYeah-2026-Fundacja-Zycie-Razem.pptx). It has nine slides and is below 10 MB. The deck names Fundacja Życie, Razem on slide 1 and covers the source-backed Kraków pilot, time-aware plan, private weekly pattern, community safety boundary, source/AI disclosure and the next city-pilot tests.
+## Upload note
 
-## Cover image brief
-
-Use `public/active-city-hero.png` as the starting cover visual. It is an original AI-generated Kraków riverside illustration (1672 × 941) with outdoor movement and no text or logo. Crop it to the platform’s preferred aspect ratio if needed; add project title text only in the platform/editor, and disclose the generated asset as required by the competition rules.
-
-## Final pre-publish checklist
-
-- [ ] Confirm the final provenance/start-time wording against the organizer’s rules before publishing.
-- [ ] Confirm team status, team size, member names and any needed skills.
-- [x] Create the GitHub repository, push the commit, and paste its public URL.
-- [ ] Add a deployed demo URL if one is available.
-- [ ] Make a cover image with rights-cleared assets.
-- [ ] Record a short listed YouTube demo, if time allows.
-- [x] Create the final PPTX under 10 MB and add source/AI disclosure.
-- [ ] Disclose use of AI tools and external/reused assets in the presentation/submission as required by the competition rules.
+The replacement deck has 11 slides and is 0.96 MB, below the platform’s 10 MB limit. It includes real local screenshots of Explore, Today’s Plan, the private wellbeing diary and the local-only visitor-report form, alongside the future verification requirement, sources and AI-mark disclosure.

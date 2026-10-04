@@ -44,6 +44,24 @@ npm run lint
 npm run build
 ```
 
+Local browser smoke tests (Chromium) cover Explore, location selection, Today
+plans, private place-condition reports, and public-place suggestion drafts:
+
+```bash
+npm ci
+npx playwright install chromium
+npm run test:smoke
+```
+
+On Linux, install browser system dependencies if needed with
+`npx playwright install --with-deps chromium`.
+The tests start their own local Vite server on port 4173 (keep that port free).
+They replace remote map tiles with a local blank image and block all other
+external browser requests; geocoding, routing and device location are avoided.
+Each test uses a fresh browser context. Reports and suggestions are checked for
+tab-only privacy and do not alter public location records. No tests are hosted
+or connected to a remote test service. Failure traces stay in `test-results/`.
+
 ## HackTribe submission details
 
 Copy-ready project fields and the final upload checklist are in [`docs/HACKTRIBE_SUBMISSION.md`](docs/HACKTRIBE_SUBMISSION.md). The draft intentionally leaves team-specific fields marked for confirmation rather than inventing them.

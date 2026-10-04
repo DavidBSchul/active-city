@@ -450,6 +450,7 @@ button, select, input, textarea, .route-action { border-radius: 2px !important; 
 .place-report-form, .suggestion-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; align-items: end; }
 .place-report-form label, .suggestion-form label { display: grid; gap: 4px; color: #273e51; font-size: .88rem; font-weight: 700; }
 .place-report-form select, .place-report-form textarea, .suggestion-form input, .suggestion-form select { width: 100%; box-sizing: border-box; border: 1px solid #9aaab8; background: #fff; color: #222; font: inherit; }
+.place-report-form select { min-height: 42px; padding: 8px; }
 .place-report-form textarea { min-height: 78px; padding: 7px; resize: vertical; }
 .place-report-note { grid-column: 1 / -1; }
 .place-report-form button, .suggestion-form button, .map-suggestion > button { min-height: 38px; border: 1px solid #1a4f85; background: #1a4f85; color: #fff; font-weight: 700; }
@@ -469,16 +470,20 @@ button, select, input, textarea, .route-action { border-radius: 2px !important; 
 }
 
 /* A warmer civic-outdoor layer: still compact, with more personality than a plain form page. */
-main { max-width: 1020px; }
-.hero { position: relative; min-height: 244px; overflow: hidden; border: 1px solid #8fb898; border-top: 6px solid #26734d; border-radius: 10px; background: linear-gradient(125deg, #f8fbf2 0%, #e5f2e7 64%, #d4ebdf 100%); box-shadow: 0 13px 28px rgba(40, 90, 60, .14); }
+main { min-height: 100vh; max-width: 1020px; }
+.hero { position: relative; min-height: 270px; overflow: hidden; border: 1px solid #8fb898; border-top: 6px solid #26734d; border-radius: 10px; background: linear-gradient(125deg, #f8fbf2 0%, #e5f2e7 64%, #d4ebdf 100%); box-shadow: 0 13px 28px rgba(40, 90, 60, .14); }
 .hero::before { position: absolute; right: -84px; bottom: -104px; width: 390px; height: 390px; border: 46px solid rgba(56, 139, 94, .11); border-radius: 50%; content: ''; }
 .hero::after { position: absolute; right: 68px; bottom: -38px; width: 280px; height: 96px; border: 7px solid rgba(24, 113, 138, .26); border-color: rgba(24, 113, 138, .26) transparent transparent; border-radius: 50%; content: ''; transform: rotate(-12deg); }
-.hero-copy { display: block; min-height: 238px; padding: 34px 196px 32px 34px; color: #183d35; background: transparent; }
+.hero-copy { display: block; min-height: 264px; padding: 34px clamp(210px, 25vw, 270px) 32px 34px; color: #183d35; background: transparent; }
 .hero-copy::after { display: none; }
+.foundation-home-link { display: inline-flex; align-items: center; width: fit-content; min-height: 24px; margin: 0 0 12px; color: #1e6645; font-size: .82rem; font-weight: 800; text-decoration: none; }
+.foundation-home-link:hover { color: #0d4930; text-decoration: underline; }
+.foundation-home-link:focus-visible { outline-color: #1e6645; }
+.foundation-home-short { display: none; }
 .hero .eyebrow, .city-theme--krakow .hero .eyebrow { max-width: 520px; color: #2d7250; font-size: .73rem; letter-spacing: .09em; }
 .hero h1, .city-theme--krakow .hero h1 { max-width: 630px; color: #143f50; font-size: clamp(2.3rem, 6vw, 4.15rem); text-shadow: none; }
 .hero .intro { max-width: 520px; color: #315444; font-size: 1.02rem; line-height: 1.5; }
-.active-city-logo { position: absolute; z-index: 2; top: 22px; right: 30px; width: 146px; height: 146px; margin: 0; filter: drop-shadow(0 5px 5px rgba(25, 75, 47, .18)); }
+.active-city-logo { position: absolute; z-index: 2; top: 16px; right: 22px; width: clamp(172px, 19vw, 210px); height: clamp(172px, 19vw, 210px); margin: 0; filter: drop-shadow(0 6px 7px rgba(25, 75, 47, .2)); }
 .app-navigation { gap: 0; border-color: #a8c7b0; background: #f9fbf7; box-shadow: 0 7px 16px rgba(30, 77, 48, .08); }
 .app-navigation a { color: #255b44; }
 .app-navigation a:hover { color: #fff; background: #26734d; }
@@ -490,11 +495,39 @@ main { max-width: 1020px; }
 .map-frame { border: 4px solid #fff; box-shadow: 0 7px 18px rgba(26, 74, 52, .15); }
 .city-theme--krakow .distance-form button, .city-theme--krakow .preference-form button, .city-theme--krakow .route-action, .city-theme--krakow .today-plan-controls button, .city-theme--krakow .checkin-form button, .city-theme--krakow .summary-button { background: #26734d; }
 .city-theme--krakow .distance-form button:hover, .city-theme--krakow .preference-form button:hover, .city-theme--krakow .route-action:hover, .city-theme--krakow .today-plan-controls button:hover, .city-theme--krakow .checkin-form button:hover, .city-theme--krakow .summary-button:hover { background: #174b32; }
+.movement-library-card { padding: 0; }
+.movement-library-card details { height: 100%; }
+.movement-library-card summary { display: flex; align-items: center; justify-content: space-between; gap: 9px; min-height: 54px; padding: 12px; color: #143f50; cursor: pointer; font-size: .94rem; font-weight: 800; list-style: none; }
+.movement-library-card summary::-webkit-details-marker { display: none; }
+.movement-library-card summary::before { width: 8px; height: 8px; border-right: 2px solid #26734d; border-bottom: 2px solid #26734d; content: ''; transform: rotate(-45deg); transition: transform .16s ease; }
+.movement-library-card summary > span:first-child { flex: 1; }
+.movement-library-card summary > span:last-child { color: #26734d; font-size: .72rem; letter-spacing: .04em; text-transform: uppercase; }
+.movement-library-card details[open] summary { border-bottom: 1px solid #c9dfcf; background: #f4faef; }
+.movement-library-card details[open] summary::before { transform: rotate(45deg); }
+.movement-library-card details[open] summary > span:last-child { font-size: 0; }
+.movement-library-card details[open] summary > span:last-child::after { content: 'Close'; font-size: .72rem; }
+.movement-library-details { padding: 12px; }
+.movement-library-details p:last-of-type { margin-bottom: 10px; }
+
+/* Keep the five planning controls inside tablet-sized content panels. */
+@media (min-width: 721px) and (max-width: 1000px) {
+  .today-plan-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .today-plan-controls button { grid-column: 1 / -1; }
+}
+
+@media (max-width: 1000px) {
+  .place-report-form select { min-height: 44px; padding: 8px; }
+}
 
 @media (max-width: 720px) {
-  .hero { min-height: 190px; }
-  .hero-copy { min-height: 184px; padding: 18px 102px 18px 18px; }
-  .active-city-logo { top: 16px; right: 14px; width: 82px; height: 82px; }
+  .distance-form input, .location-filter select, .today-plan-controls select,
+  .place-report-form select, .place-report-form textarea { font-size: 1rem; }
+  .hero { min-height: 226px; }
+  .hero-copy { min-height: 220px; padding: 18px 126px 18px 18px; }
+  .foundation-home-link { margin-bottom: 8px; font-size: .76rem; }
+  .foundation-home-short { display: inline; }
+  .foundation-home-long { display: none; }
+  .active-city-logo { top: 12px; right: 12px; width: 108px; height: 108px; }
   .hero h1, .city-theme--krakow .hero h1 { font-size: clamp(2rem, 10vw, 2.7rem); }
   .hero .intro { font-size: .92rem; }
   .hero::before { right: -130px; bottom: -184px; width: 310px; height: 310px; }
