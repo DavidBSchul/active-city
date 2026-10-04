@@ -8,13 +8,13 @@
   --active-amber: #f4a928;
   --active-mist: #eef8f7;
   color: #222;
-  background: #e7e7e7;
+  background: #edf2eb;
   font-family: Arial, Helvetica, sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
 }
 
 * { box-sizing: border-box; }
-body { margin: 0; min-width: 320px; background: #e7e7e7; }
+body { margin: 0; min-width: 320px; background: linear-gradient(135deg, #edf2eb 0%, #f7f8f1 52%, #e8f2ed 100%); }
 button, a { font: inherit; }
 button:focus-visible, a:focus-visible { outline: 3px solid var(--active-amber); outline-offset: 3px; }
