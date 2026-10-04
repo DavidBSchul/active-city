@@ -438,3 +438,30 @@ button, select, input, textarea, .route-action { border-radius: 2px !important; 
   .app-navigation a { min-height: 40px; padding: 8px; }
   .discovery, .location-list, .profile, .shared-progress, .profile-hub { padding: 14px; }
 }
+
+/* Visitor updates are intentionally tucked away until someone chooses to help. */
+.place-contribution { margin-top: 12px; border: 1px solid #bbb; background: #fff; }
+.place-contribution > details { padding: 14px; }
+.place-contribution summary { cursor: pointer; color: #1a4f85; font-weight: 700; }
+.place-contribution details[open] > summary { margin-bottom: 10px; }
+.contribution-intro { max-width: 700px; margin: 0 0 12px; color: #3d4c48; line-height: 1.45; }
+.place-report-form, .suggestion-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; align-items: end; }
+.place-report-form label, .suggestion-form label { display: grid; gap: 4px; color: #273e51; font-size: .88rem; font-weight: 700; }
+.place-report-form select, .place-report-form textarea, .suggestion-form input, .suggestion-form select { width: 100%; box-sizing: border-box; border: 1px solid #9aaab8; background: #fff; color: #222; font: inherit; }
+.place-report-form textarea { min-height: 78px; padding: 7px; resize: vertical; }
+.place-report-note { grid-column: 1 / -1; }
+.place-report-form button, .suggestion-form button, .map-suggestion > button { min-height: 38px; border: 1px solid #1a4f85; background: #1a4f85; color: #fff; font-weight: 700; }
+.place-report-form button:hover, .suggestion-form button:hover, .map-suggestion > button:hover { background: #12375e; }
+.contribution-message { margin: 12px 0 0; padding: 8px 10px; border-left: 4px solid #367f65; background: #edf7f0; color: #174e35; }
+.private-report-count { margin: 10px 0 0; color: #59655f; font-size: .86rem; }
+.map-suggestion { margin-top: 14px; padding-top: 12px; border-top: 1px solid #d3d3d3; }
+.contributor-check { display: flex; gap: 8px; align-items: flex-start; margin: 10px 0; color: #273e51; font-size: .9rem; font-weight: 700; line-height: 1.35; }
+.contributor-check input { margin-top: 3px; }
+.suggestion-form { margin-top: 12px; }
+
+@media (max-width: 720px) {
+  .place-contribution > details { padding: 12px; }
+  .place-report-form, .suggestion-form { grid-template-columns: 1fr; }
+  .place-report-note { grid-column: auto; }
+  .place-report-form button, .suggestion-form button, .map-suggestion > button { width: 100%; }
+}

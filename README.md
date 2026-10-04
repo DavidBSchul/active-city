@@ -12,6 +12,8 @@ The app currently provides:
 - Source-linked profiles for outdoor gyms, outdoor courts/pitches, waterfront recreation and a documented park-sport hub at Park Lotników Polskich.
 - Nearby-place search from a neighbourhood, street or landmark, plus an optional browser device-location prompt; walking/running route previews and a public-transport handoff.
 - A concise activity filter that updates the map and text alternative together.
+- A tucked-away visitor update form for a selected place: people can record equipment condition, description accuracy, busyness and a broad visitor mix. Reports stay private to the browser tab in this prototype and never alter map data.
+- A public-place suggestion flow that requires an adult/privacy acknowledgement and a public source or map link. It prepares a local draft only; identity, public access, evidence and moderation must be checked by a future named review service before a new marker can be published.
 - Non-medical activity discovery based on an age band, movement comfort, goal and optional broad wellbeing focus.
 - Strength and calisthenics recommendations name concrete, comfort-aware movements to try—such as bodyweight squats, standing press-ups, calf raises and, only at documented bar-based venues for the energetic setting, pull-up progressions.
 - Venue-matched exercise ideas and a high-energy session builder for people who select energetic activity.

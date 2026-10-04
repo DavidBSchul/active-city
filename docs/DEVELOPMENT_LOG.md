@@ -1,5 +1,10 @@
 # Development log
 
+## 4 October 2026 — visitor updates and responsible map growth
+
+- Added a compact, optional visitor update form to each selected place in Explore. A person can record equipment condition, whether the description still fits, a broad sense of busyness and a non-identifying visitor mix, plus a short optional note. Reports give an immediate local confirmation but remain private to the current browser tab and do not change the map.
+- Added a separate public-place suggestion path for future map contributors. It requires an adult/public-place/privacy acknowledgement and a public source or map link, then saves a local draft. The prototype explicitly does not request identity documents, verify anyone, publish a suggestion or add a marker; a future city, venue or NGO-operated moderation service would need to review public access, evidence and safety before publication.
+
 ## 3 October 2026 — team identity for submission
 
 - Updated the HackYeah submission draft and final pitch deck to name **Fundacja Życie, Razem** as the Active City team, so the foundation is clearly credited in the public project materials.

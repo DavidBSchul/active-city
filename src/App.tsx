@@ -34,6 +34,28 @@ type GuidanceRole = 'volunteer' | 'trainer'
 type GuidanceOffer = { id: string; role: GuidanceRole; title: string; locationId: string; availability: string; topics: string; scope: string; enquiries: number; moderation: ModerationState }
 type AppView = 'explore' | 'plan' | 'week' | 'community'
 type WeeklyPattern = { movementDays: number; checkIns: number; familiarPlace?: string; reflection: string; nextStep: string }
+type EquipmentCondition = 'good' | 'attention' | 'not-checked' | 'not-applicable'
+type DescriptionAccuracy = 'accurate' | 'partly-accurate' | 'needs-review' | 'not-sure'
+type PlaceBusyness = 'quiet' | 'some-people' | 'busy' | 'not-sure'
+type VisitorMix = 'mostly-adults' | 'families-mixed' | 'mostly-young-people' | 'mixed-not-sure'
+type PlaceReport = {
+  id: string
+  locationId: string
+  equipmentCondition: EquipmentCondition
+  descriptionAccuracy: DescriptionAccuracy
+  busyness: PlaceBusyness
+  visitorMix: VisitorMix
+  note: string
+  date: string
+}
+type MapSuggestion = {
+  id: string
+  name: string
+  publicArea: string
+  category: RecreationLocation['category']
+  sourceUrl: string
+  date: string
+}
 
 function viewFromCurrentUrl(): AppView {
   const view = new URLSearchParams(window.location.search).get('view')
@@ -440,6 +462,21 @@ function App() {
   const [trainerVerificationState, setTrainerVerificationState] = useState<'not-started' | 'demo-review'>('not-started')
   const [volunteerSafetyAcknowledged, setVolunteerSafetyAcknowledged] = useState(false)
   const [volunteerApplicationState, setVolunteerApplicationState] = useState<'not-started' | 'draft-review'>('not-started')
+  const [equipmentCondition, setEquipmentCondition] = useState<EquipmentCondition>('good')
+  const [descriptionAccuracy, setDescriptionAccuracy] = useState<DescriptionAccuracy>('accurate')
+  const [placeBusyness, setPlaceBusyness] = useState<PlaceBusyness>('some-people')
+  const [visitorMix, setVisitorMix] = useState<VisitorMix>('mixed-not-sure')
+  const [placeReportNote, setPlaceReportNote] = useState('')
+  const [placeReports, setPlaceReports] = useState<PlaceReport[]>([])
+  const [placeReportMessage, setPlaceReportMessage] = useState('')
+  const [contributorAcknowledged, setContributorAcknowledged] = useState(false)
+  const [contributorReviewReady, setContributorReviewReady] = useState(false)
+  const [contributorMessage, setContributorMessage] = useState('')
+  const [suggestionName, setSuggestionName] = useState('')
+  const [suggestionArea, setSuggestionArea] = useState('')
+  const [suggestionCategory, setSuggestionCategory] = useState<RecreationLocation['category']>('Outdoor gym and sports complex')
+  const [suggestionSourceUrl, setSuggestionSourceUrl] = useState('')
+  const [mapSuggestions, setMapSuggestions] = useState<MapSuggestion[]>([])
   const activeProfile = profiles.find((profile) => profile.id === activeProfileId) ?? profiles[0]
   const selectedLocation = documentedLocations.find((location) => location.id === selectedId) ?? documentedLocations[0]
   const todayPlanLocation = todayPlan ? documentedLocations.find((location) => location.id === todayPlan.locationId) ?? documentedLocations[0] : null
@@ -1012,6 +1049,53 @@ function App() {
     }
     setVolunteerApplicationState('draft-review')
     setGuidanceMessage('A local application draft is ready. It was not submitted or verified: a live service needs a named city, NGO, or venue operator to check identity, safeguarding, role boundaries and the written agreement before approval.')
+  }
+
+  const savePlaceReport = () => {
+    const report: PlaceReport = {
+      id: `place-report-${Date.now()}`,
+      locationId: selectedLocation.id,
+      equipmentCondition,
+      descriptionAccuracy,
+      busyness: placeBusyness,
+      visitorMix,
+      note: placeReportNote.trim(),
+      date: todayInKrakow(),
+    }
+    setPlaceReports((current) => [report, ...current].slice(0, 25))
+    setPlaceReportNote('')
+    setPlaceReportMessage(`Saved privately for ${selectedLocation.name}. It has not changed the public map.`)
+  }
+
+  const prepareContributorReview = () => {
+    if (!contributorAcknowledged) {
+      setContributorMessage('Please confirm the public-place and privacy statement first.')
+      return
+    }
+    setContributorReviewReady(true)
+    setContributorMessage('Contributor review is ready in this prototype. No identity documents are requested or checked here.')
+  }
+
+  const saveMapSuggestion = () => {
+    const name = suggestionName.trim()
+    const publicArea = suggestionArea.trim()
+    const sourceUrl = suggestionSourceUrl.trim()
+    if (!name || !publicArea || !sourceUrl) {
+      setContributorMessage('Add a name, a public park or street reference, and a public source or map link.')
+      return
+    }
+    setMapSuggestions((current) => [{
+      id: `map-suggestion-${Date.now()}`,
+      name,
+      publicArea,
+      category: suggestionCategory,
+      sourceUrl,
+      date: todayInKrakow(),
+    }, ...current].slice(0, 10))
+    setSuggestionName('')
+    setSuggestionArea('')
+    setSuggestionSourceUrl('')
+    setContributorMessage('Suggestion saved privately in this browser. A future reviewer must confirm public access, the location and the description before any marker is added.')
   }
 
   const publicTransportUrl = userLocation
@@ -1698,6 +1782,94 @@ function App() {
             {' · '}Last recorded: {selectedLocation.lastReported}
           </p>
         </article>
+      </section>
+
+      <section className="place-contribution" aria-labelledby="place-contribution-heading" hidden={activeView !== 'explore'}>
+        <details>
+          <summary id="place-contribution-heading">Help keep this place up to date</summary>
+          <p className="contribution-intro">Tell us what you found at <strong>{selectedLocation.name}</strong>. In this prototype, your report stays in this browser and does not change the public map.</p>
+          <form className="place-report-form" onSubmit={(event) => { event.preventDefault(); savePlaceReport() }}>
+            <label>
+              Equipment today
+              <select onChange={(event) => setEquipmentCondition(event.target.value as EquipmentCondition)} value={equipmentCondition}>
+                <option value="good">In good shape</option>
+                <option value="attention">Some equipment needs attention</option>
+                <option value="not-checked">Could not check</option>
+                <option value="not-applicable">No equipment at this place</option>
+              </select>
+            </label>
+            <label>
+              Place description
+              <select onChange={(event) => setDescriptionAccuracy(event.target.value as DescriptionAccuracy)} value={descriptionAccuracy}>
+                <option value="accurate">Looks accurate</option>
+                <option value="partly-accurate">Partly accurate</option>
+                <option value="needs-review">Needs review</option>
+                <option value="not-sure">Not sure</option>
+              </select>
+            </label>
+            <label>
+              How busy was it?
+              <select onChange={(event) => setPlaceBusyness(event.target.value as PlaceBusyness)} value={placeBusyness}>
+                <option value="quiet">Quiet</option>
+                <option value="some-people">Some people</option>
+                <option value="busy">Busy</option>
+                <option value="not-sure">Could not tell</option>
+              </select>
+            </label>
+            <label>
+              Visitor mix (broad terms only)
+              <select onChange={(event) => setVisitorMix(event.target.value as VisitorMix)} value={visitorMix}>
+                <option value="mostly-adults">Mostly adults</option>
+                <option value="families-mixed">Families and mixed ages</option>
+                <option value="mostly-young-people">Mostly young people</option>
+                <option value="mixed-not-sure">Mixed or not sure</option>
+              </select>
+            </label>
+            <label className="place-report-note">
+              Optional note
+              <textarea maxLength={280} onChange={(event) => setPlaceReportNote(event.target.value)} placeholder="For example: two exercise stations were unavailable. Do not add names, photos or personal details." value={placeReportNote} />
+            </label>
+            <button type="submit">Save private report</button>
+          </form>
+          {placeReportMessage && <p className="contribution-message" role="status">{placeReportMessage}</p>}
+          {placeReports.some((report) => report.locationId === selectedLocation.id) && <p className="private-report-count">{placeReports.filter((report) => report.locationId === selectedLocation.id).length} private report{placeReports.filter((report) => report.locationId === selectedLocation.id).length === 1 ? '' : 's'} saved for this place in this browser tab.</p>}
+
+          <details className="map-suggestion">
+            <summary>Suggest a missing public place</summary>
+            <p className="contribution-intro">A real service would use trained reviewers to check identity, public access, evidence and the proposed description. This prototype does not collect documents or add a marker automatically.</p>
+            <label className="contributor-check"><input checked={contributorAcknowledged} onChange={(event) => setContributorAcknowledged(event.target.checked)} type="checkbox" /> I am 18+ and will suggest only a public outdoor place. I will not include a private address or personal details.</label>
+            <button onClick={prepareContributorReview} type="button">Prepare contributor review</button>
+            {contributorReviewReady && (
+              <form className="suggestion-form" onSubmit={(event) => { event.preventDefault(); saveMapSuggestion() }}>
+                <label>
+                  Place name
+                  <input onChange={(event) => setSuggestionName(event.target.value)} required value={suggestionName} />
+                </label>
+                <label>
+                  Public park or nearest street
+                  <input onChange={(event) => setSuggestionArea(event.target.value)} placeholder="Park name or nearest public street" required value={suggestionArea} />
+                </label>
+                <label>
+                  Type of place
+                  <select onChange={(event) => setSuggestionCategory(event.target.value as RecreationLocation['category'])} value={suggestionCategory}>
+                    <option value="Outdoor gym and sports complex">Outdoor gym or sports area</option>
+                    <option value="Outdoor team-sport facility">Outdoor court or pitch</option>
+                    <option value="Park and open space">Park or open space</option>
+                    <option value="Waterfront recreation">Waterfront recreation</option>
+                    <option value="Urban green corridor">Green corridor</option>
+                  </select>
+                </label>
+                <label>
+                  Public source or map link
+                  <input onChange={(event) => setSuggestionSourceUrl(event.target.value)} placeholder="https://" required type="url" value={suggestionSourceUrl} />
+                </label>
+                <button type="submit">Save map suggestion</button>
+              </form>
+            )}
+            {contributorMessage && <p className="contribution-message" role="status">{contributorMessage}</p>}
+            {mapSuggestions.length > 0 && <p className="private-report-count">{mapSuggestions.length} private map suggestion{mapSuggestions.length === 1 ? '' : 's'} saved in this browser tab.</p>}
+          </details>
+        </details>
       </section>
 
       <aside className="safety-note" hidden={activeView === 'week' || activeView === 'community'}>
