@@ -1106,6 +1106,7 @@ function App() {
     <main className={`city-theme city-theme--${pilotCity.id}`}>
       <header className="hero">
         <div className="hero-copy">
+          <img alt="Green Active City tree mark with subtle movement symbols" className="active-city-logo" src={`${import.meta.env.BASE_URL}active-city-logo.png`} />
           <p className="eyebrow">Fundacja Życie, Razem · HackYeah 2026 prototype</p>
           <h1>Active City Kraków</h1>
           <p className="intro">Find a nearby public place to move, then make a plan for the time you have.</p>
